@@ -6,7 +6,10 @@
 ACharacterBase_YMH::ACharacterBase_YMH()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
+	
+	GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -90.0f));
+	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
+	GetMesh()->SetRelativeScale3D(FVector(0.6f));
 }
 
 void ACharacterBase_YMH::BeginPlay()
