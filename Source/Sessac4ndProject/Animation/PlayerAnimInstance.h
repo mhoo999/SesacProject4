@@ -22,8 +22,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MyAnimSettings")
 	float speed;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MyAnimSettings")
+	bool bIsCombat = false;
+
 	UPROPERTY()
 	APlayerBase_YMH* Player;
+
+	int32 SMGBulletCount = 30;
 
 public:
 	virtual void NativeInitializeAnimation() override;
@@ -34,4 +39,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Anim")
 	UAnimMontage* fireMontage;
 	void PlayFireAnimation();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="MySettings")
+	float pitchAngle;
+
+	// 재장전 몽타주
+	UPROPERTY(EditDefaultsOnly, Category="Anim")
+	UAnimMontage* reloadMontage;
+	void PlayReloadAnimation();
+	UFUNCTION()
+	void AnimNotify_Reload();
+	
 };
