@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CharacterBase_YMH.h"
+#include "Character/CharacterBase_YMH.h"
 #include "ZombieBase_KJY.generated.h"
 
 /**

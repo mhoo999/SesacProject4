@@ -2,8 +2,9 @@
 
 
 #include "ZombieFSM.h"
-#include "DestinationActor_KJY.h"
+#include "Actor/DestinationActor_KJY.h"
 #include "ZombieBase_KJY.h"
+#include "Character/Player/PlayerBase_YMH.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties

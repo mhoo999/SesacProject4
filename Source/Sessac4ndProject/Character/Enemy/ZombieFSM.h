@@ -39,7 +39,7 @@ public:
 	class ADestinationActor_KJY* Target;
 
 	UPROPERTY(VisibleAnywhere, Category=FSM)
-	class ACharacterBase_YMH* Player; // 추후 클래스 변경
+	class APlayerBase_YMH* Player; // 추후 클래스 변경
 
 	UPROPERTY(VisibleAnywhere, Category=FSM)
 	class AZombieBase_KJY* Me;

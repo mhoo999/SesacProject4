@@ -1,8 +1,8 @@
 // zombie must die
 
 
-#include "ZombieBase_KJY.h"
-#include "ZombieFSM.h"
+#include "Character/Enemy/ZombieBase_KJY.h"
+#include "Character/Enemy/ZombieFSM.h"
 
 
 // 기본적으로 목적지(지켜야 하는곳)를 향해 감
