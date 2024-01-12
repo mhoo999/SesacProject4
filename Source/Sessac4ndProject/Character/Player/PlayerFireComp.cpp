@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "Animation/AnimInstance.h"
 #include "PlayerBase_YMH.h"
+#include "Animation/PlayerAnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -22,6 +23,8 @@ void UPlayerFireComp::BeginPlay()
 void UPlayerFireComp::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	bIsReloading = player->bIsReloading;
 }
 
 void UPlayerFireComp::SetupPlayerInput(UInputComponent* PlayerInputComponent)
@@ -41,29 +44,30 @@ void UPlayerFireComp::SetupPlayerInput(UInputComponent* PlayerInputComponent)
 void UPlayerFireComp::Fire(const FInputActionValue& value)
 {
 	// UE_LOG(LogTemp, Warning, TEXT("Fire"));
-
-	if (player->bulletCount <= 0)
+	
+	if (player->bulletCount <= 0 || bIsReloading)
 	{
-		// Reload();
 		return;
 	}
 	
-	if (fireSpeedHandle.IsValid())
-	{
-		GetWorld()->GetTimerManager().ClearTimer(fireSpeedHandle);
-	}
+	currentTime += 0.1f;
 
-	GetWorld()->GetTimerManager().SetTimer(fireSpeedHandle, this, &UPlayerFireComp::FireBullet, 0.01, false);
-	
-	FVector startPos = player->FollowCamera->GetComponentLocation();
-	FVector endPos = startPos + player->FollowCamera->GetForwardVector() * 10000;
-	FCollisionQueryParams params;
-	params.AddIgnoredActor(player);
-	bHit = GetWorld()->LineTraceSingleByChannel(hitInfo, startPos, endPos, ECC_Visibility, params);
+	if (currentTime > player->fireSpeed)
+	{
+		FireBullet();
+		currentTime = 0;
+	}
 }
 
 void UPlayerFireComp::FireBullet()
 {
+	FHitResult hitInfo;
+	FVector startPos = player->FollowCamera->GetComponentLocation();
+	FVector endPos = startPos + player->FollowCamera->GetForwardVector() * 10000;
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(player);
+	bool bHit = GetWorld()->LineTraceSingleByChannel(hitInfo, startPos, endPos, ECC_Visibility, params);
+	
 	if (bHit)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), bulletMark, hitInfo.Location, FRotator());
@@ -74,10 +78,21 @@ void UPlayerFireComp::FireBullet()
 
 	auto anim = Cast<UPlayerAnimInstance>(player->GetMesh()->GetAnimInstance());
 	anim->PlayFireAnimation();
+
+	player->bIsCombat = true;
 }
 
 void UPlayerFireComp::Reload(const FInputActionValue& value)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Reload"));
-	player->bulletCount = 30;
+
+	if (bIsReloading)
+	{
+		return;
+	}
+	
+	auto anim = Cast<UPlayerAnimInstance>(player->GetMesh()->GetAnimInstance());
+	anim->PlayReloadAnimation();
+
+	bIsReloading = true;
 }

@@ -66,6 +66,11 @@ public:
 	// 재화
 	UPROPERTY()
 	int32 wallet;
+
+	// 교전 여부
+	bool bIsCombat;
+
+	bool bIsReloading = false;
 	
 public:
 	// 트랩 설치

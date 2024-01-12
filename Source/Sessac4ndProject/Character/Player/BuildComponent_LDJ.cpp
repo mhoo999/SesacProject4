@@ -3,9 +3,9 @@
 
 #include "BuildComponent_LDJ.h"
 
-#include "Sessac4ndProjectCharacter.h"
-#include "SpikeTrap_LDJ.h"
 #include "Camera/CameraComponent.h"
+#include "Character/Sessac4ndProjectCharacter.h"
+#include "Trap/SpikeTrap_LDJ.h"
 
 UBuildComponent_LDJ::UBuildComponent_LDJ()
 {

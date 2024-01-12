@@ -10,8 +10,8 @@
 ASMGPlayer_YMH::ASMGPlayer_YMH()
 {
 	weaponeGrade = 1;
-	bulletCount = 30;
-	fireSpeed = 1.0f;
+	bulletCount = SMGBulletCount;
+	fireSpeed = 2.0f;
 }
 
 void ASMGPlayer_YMH::BeginPlay()

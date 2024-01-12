@@ -38,14 +38,12 @@ public:
 	// 사격
 	void Fire(const FInputActionValue& value);
 	void FireBullet();
-	bool bHit;
-	FHitResult hitInfo;
+	float currentTime = 0;
 
 	UPROPERTY(EditDefaultsOnly, Category="WeaponEffect")
 	UParticleSystem* bulletMark;
 
 	// 재장전
 	void Reload(const FInputActionValue& value);
-
-	FTimerHandle fireSpeedHandle;
+	bool bIsReloading;
 };
