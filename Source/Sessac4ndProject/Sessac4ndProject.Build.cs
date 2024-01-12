@@ -11,6 +11,6 @@ public class Sessac4ndProject : ModuleRules
 		PublicIncludePaths.AddRange(new string[]{"Sessac4ndProject"});
 		PrivateIncludePaths.AddRange(new string[]{"Sessac4ndProject"});
 		
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Cascade" });
 	}
 }
