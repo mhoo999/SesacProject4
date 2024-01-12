@@ -42,8 +42,11 @@ public:
 
 	int32 Cost = 350;
 	int32 TrapAttackDamage = 0;
-	int32 AttackCoolTime;
-	bool bIsAttacked = false;
+	float AttackCoolTime = 5;
+	float CurrentTime = 0;
+	int32 TrapInArea = 0;
+
+	FTimerHandle Handle;
 
 	UFUNCTION()
 	virtual void OnEnemyOverlapped(UPrimitiveComponent* OverlappedComponent,
@@ -53,6 +56,12 @@ public:
 		bool bFromSweep,
 		const FHitResult& SweepResult);
 
+	UFUNCTION()
+	virtual void OnEnemyEndOverlapped(UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex);
+	
 	virtual void UpgradeCost();
 	virtual void UpgradeAbility();
 	virtual void ReactTrap();
