@@ -22,7 +22,6 @@ void ASpikeTrap_LDJ::BeginPlay()
 void ASpikeTrap_LDJ::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void ASpikeTrap_LDJ::UpgradeCost()
@@ -41,8 +40,24 @@ void ASpikeTrap_LDJ::ReactTrap()
 	// TO DO : 올렸다가 다시 내려가기
 	GetWorld()->GetTimerManager().SetTimer(THandle, FTimerDelegate::CreateLambda([this]()->void
 	{
-		auto Temp = FMath::Lerp(SpikeMeshComp->GetComponentLocation().Z, 0, GetWorld()->GetDeltaSeconds()*10);
-		UE_LOG(LogTemp,Warning, TEXT("123"));
-		SpikeMeshComp->SetRelativeLocation(FVector(0,0,Temp));
+		if (!GoalArrived)
+		{
+			auto Temp = FMath::Lerp(SpikeMeshComp->GetComponentLocation().Z, 0, GetWorld()->GetDeltaSeconds() * 10);
+			SpikeMeshComp->SetRelativeLocation(FVector(0, 0, Temp));
+			if (Temp > -0.1)
+			{
+				GoalArrived = true;
+			}
+		}
+		else
+		{
+			auto Temp = FMath::Lerp(SpikeMeshComp->GetComponentLocation().Z, -50, GetWorld()->GetDeltaSeconds() * 10);
+			SpikeMeshComp->SetRelativeLocation(FVector(0, 0, Temp));
+			if (Temp < -49.9)
+			{
+				GoalArrived = false;
+				GetWorld()->GetTimerManager().ClearTimer(THandle);
+			}
+		}
 	}), GetWorld()->GetDeltaSeconds(), true);
 }
