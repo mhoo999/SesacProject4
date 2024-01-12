@@ -23,5 +23,5 @@ protected:
 public:
 	virtual void Tick(float DeltaSeconds) override;
 
-	
+	int32 SMGBulletCount = 30;
 };
