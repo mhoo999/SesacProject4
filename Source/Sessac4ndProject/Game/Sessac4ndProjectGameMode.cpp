@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "Sessac4ndProjectGameMode.h"
-#include "Sessac4ndProjectCharacter.h"
+#include "Character/Sessac4ndProjectCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 ASessac4ndProjectGameMode::ASessac4ndProjectGameMode()

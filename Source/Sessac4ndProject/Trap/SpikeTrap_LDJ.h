@@ -29,5 +29,5 @@ public:
 
 	FTimerHandle THandle;
 
-	bool bLerped = false;
+	bool GoalArrived = false;
 };

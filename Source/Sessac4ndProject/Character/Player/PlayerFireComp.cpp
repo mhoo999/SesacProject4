@@ -4,7 +4,7 @@
 #include "PlayerFireComp.h"
 
 #include "EnhancedInputComponent.h"
-#include "PlayerAnimInstance.h"
+#include "Animation/AnimInstance.h"
 #include "PlayerBase_YMH.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"

@@ -34,20 +34,53 @@ void ATrapBase::BeginPlay()
 {
 	Super::BeginPlay();
 	ReactionCollision->OnComponentBeginOverlap.AddDynamic(this, &ATrapBase::OnEnemyOverlapped);
+	ReactionCollision->OnComponentEndOverlap.AddDynamic(this, &ATrapBase::OnEnemyEndOverlapped);
 }
 
 // Called every frame
 void ATrapBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void ATrapBase::OnEnemyOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// TO DO : 플레이어한테 반응하는거 에너미로 바꾸기
 	auto Temp = Cast<AActor>(OtherActor);
-	this->ReactTrap();
+	if (Temp)
+	{
+		TrapInArea++;
+	}
+
+	if (TrapInArea == 1)
+	{
+		ReactTrap();
+	}
+	
+	if (TrapInArea > 0)
+	{
+		GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([this]()->void
+		{
+			ReactTrap();
+			UE_LOG(LogTemp,Warning, TEXT("Still In Trap"));
+		}), AttackCoolTime, true);	
+	}
+}
+
+void ATrapBase::OnEnemyEndOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	auto Temp = Cast<AActor>(OtherActor);
+	if (Temp)
+	{
+		TrapInArea--;
+	}
+
+	if (TrapInArea == 0)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(Handle);	
+	}
 }
 
 void ATrapBase::UpgradeCost()
