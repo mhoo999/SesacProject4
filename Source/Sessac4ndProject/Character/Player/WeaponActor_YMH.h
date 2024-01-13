@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "WeaponActor.generated.h"
+#include "WeaponActor_YMH.generated.h"
 
 UCLASS()
 class SESSAC4NDPROJECT_API AWeaponActor : public AActor

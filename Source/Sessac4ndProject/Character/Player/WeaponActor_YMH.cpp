@@ -1,7 +1,7 @@
 // zombie must die
 
 
-#include "WeaponActor.h"
+#include "WeaponActor_YMH.h"
 
 AWeaponActor::AWeaponActor()
 {

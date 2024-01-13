@@ -1,18 +1,18 @@
 // zombie must die
 
 
-#include "PlayerAnimInstance.h"
+#include "PlayerAnimInstance_YMH.h"
 
 #include "Character/Player/PlayerBase_YMH.h"
 
-void UPlayerAnimInstance::NativeInitializeAnimation()
+void UPlayerAnimInstance_YMH::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
 	Player = Cast<APlayerBase_YMH>(TryGetPawnOwner());
 }
 
-void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
+void UPlayerAnimInstance_YMH::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
@@ -30,7 +30,7 @@ void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 }
 
-void UPlayerAnimInstance::PlayFireAnimation()
+void UPlayerAnimInstance_YMH::PlayFireAnimation()
 {
 	if (fireMontage)
 	{
@@ -38,15 +38,16 @@ void UPlayerAnimInstance::PlayFireAnimation()
 	}
 }
 
-void UPlayerAnimInstance::PlayReloadAnimation()
+void UPlayerAnimInstance_YMH::PlayReloadAnimation()
 {
 	if (reloadMontage)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Reload Start!"));
 		Montage_Play(reloadMontage);
 	}
 }
 
-void UPlayerAnimInstance::AnimNotify_Reload()
+void UPlayerAnimInstance_YMH::AnimNotify_Reload()
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnReload"));
 	Player->bulletCount = SMGBulletCount;
