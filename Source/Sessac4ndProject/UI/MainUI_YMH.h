@@ -16,8 +16,11 @@ class SESSAC4NDPROJECT_API UMainUI_YMH : public UUserWidget
 
 public:
 	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(BindWidget))
+	class UImage* img_pointer;
+	void ShowPointer();
+	
+	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(BindWidget))
 	class UImage* img_cresshair;
-
 	void ShowCrosshair(bool isShow);
 
 public:
