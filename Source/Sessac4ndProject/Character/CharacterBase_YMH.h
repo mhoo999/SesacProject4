@@ -26,7 +26,7 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-private:
+public:
 	// 최대 체력
 	UPROPERTY()
 	float maxHelth;
@@ -49,7 +49,8 @@ public:
 	virtual void Attack();
 
 	// 피격
-	virtual void BeShot();
+	virtual void BeShot(float damage);
+	bool bIsDead = false;
 
 	// 체력 회복
 	virtual void RestorationHealth();

@@ -34,8 +34,14 @@ void ACharacterBase_YMH::Attack()
 {
 }
 
-void ACharacterBase_YMH::BeShot()
+void ACharacterBase_YMH::BeShot(float damage)
 {
+	currentHealth -= damage;
+
+	if (currentHealth > 0)
+	{
+		bIsDead = true;
+	}
 }
 
 void ACharacterBase_YMH::RestorationHealth()

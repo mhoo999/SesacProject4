@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "PlayerAnimInstance.generated.h"
+#include "PlayerAnimInstance_YMH.generated.h"
 
 class APlayerBase_YMH;
 /**
  * 
  */
 UCLASS()
-class SESSAC4NDPROJECT_API UPlayerAnimInstance : public UAnimInstance
+class SESSAC4NDPROJECT_API UPlayerAnimInstance_YMH : public UAnimInstance
 {
 	GENERATED_BODY()
 

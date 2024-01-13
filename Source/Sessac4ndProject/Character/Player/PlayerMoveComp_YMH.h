@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PlayerBaseComp.h"
+#include "PlayerBaseComp_YMH.h"
 #include "InputActionValue.h"
 #include "PlayerMoveComp_YMH.generated.h"
 
@@ -12,7 +12,7 @@ class UInputAction;
  * 
  */
 UCLASS()
-class SESSAC4NDPROJECT_API UPlayerMoveComp_YMH : public UPlayerBaseComp
+class SESSAC4NDPROJECT_API UPlayerMoveComp_YMH : public UPlayerBaseComp_YMH
 {
 	GENERATED_BODY()
 

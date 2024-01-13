@@ -4,20 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "InputAction.h"
-#include "PlayerBaseComp.h"
-#include "PlayerFireComp.generated.h"
+#include "PlayerBaseComp_YMH.h"
+#include "PlayerFireComp_YMH.generated.h"
 
 class UInputAction;
 /**
  * 
  */
 UCLASS()
-class SESSAC4NDPROJECT_API UPlayerFireComp : public UPlayerBaseComp
+class SESSAC4NDPROJECT_API UPlayerFireComp_YMH : public UPlayerBaseComp_YMH
 {
 	GENERATED_BODY()
 	
 public:
-	UPlayerFireComp();
+	UPlayerFireComp_YMH();
 
 protected:
 	virtual void BeginPlay() override;
@@ -39,6 +39,7 @@ public:
 	void Fire(const FInputActionValue& value);
 	void FireBullet();
 	float currentTime = 0;
+	FTimerHandle combatHandle;
 
 	UPROPERTY(EditDefaultsOnly, Category="WeaponEffect")
 	UParticleSystem* bulletMark;
