@@ -3,6 +3,7 @@
 
 #include "TrapBase.h"
 
+#include "Character/Player/PlayerBase_YMH.h"
 #include "Components/BoxComponent.h"
 
 // Sets default values
@@ -13,7 +14,7 @@ ATrapBase::ATrapBase()
 
 	BuildingCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Building Component"));
 	SetRootComponent(BuildingCollision);
-	BuildingCollision->SetBoxExtent(FVector(100,100,5));
+	BuildingCollision->SetBoxExtent(FVector(100,100,25));
 	
 	TileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Tile Mesh Component"));
 	TileMesh->SetupAttachment(RootComponent);
@@ -33,7 +34,7 @@ ATrapBase::ATrapBase()
 void ATrapBase::BeginPlay()
 {
 	Super::BeginPlay();
-	ReactionCollision->OnComponentBeginOverlap.AddDynamic(this, &ATrapBase::OnEnemyOverlapped);
+	ReactionCollision->OnComponentBeginOverlap.AddDynamic(this, &ATrapBase::OnEnemyBeginOverlapped);
 	ReactionCollision->OnComponentEndOverlap.AddDynamic(this, &ATrapBase::OnEnemyEndOverlapped);
 }
 
@@ -43,43 +44,39 @@ void ATrapBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ATrapBase::OnEnemyOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void ATrapBase::OnEnemyBeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// TO DO : 플레이어한테 반응하는거 에너미로 바꾸기
-	auto Temp = Cast<AActor>(OtherActor);
+	auto Temp = Cast<APlayerBase_YMH>(OtherActor);
 	if (Temp)
 	{
 		TrapInArea++;
 	}
 
-	if (TrapInArea == 1)
+	if (!GetWorld()->GetTimerManager().IsTimerActive(Handle))
 	{
-		ReactTrap();
-	}
-	
-	if (TrapInArea > 0)
-	{
-		GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([this]()->void
+		GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([this]()-> void
 		{
-			ReactTrap();
-			UE_LOG(LogTemp,Warning, TEXT("Still In Trap"));
-		}), AttackCoolTime, true);	
+			if (TrapInArea == 0)
+			{
+				GetWorld()->GetTimerManager().ClearTimer(Handle);	
+			}
+			else
+			{
+				ReactTrap();
+			}
+		}), AttackCoolTime, true, 0);
 	}
 }
 
 void ATrapBase::OnEnemyEndOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	auto Temp = Cast<AActor>(OtherActor);
+	auto Temp = Cast<APlayerBase_YMH>(OtherActor);
 	if (Temp)
 	{
 		TrapInArea--;
-	}
-
-	if (TrapInArea == 0)
-	{
-		GetWorld()->GetTimerManager().ClearTimer(Handle);	
 	}
 }
 

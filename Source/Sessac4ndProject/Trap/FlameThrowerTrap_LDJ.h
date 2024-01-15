@@ -3,25 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "TrapBase.h"
-#include "SpikeTrap_LDJ.generated.h"
+#include "Trap/TrapBase.h"
+#include "FlameThrowerTrap_LDJ.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SESSAC4NDPROJECT_API ASpikeTrap_LDJ : public ATrapBase
+class SESSAC4NDPROJECT_API AFlameThrowerTrap_LDJ : public ATrapBase
 {
 	GENERATED_BODY()
 
-	ASpikeTrap_LDJ();
-	
 public:
+	AFlameThrowerTrap_LDJ();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UStaticMeshComponent* SpikeMeshComp;
+	class UParticleSystemComponent* FireFX1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UStaticMeshComponent* SpikeMeshComp2;
+	class UParticleSystemComponent* FireFX2;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UParticleSystemComponent* FireFX3;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UParticleSystemComponent* FireFX4;
 	
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
