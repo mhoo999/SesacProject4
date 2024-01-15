@@ -7,6 +7,7 @@
 #include "InputActionValue.h"
 #include "PlayerBase_YMH.generated.h"
 
+class UPlayerBuildComp_LDJ;
 class UPlayerFireComp_YMH;
 class UPlayerMoveComp_YMH;
 class UPlayerBaseComp_YMH;
@@ -52,6 +53,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	UPlayerFireComp_YMH* FireComp;
+
+	UPROPERTY(EditDefaultsOnly)
+	UPlayerBuildComp_LDJ* BuildComp;
 	
 	// 탄창
 	UPROPERTY()
