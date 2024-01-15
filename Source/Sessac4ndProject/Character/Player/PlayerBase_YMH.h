@@ -7,6 +7,8 @@
 #include "InputActionValue.h"
 #include "PlayerBase_YMH.generated.h"
 
+class APlayerController_YMH;
+class UPlayerBuildComp_LDJ;
 class UPlayerFireComp_YMH;
 class UPlayerMoveComp_YMH;
 class UPlayerBaseComp_YMH;
@@ -52,6 +54,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	UPlayerFireComp_YMH* FireComp;
+
+	UPROPERTY(EditDefaultsOnly)
+	UPlayerBuildComp_LDJ* BuildComp;
 	
 	// 탄창
 	UPROPERTY()
@@ -65,17 +70,11 @@ public:
 	int32 wallet;
 
 	// 교전 여부
-	bool bIsCombat;
-
+	bool bIsCombat = false;
+	// 재장전 여부
 	bool bIsReloading = false;
-	
-public:
-	// 트랩 설치
-	void InstallTrap();
-	
-	// 무기, 트랩 선택
-	void Selector();
-
+	// 빌드 모드 여부
+	bool bIsBuildMode = false;
 public:
 	
 };

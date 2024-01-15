@@ -45,8 +45,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
 	UInputAction* IA_PlaceTrap;
-
-	bool bIsBuildMode = false; // YMH TO DO : 총을 들고 있는 지 확인하는 변수 
+	
 	bool bDoOnceMeshSet = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
