@@ -20,5 +20,7 @@ void APlayerController_YMH::InitUIWidget()
 		mainUI->AddToViewport();
 		mainUI->ShowPointer();
 		mainUI->ShowCrosshair(true);
+
+		mainUI->SelectSlot(0);
 	}
 }
