@@ -2,6 +2,8 @@
 
 
 #include "ZombieFSM.h"
+
+#include "ZombieAnim.h"
 #include "Actor/DestinationActor_KJY.h"
 #include "ZombieBase_KJY.h"
 #include "Character/Player/PlayerBase_YMH.h"
@@ -23,9 +25,13 @@ void UZombieFSM::BeginPlay()
 {
 	Super::BeginPlay();
 
-	auto actor = UGameplayStatics::GetActorOfClass(GetWorld(), ADestinationActor_KJY::StaticClass());
-	Target = Cast<ADestinationActor_KJY>(actor);
+	auto TargetActor = UGameplayStatics::GetActorOfClass(GetWorld(), ADestinationActor_KJY::StaticClass());
+	Target = Cast<ADestinationActor_KJY>(TargetActor);
+	auto Playeractor = UGameplayStatics::GetActorOfClass(GetWorld(), APlayerBase_YMH::StaticClass());
+	Player = Cast<APlayerBase_YMH>(Playeractor);
 	Me = Cast<AZombieBase_KJY>(GetOwner());
+
+	Anim = Cast<UZombieAnim>(Me->GetMesh()->GetAnimInstance());
 	
 }
 
@@ -56,48 +62,73 @@ void UZombieFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 
 void UZombieFSM::MoveState()
 {
+	// 목적지 - 에너미
 	FVector TargetDir = Target->GetActorLocation() - Me->GetActorLocation();
+	// 플레이어 - 에너미
 	FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
 
 	// 목적지 향해 가다가
 	Me->AddMovementInput(TargetDir.GetSafeNormal());
 	
-	// 플레이어가 일정 거리 내에 있으면 플레이어에게 이동
-	if (PlayerDir.Size()<MovetoPlayerRange)
+	// 플레이어와 가까워지면 플레이어 공격
+	if (PlayerDir.Size()<AttackRange)
 	{
-		Me->AddMovementInput(PlayerDir.GetSafeNormal());
-
-		// 플레이어와 가까워지면 플레이어 공격
-		if (PlayerDir.Size()<AttackRange)
-		{
-			mState = EZombieState::Attack;
-		}
+		mState = EZombieState::Attack;
+		Anim->AnimState = mState;
+		Anim->bAttackPlay = true;
+		CurrentTime = AttackTime;
 	}
 }
 
 void UZombieFSM::AttackState()
 {
-	// 일정 시간마다 공격
 	CurrentTime += GetWorld()->DeltaTimeSeconds;
 	if (CurrentTime > AttackTime)
 	{
 		// 플레이어 공격 에니메이션
 		// 플레이어 체력 닳음
 		CurrentTime = 0;
+		Anim->bAttackPlay = true;
 	}
 
 	FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
 	if (PlayerDir.Size()>AttackRange)
 	{
 		mState = EZombieState::Move;
+		Anim->AnimState = mState;	
 	}
 }
 
 void UZombieFSM::DamageState()
 {
+	CurrentTime += GetWorld()->DeltaTimeSeconds;
+	if (CurrentTime > DamageTime)
+	{
+		mState = EZombieState::Move;
+		CurrentTime = 0;
+		Anim->AnimState = mState;	
+	}
 }
 
 void UZombieFSM::DieState()
 {
+	Me->Destroy();
+}
+
+void UZombieFSM::Damage()
+{
+	Hp--;
+	if(Hp>0)
+	{
+		mState = EZombieState::Damage;
+
+		CurrentTime = 0;
+		Anim->PlayDamageAnim();
+	}
+	else
+	{
+		mState = EZombieState::Die;
+	}
+	Anim->AnimState = mState;	
 }
 
