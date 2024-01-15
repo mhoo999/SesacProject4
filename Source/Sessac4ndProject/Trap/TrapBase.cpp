@@ -14,11 +14,11 @@ ATrapBase::ATrapBase()
 
 	BuildingCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Building Component"));
 	SetRootComponent(BuildingCollision);
-	BuildingCollision->SetBoxExtent(FVector(100,100,25));
+	BuildingCollision->SetBoxExtent(FVector(142,142,25));
 	
 	TileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Tile Mesh Component"));
 	TileMesh->SetupAttachment(RootComponent);
-	TileMesh->SetRelativeScale3D(FVector(1.25,1.25,1));
+	TileMesh->SetRelativeScale3D(FVector(1.775,1.775,1));
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> TileMeshRef(TEXT("/Game/SimpleApocalypse/Meshes/Environment/SM_Env_ManholeClosed_01.SM_Env_ManholeClosed_01"));
     if (TileMeshRef.Object)
@@ -27,7 +27,7 @@ ATrapBase::ATrapBase()
     }
 	ReactionCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Enemy Sensing Component"));
 	ReactionCollision->SetupAttachment(RootComponent);
-	ReactionCollision->SetBoxExtent(FVector(100));
+	ReactionCollision->SetBoxExtent(FVector(142));
 }
 
 // Called when the game starts or when spawned
