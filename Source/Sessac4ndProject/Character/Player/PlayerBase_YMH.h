@@ -75,7 +75,9 @@ public:
 	bool bIsReloading = false;
 	// 빌드 모드 여부
 	bool bIsBuildMode = false;
-public:
 	
+public:
+	// --------------- 플레이어 체력 --------------------
+	virtual void BeShot(float damage) override;
 };
 
