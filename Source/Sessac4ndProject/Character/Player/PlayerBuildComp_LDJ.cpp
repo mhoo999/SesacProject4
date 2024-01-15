@@ -13,10 +13,57 @@
 #include "Trap/FreezeTrap_LDJ.h"
 #include "Trap/PoisonTrap_LDJ.h"
 #include "Trap/SpikeTrap_LDJ.h"
+#include "InputAction.h"
+
 
 UPlayerBuildComp_LDJ::UPlayerBuildComp_LDJ()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+	static ConstructorHelpers::FClassFinder<UStaticMeshComponent> StaticMeshCompRef(TEXT("/Script/Engine.StaticMeshComponent"));
+	if (StaticMeshCompRef.Succeeded())
+	{
+		PreviewMeshFactory = StaticMeshCompRef.Class;
+		PreviewTrap = PreviewMeshFactory.GetDefaultObject();
+	}
+	
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> PreviewTrapMeshRef(TEXT("/Game/SimpleApocalypse/Meshes/Environment/SM_Env_ManholeClosed_01.SM_Env_ManholeClosed_01"));
+	if (PreviewTrapMeshRef.Succeeded()) PreviewTrapMesh = PreviewTrapMeshRef.Object;
+
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> EnableMeshRef(TEXT("/Game/LDJ/Blueprints/M_BuildingPreview.M_BuildingPreview"));
+	if (EnableMeshRef.Succeeded()) EnableMesh = EnableMeshRef.Object;
+
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> DisableMeshRef(TEXT("/Script/Engine.Material'/Game/LDJ/Blueprints/M_DisablePreview.M_DisablePreview'"));
+	if (DisableMeshRef.Succeeded()) DisableMesh = DisableMeshRef.Object;
+
+	static ConstructorHelpers::FClassFinder<ASpikeTrap_LDJ> SpikeTrapRef(TEXT("/Game/LDJ/Blueprints/BP_SpikeTrap_LDJ.BP_SpikeTrap_LDJ_C"));
+	if (SpikeTrapRef.Succeeded()) SpikeTrapFactory = SpikeTrapRef.Class;
+
+	static ConstructorHelpers::FClassFinder<AFreezeTrap_LDJ> FreezeTrapRef(TEXT("/Game/LDJ/Blueprints/BP_FreezeTrap_LDJ.BP_FreezeTrap_LDJ_C"));
+	if (FreezeTrapRef.Succeeded()) FreezeTrapFactory = FreezeTrapRef.Class;
+
+	static ConstructorHelpers::FClassFinder<APoisonTrap_LDJ> PoisonTrapRef(TEXT("/Game/LDJ/Blueprints/BP_PoisonTrap_LDJ.BP_PoisonTrap_LDJ_C"));
+	if (PoisonTrapRef.Succeeded()) PoisonTrapFactory = PoisonTrapRef.Class;
+
+	static ConstructorHelpers::FClassFinder<AFlameThrowerTrap_LDJ> FlameTrapRef(TEXT("/Game/LDJ/Blueprints/BP_FlameThrowerTrap_LDJ.BP_FlameThrowerTrap_LDJ_C"));
+	if (FlameTrapRef.Succeeded()) FlameTrapFactory = FlameTrapRef.Class;
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> IA_ChooseTrap1Ref(TEXT("/Game/YMH/Inputs/Actions/IA_ChooseTrap1_YMH.IA_ChooseTrap1_YMH"));
+	if (IA_ChooseTrap1Ref.Succeeded()) IA_ChooseTrap1 = IA_ChooseTrap1Ref.Object;
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> IA_ChooseTrap2Ref(TEXT("/Game/YMH/Inputs/Actions/IA_ChooseTrap2_YMH.IA_ChooseTrap2_YMH"));
+	if (IA_ChooseTrap2Ref.Succeeded()) IA_ChooseTrap2 = IA_ChooseTrap2Ref.Object;
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> IA_ChooseTrap3Ref(TEXT("/Game/YMH/Inputs/Actions/IA_ChooseTrap3_YMH.IA_ChooseTrap3_YMH"));
+	if (IA_ChooseTrap3Ref.Succeeded()) IA_ChooseTrap3 = IA_ChooseTrap3Ref.Object;
+	
+	static ConstructorHelpers::FObjectFinder<UInputAction> IA_ChooseTrap4Ref(TEXT("/Game/YMH/Inputs/Actions/IA_ChooseTrap4_YMH.IA_ChooseTrap4_YMH"));
+	if (IA_ChooseTrap4Ref.Succeeded()) IA_ChooseTrap4 = IA_ChooseTrap4Ref.Object;
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> IA_ChooseWeaponRef(TEXT("/Game/YMH/Inputs/Actions/IA_ChooseWeapon_YMH.IA_ChooseWeapon_YMH"));
+	if (IA_ChooseWeaponRef.Succeeded()) IA_ChooseWeapon = IA_ChooseWeaponRef.Object;
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> IA_PlaceTrapRef(TEXT("/Game/YMH/Inputs/Actions/IA_Fire_YMH.IA_Fire_YMH"));
+	if (IA_PlaceTrapRef.Succeeded()) IA_PlaceTrap = IA_PlaceTrapRef.Object;
 }
 
 void UPlayerBuildComp_LDJ::BeginPlay()
@@ -114,7 +161,10 @@ void UPlayerBuildComp_LDJ::PreviewLoop()
 	BuildPreviewTransform.SetLocation(TempVec);
 	BuildPreviewTransform.SetScale3D(FVector(1.1, 1.1, 1));
 
-	PreviewTrap->SetWorldTransform(BuildPreviewTransform);
+	if (PreviewTrap)
+	{
+		PreviewTrap->SetWorldTransform(BuildPreviewTransform);
+	}
 }
 
 void UPlayerBuildComp_LDJ::ResetPreviewMesh()
@@ -124,7 +174,7 @@ void UPlayerBuildComp_LDJ::ResetPreviewMesh()
 	if (temp && !bDoOnceMeshSet)
 	{
 		PreviewTrap->SetStaticMesh(PreviewTrapMesh);
-		PreviewTrap->SetMaterial(0, ClockingMesh);
+		PreviewTrap->SetMaterial(0, EnableMesh);
 		PreviewTrap->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		PreviewTrap->SetGenerateOverlapEvents(true);
 
@@ -140,7 +190,6 @@ void UPlayerBuildComp_LDJ::PressPlaceBuild()
 	{
 		BuildPreviewTransform.SetScale3D(FVector(0.98));
 		GetWorld()->SpawnActor<ATrapBase>(TrapFactory, BuildPreviewTransform);
-		UE_LOG(LogTemp, Warning, TEXT("Place Trap"));
 	}
 }
 
@@ -151,10 +200,9 @@ void UPlayerBuildComp_LDJ::OnTrapEndOverlapped(UPrimitiveComponent* OverlappedCo
 	if (Temp)
 	{
 		CollisionMeshCnt--;
-		UE_LOG(LogTemp,Warning, TEXT("Count : %d"), CollisionMeshCnt);
 		if (CollisionMeshCnt == 0)
 		{
-			PreviewTrap->SetMaterial(0, ClockingMesh);
+			PreviewTrap->SetMaterial(0, EnableMesh);
 			bBuildEnable = true;
 		}
 	}
@@ -173,6 +221,5 @@ void UPlayerBuildComp_LDJ::OnTrapBeginOverlapped(UPrimitiveComponent* Overlapped
 			PreviewTrap->SetMaterial(0, DisableMesh);
 			bBuildEnable = false;
 		}
-		UE_LOG(LogTemp,Warning, TEXT("Count : %d"), CollisionMeshCnt);
 	}
 }

@@ -4,14 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "InputAction.h"
-#include "Character/Player/PlayerBaseComp.h"
+#include "PlayerBaseComp_YMH.h"
+#include "Character/CharacterBase_YMH.h"
 #include "PlayerBuildComp_LDJ.generated.h"
 
 /**
  * 
  */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class SESSAC4NDPROJECT_API UPlayerBuildComp_LDJ : public UPlayerBaseComp
+class SESSAC4NDPROJECT_API UPlayerBuildComp_LDJ : public UPlayerBaseComp_YMH
 {
 	GENERATED_BODY()
 	
@@ -28,7 +29,7 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
-	UInputAction* IA_ChooseTrap1;
+	class UInputAction* IA_ChooseTrap1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
 	UInputAction* IA_ChooseTrap2;
@@ -58,7 +59,7 @@ public:
 	class UStaticMesh* PreviewTrapMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
-	class UMaterialInterface* ClockingMesh;
+	class UMaterialInterface* EnableMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
 	class UMaterialInterface* DisableMesh;
@@ -75,10 +76,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
 	TSubclassOf<class AFlameThrowerTrap_LDJ> FlameTrapFactory;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
+	UPROPERTY()
 	TSubclassOf<class ATrapBase> TrapFactory;
 	
 	FTransform BuildPreviewTransform;
+
 
 public:
 	void DoBuildSpikeTrap(const FInputActionValue& value);
