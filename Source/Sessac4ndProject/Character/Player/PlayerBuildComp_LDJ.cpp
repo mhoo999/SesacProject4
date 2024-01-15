@@ -14,6 +14,8 @@
 #include "Trap/PoisonTrap_LDJ.h"
 #include "Trap/SpikeTrap_LDJ.h"
 #include "InputAction.h"
+#include "PlayerController/PlayerController_YMH.h"
+#include "UI/MainUI_YMH.h"
 
 
 UPlayerBuildComp_LDJ::UPlayerBuildComp_LDJ()
@@ -76,7 +78,7 @@ void UPlayerBuildComp_LDJ::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (bIsBuildMode)
+	if (player->bIsBuildMode)
 	{
 		PreviewLoop();
 	}
@@ -106,37 +108,62 @@ void UPlayerBuildComp_LDJ::SetupPlayerInput(UInputComponent* PlayerInputComponen
 
 void UPlayerBuildComp_LDJ::DoBuildSpikeTrap(const FInputActionValue& value)
 {
-	bIsBuildMode = true;
+	player->bIsBuildMode = true;
 	TrapFactory = SpikeTrapFactory;
+	
+	if (player)
+	{
+		PlayerController->mainUI->SelectSlot(1);
+	}
 }
 
 void UPlayerBuildComp_LDJ::DoBuildFreezeTrap(const FInputActionValue& value)
 {
-	bIsBuildMode = true;
+	player->bIsBuildMode = true;
 	TrapFactory = FreezeTrapFactory;
+	
+	if (player)
+	{
+		PlayerController->mainUI->SelectSlot(2);
+	}
 }
 
 void UPlayerBuildComp_LDJ::DoBuildPoisonTrap(const FInputActionValue& value)
 {
-	bIsBuildMode = true;
+	player->bIsBuildMode = true;
 	TrapFactory = PoisonTrapFactory;
+	
+	if (player)
+	{
+		PlayerController->mainUI->SelectSlot(3);
+	}
 }
 
 void UPlayerBuildComp_LDJ::DoBuildFlameTrap(const FInputActionValue& value)
 {
-	bIsBuildMode = true;
+	player->bIsBuildMode = true;
 	TrapFactory = FlameTrapFactory;
+	
+	if (player)
+	{
+		PlayerController->mainUI->SelectSlot(4);
+	}
 }
 
 void UPlayerBuildComp_LDJ::DoEquipGun(const FInputActionValue& value)
 {
-	bIsBuildMode = false;
+	player->bIsBuildMode = false;
 	if (PreviewTrap)
 	{
 		PreviewTrap->SetStaticMesh(nullptr);
 		TrapFactory = nullptr;
 	}
 	bDoOnceMeshSet = false;
+
+	if (player)
+	{
+		PlayerController->mainUI->SelectSlot(0);
+	}
 }
 
 void UPlayerBuildComp_LDJ::PreviewLoop()
@@ -186,7 +213,7 @@ void UPlayerBuildComp_LDJ::ResetPreviewMesh()
 
 void UPlayerBuildComp_LDJ::PressPlaceBuild()
 {
-	if (bIsBuildMode && bBuildEnable)
+	if (player->bIsBuildMode && bBuildEnable)
 	{
 		BuildPreviewTransform.SetScale3D(FVector(0.98));
 		GetWorld()->SpawnActor<ATrapBase>(TrapFactory, BuildPreviewTransform);

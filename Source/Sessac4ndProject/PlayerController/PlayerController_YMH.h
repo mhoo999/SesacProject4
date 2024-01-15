@@ -27,5 +27,5 @@ public:
 	
 	void InitUIWidget();
 
-	
+	void SelectSlot(int32 num);
 };

@@ -7,6 +7,8 @@
 #include "PlayerBaseComp_YMH.generated.h"
 
 
+class APlayerController_YMH;
+class UMainUI_YMH;
 class APlayerBase_YMH;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -30,4 +32,7 @@ public:
 public:
 	UPROPERTY()
 	APlayerBase_YMH* player;
+
+	UPROPERTY()
+	APlayerController_YMH* PlayerController;
 };

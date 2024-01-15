@@ -9,6 +9,7 @@
 #include "PlayerBuildComp_LDJ.h"
 #include "PlayerFireComp_YMH.h"
 #include "PlayerMoveComp_YMH.h"
+#include "PlayerController/PlayerController_YMH.h"
 
 APlayerBase_YMH::APlayerBase_YMH()
 {
@@ -62,12 +63,4 @@ void APlayerBase_YMH::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	OnSetupInputDelegate.Broadcast(PlayerInputComponent);
-}
-
-void APlayerBase_YMH::InstallTrap()
-{
-}
-
-void APlayerBase_YMH::Selector()
-{
 }
