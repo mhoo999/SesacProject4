@@ -8,10 +8,15 @@ ASpikeTrap_LDJ::ASpikeTrap_LDJ()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	
-	SpikeMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Spike Mesh Component"));
+	SpikeMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Spike Mesh Component"));
 	SpikeMeshComp->SetupAttachment(TileMesh);
-	SpikeMeshComp->SetRelativeLocation(FVector(0,0,-50));
-	
+	SpikeMeshComp->SetRelativeScale3D(FVector(1.25));
+
+	SpikeMeshComp2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Spike Mesh Component2"));
+	SpikeMeshComp2->SetupAttachment(TileMesh);
+	SpikeMeshComp2->SetRelativeScale3D(FVector(1.25));
+
+	SpikeMeshComp2->SetVisibility(false);
 }
 
 void ASpikeTrap_LDJ::BeginPlay()
@@ -36,28 +41,45 @@ void ASpikeTrap_LDJ::UpgradeAbility()
 
 void ASpikeTrap_LDJ::ReactTrap()
 {
-	UE_LOG(LogTemp,Warning, TEXT("Child Trap"));
-	// TO DO : 올렸다가 다시 내려가기
-	GetWorld()->GetTimerManager().SetTimer(THandle, FTimerDelegate::CreateLambda([this]()->void
+	GetWorld()->GetTimerManager().SetTimer(THandle, FTimerDelegate::CreateLambda([&]
 	{
-		if (!GoalArrived)
+		SpikeMeshComp->SetVisibility(false);
+		SpikeMeshComp2->SetVisibility(true);
+		FTimerHandle Handle;
+		GetWorldTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
 		{
-			auto Temp = FMath::Lerp(SpikeMeshComp->GetComponentLocation().Z, 0, GetWorld()->GetDeltaSeconds() * 10);
-			SpikeMeshComp->SetRelativeLocation(FVector(0, 0, Temp));
-			if (Temp > -0.1)
-			{
-				GoalArrived = true;
-			}
-		}
-		else
-		{
-			auto Temp = FMath::Lerp(SpikeMeshComp->GetComponentLocation().Z, -50, GetWorld()->GetDeltaSeconds() * 10);
-			SpikeMeshComp->SetRelativeLocation(FVector(0, 0, Temp));
-			if (Temp < -49.9)
-			{
-				GoalArrived = false;
-				GetWorld()->GetTimerManager().ClearTimer(THandle);
-			}
-		}
-	}), GetWorld()->GetDeltaSeconds(), true);
+			SpikeMeshComp->SetVisibility(true);
+			SpikeMeshComp2->SetVisibility(false);
+			GetWorldTimerManager().ClearTimer(Handle);
+		}), 1, false);
+		GetWorldTimerManager().ClearTimer(THandle);
+	}), 0.1, false);
 }
+
+// void ASpikeTrap_LDJ::ReactTrap()
+// {
+// 	UE_LOG(LogTemp,Warning, TEXT("Child Trap"));
+// 	// TO DO : 올렸다가 다시 내려가기
+// 	GetWorld()->GetTimerManager().SetTimer(THandle, FTimerDelegate::CreateLambda([this]()->void
+// 	{
+// 		if (!GoalArrived)
+// 		{
+// 			auto Temp = FMath::Lerp(SpikeMeshComp->GetComponentLocation().Z, 0, GetWorld()->GetDeltaSeconds() * 10);
+// 			SpikeMeshComp->SetRelativeLocation(FVector(0, 0, Temp));
+// 			if (Temp > -0.1)
+// 			{
+// 				GoalArrived = true;
+// 			}
+// 		}
+// 		else
+// 		{
+// 			auto Temp = FMath::Lerp(SpikeMeshComp->GetComponentLocation().Z, -50, GetWorld()->GetDeltaSeconds() * 10);
+// 			SpikeMeshComp->SetRelativeLocation(FVector(0, 0, Temp));
+// 			if (Temp < -49.9)
+// 			{
+// 				GoalArrived = false;
+// 				GetWorld()->GetTimerManager().ClearTimer(THandle);
+// 			}
+// 		}
+// 	}), GetWorld()->GetDeltaSeconds(), true);
+// }

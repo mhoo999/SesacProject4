@@ -49,7 +49,7 @@ public:
 	FTimerHandle Handle;
 
 	UFUNCTION()
-	virtual void OnEnemyOverlapped(UPrimitiveComponent* OverlappedComponent,
+	virtual void OnEnemyBeginOverlapped(UPrimitiveComponent* OverlappedComponent,
 		AActor* OtherActor,
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex,

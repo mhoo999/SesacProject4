@@ -1,0 +1,73 @@
+// zombie must die
+
+
+#include "Trap/FreezeTrap_LDJ.h"
+
+#include "CascadeParticleSystemComponent.h"
+
+AFreezeTrap_LDJ::AFreezeTrap_LDJ()
+{
+	FreezeFX1 = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("VFX Mesh1"));
+	FreezeFX1->SetupAttachment(TileMesh);
+	FreezeFX1->SetRelativeRotation(FRotator(90,0,0));
+	FreezeFX1->SetRelativeLocation((FVector(30,-30,0)));
+	FreezeFX1->SetVisibility(false);
+
+	FreezeFX2 = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("VFX Mesh2"));
+	FreezeFX2->SetupAttachment(TileMesh);
+	FreezeFX2->SetRelativeRotation(FRotator(90,0,0));
+	FreezeFX2->SetRelativeLocation((FVector(30,30,0)));
+	FreezeFX2->SetVisibility(false);
+
+	FreezeFX3 = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("VFX Mesh3"));
+	FreezeFX3->SetupAttachment(TileMesh);
+	FreezeFX3->SetRelativeRotation(FRotator(90,0,0));
+	FreezeFX3->SetRelativeLocation((FVector(-30,-30,0)));
+	FreezeFX3->SetVisibility(false);
+
+
+	FreezeFX4 = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("VFX Mesh4"));
+	FreezeFX4->SetupAttachment(TileMesh);
+	FreezeFX4->SetRelativeRotation(FRotator(90,0,0));
+	FreezeFX4->SetRelativeLocation((FVector(-30,30,0)));
+	FreezeFX4->SetVisibility(false);
+} 
+
+void AFreezeTrap_LDJ::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void AFreezeTrap_LDJ::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
+
+void AFreezeTrap_LDJ::UpgradeCost()
+{
+}
+
+void AFreezeTrap_LDJ::UpgradeAbility()
+{
+}
+
+void AFreezeTrap_LDJ::ReactTrap()
+{
+	GetWorld()->GetTimerManager().SetTimer(THandle, FTimerDelegate::CreateLambda([&]
+	{
+		FreezeFX1->SetVisibility(true);
+		FreezeFX2->SetVisibility(true);
+		FreezeFX3->SetVisibility(true);
+		FreezeFX4->SetVisibility(true);
+		FTimerHandle Handle;
+		GetWorldTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
+		{
+			FreezeFX1->SetVisibility(false);
+			FreezeFX2->SetVisibility(false);
+			FreezeFX3->SetVisibility(false);
+			FreezeFX4->SetVisibility(false);
+			GetWorldTimerManager().ClearTimer(Handle);
+		}), 3, false);
+		GetWorldTimerManager().ClearTimer(THandle);
+	}), 0.1, false);
+}
