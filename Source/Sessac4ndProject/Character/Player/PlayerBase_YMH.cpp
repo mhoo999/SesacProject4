@@ -10,6 +10,7 @@
 #include "PlayerFireComp_YMH.h"
 #include "PlayerMoveComp_YMH.h"
 #include "PlayerController/PlayerController_YMH.h"
+#include "UI/MainUI_YMH.h"
 
 APlayerBase_YMH::APlayerBase_YMH()
 {
@@ -63,4 +64,11 @@ void APlayerBase_YMH::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	OnSetupInputDelegate.Broadcast(PlayerInputComponent);
+}
+
+void APlayerBase_YMH::BeShot(float damage)
+{
+	Super::BeShot(damage);
+
+	float percent = currentHealth / maxHelth;
 }
