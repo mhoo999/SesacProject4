@@ -7,9 +7,9 @@
 #include "InputActionValue.h"
 #include "PlayerBase_YMH.generated.h"
 
-class UPlayerFireComp;
+class UPlayerFireComp_YMH;
 class UPlayerMoveComp_YMH;
-class UPlayerBaseComp;
+class UPlayerBaseComp_YMH;
 struct FInputActionValue;
 class UInputAction;
 /**
@@ -51,14 +51,11 @@ public:
 	UPlayerMoveComp_YMH* MoveComp;
 
 	UPROPERTY(EditDefaultsOnly)
-	UPlayerFireComp* FireComp;
+	UPlayerFireComp_YMH* FireComp;
 	
 	// 탄창
 	UPROPERTY()
 	int32 bulletCount;
-	
-	// 공격 속도
-	float fireSpeed;
 	
 	// 무기 레벨
 	int32 weaponeGrade;
@@ -66,6 +63,11 @@ public:
 	// 재화
 	UPROPERTY()
 	int32 wallet;
+
+	// 교전 여부
+	bool bIsCombat;
+
+	bool bIsReloading = false;
 	
 public:
 	// 트랩 설치
@@ -73,5 +75,8 @@ public:
 	
 	// 무기, 트랩 선택
 	void Selector();
+
+public:
+	
 };
 

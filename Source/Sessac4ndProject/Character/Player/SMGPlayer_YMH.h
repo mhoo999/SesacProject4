@@ -14,6 +14,7 @@ UCLASS()
 class SESSAC4NDPROJECT_API ASMGPlayer_YMH : public APlayerBase_YMH
 {
 	GENERATED_BODY()
+	
 public:
 	ASMGPlayer_YMH();
 	
@@ -23,5 +24,9 @@ protected:
 public:
 	virtual void Tick(float DeltaSeconds) override;
 
+public:
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Components")
+	USkeletalMeshComponent* weapon;*/
 	
+	int32 SMGBulletCount = 30;
 };

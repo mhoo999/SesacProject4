@@ -6,7 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "PlayerFireComp.h"
+#include "PlayerFireComp_YMH.h"
 #include "PlayerMoveComp_YMH.h"
 
 APlayerBase_YMH::APlayerBase_YMH()
@@ -34,7 +34,7 @@ APlayerBase_YMH::APlayerBase_YMH()
 	FollowCamera->bUsePawnControlRotation = false;
 
 	MoveComp = CreateDefaultSubobject<UPlayerMoveComp_YMH>(TEXT("Movement Component"));
-	FireComp = CreateDefaultSubobject<UPlayerFireComp>(TEXT("Fire Component"));
+	FireComp = CreateDefaultSubobject<UPlayerFireComp_YMH>(TEXT("Fire Component"));
 }
 
 void APlayerBase_YMH::BeginPlay()
