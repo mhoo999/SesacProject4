@@ -111,7 +111,7 @@ void UPlayerBuildComp_LDJ::DoBuildSpikeTrap(const FInputActionValue& value)
 	player->bIsBuildMode = true;
 	TrapFactory = SpikeTrapFactory;
 	
-	if (player)
+	if (PlayerController)
 	{
 		PlayerController->mainUI->SelectSlot(1);
 	}
@@ -122,7 +122,7 @@ void UPlayerBuildComp_LDJ::DoBuildFreezeTrap(const FInputActionValue& value)
 	player->bIsBuildMode = true;
 	TrapFactory = FreezeTrapFactory;
 	
-	if (player)
+	if (PlayerController)
 	{
 		PlayerController->mainUI->SelectSlot(2);
 	}
@@ -133,7 +133,7 @@ void UPlayerBuildComp_LDJ::DoBuildPoisonTrap(const FInputActionValue& value)
 	player->bIsBuildMode = true;
 	TrapFactory = PoisonTrapFactory;
 	
-	if (player)
+	if (PlayerController)
 	{
 		PlayerController->mainUI->SelectSlot(3);
 	}
@@ -144,7 +144,7 @@ void UPlayerBuildComp_LDJ::DoBuildFlameTrap(const FInputActionValue& value)
 	player->bIsBuildMode = true;
 	TrapFactory = FlameTrapFactory;
 	
-	if (player)
+	if (PlayerController)
 	{
 		PlayerController->mainUI->SelectSlot(4);
 	}
@@ -160,7 +160,7 @@ void UPlayerBuildComp_LDJ::DoEquipGun(const FInputActionValue& value)
 	}
 	bDoOnceMeshSet = false;
 
-	if (player)
+	if (PlayerController)
 	{
 		PlayerController->mainUI->SelectSlot(0);
 	}
@@ -169,7 +169,7 @@ void UPlayerBuildComp_LDJ::DoEquipGun(const FInputActionValue& value)
 void UPlayerBuildComp_LDJ::PreviewLoop()
 {
 	FVector StartPos = player->FollowCamera->GetComponentLocation();
-	FVector EndPos = StartPos + player->FollowCamera->GetForwardVector() * 1000;
+	FVector EndPos = StartPos + player->FollowCamera->GetForwardVector() * 2000;
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(player);
 	FHitResult HitInfo;
@@ -181,12 +181,12 @@ void UPlayerBuildComp_LDJ::PreviewLoop()
 	}
 	
 	FVector TempVec = FVector(HitInfo.Location.X, HitInfo.Location.Y, HitInfo.Location.Z);
-	TempVec.X = FMath::Floor(HitInfo.Location.X / 100) * 100;
-	TempVec.Y = FMath::Floor(HitInfo.Location.Y / 100) * 100;
+	TempVec.X = FMath::Floor(HitInfo.Location.X / 350) * 350 + 190;
+	TempVec.Y = FMath::Floor(HitInfo.Location.Y / 350) * 350 + 250;
 	TempVec.Z = FMath::CeilToFloat(HitInfo.Location.Z);
 
 	BuildPreviewTransform.SetLocation(TempVec);
-	BuildPreviewTransform.SetScale3D(FVector(1.1, 1.1, 1));
+	BuildPreviewTransform.SetScale3D(FVector(2.15, 2.15, 1));	
 
 	if (PreviewTrap)
 	{

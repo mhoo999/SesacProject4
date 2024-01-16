@@ -4,6 +4,8 @@
 #include "Trap/FreezeTrap_LDJ.h"
 
 #include "CascadeParticleSystemComponent.h"
+#include "Character/Enemy/ZombieBase_KJY.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AFreezeTrap_LDJ::AFreezeTrap_LDJ()
 {
@@ -51,8 +53,12 @@ void AFreezeTrap_LDJ::UpgradeAbility()
 {
 }
 
-void AFreezeTrap_LDJ::ReactTrap()
+void AFreezeTrap_LDJ::ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef)
 {
+	for (auto e : EnemyBoxRef)
+	{
+		e->GetCharacterMovement()->MaxWalkSpeed = 200;
+	}
 	GetWorld()->GetTimerManager().SetTimer(THandle, FTimerDelegate::CreateLambda([&]
 	{
 		FreezeFX1->SetVisibility(true);

@@ -33,8 +33,9 @@ public:
 	class UBoxComponent* ReactionCollision;
 
 	// TO DO :
-	// UPROPERTY()
-	// class AZombieBase* Enemy;
+	UPROPERTY()
+	TArray<class AZombieBase_KJY*> EnemyArray;
+	// class AZombieBase_KJY* Enemy;
 
 	// TO DO :
 	// UPROPERTY()
@@ -64,5 +65,5 @@ public:
 	
 	virtual void UpgradeCost();
 	virtual void UpgradeAbility();
-	virtual void ReactTrap();
+	virtual void ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef);
 };

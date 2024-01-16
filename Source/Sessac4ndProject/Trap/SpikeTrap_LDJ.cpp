@@ -3,6 +3,9 @@
 
 #include "SpikeTrap_LDJ.h"
 
+#include "Character/Enemy/ZombieBase_KJY.h"
+#include "Character/Enemy/ZombieFSM.h"
+
 
 ASpikeTrap_LDJ::ASpikeTrap_LDJ()
 {
@@ -39,8 +42,9 @@ void ASpikeTrap_LDJ::UpgradeAbility()
 	
 }
 
-void ASpikeTrap_LDJ::ReactTrap()
+void ASpikeTrap_LDJ::ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef)
 {
+	for (auto e : EnemyBoxRef) e->fsm->Damage();
 	GetWorld()->GetTimerManager().SetTimer(THandle, FTimerDelegate::CreateLambda([&]
 	{
 		SpikeMeshComp->SetVisibility(false);

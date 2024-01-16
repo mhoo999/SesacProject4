@@ -3,6 +3,11 @@
 
 #include "Trap/PoisonTrap_LDJ.h"
 
+#include "Character/Enemy/ZombieBase_KJY.h"
+#include "Character/Enemy/ZombieFSM.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
+
 APoisonTrap_LDJ::APoisonTrap_LDJ()
 {
 	PoisonBottleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Poison Bottle Mesh"));
@@ -46,7 +51,7 @@ void APoisonTrap_LDJ::UpgradeAbility()
 	
 }
 
-void APoisonTrap_LDJ::ReactTrap()
+void APoisonTrap_LDJ::ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef)
 {
-
+	for (auto e : EnemyBoxRef) e->CustomTimeDilation = 0.25;
 }
