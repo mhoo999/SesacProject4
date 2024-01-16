@@ -7,6 +7,7 @@
 #include "InputActionValue.h"
 #include "PlayerBase_YMH.generated.h"
 
+class UMainUI_YMH;
 class APlayerController_YMH;
 class UPlayerBuildComp_LDJ;
 class UPlayerFireComp_YMH;
@@ -75,11 +76,13 @@ public:
 	bool bIsReloading = false;
 	// 빌드 모드 여부
 	bool bIsBuildMode = false;
+	// 반동 크기
+	float recoilValue;
 	
 public:
 	// --------------- 플레이어 체력 --------------------
 	virtual void BeShot(float damage) override;
 
-	
+public:
 };
 

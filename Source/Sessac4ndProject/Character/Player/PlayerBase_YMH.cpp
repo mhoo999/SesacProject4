@@ -52,6 +52,7 @@ void APlayerBase_YMH::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
 }
 
 void APlayerBase_YMH::Tick(float DeltaSeconds)

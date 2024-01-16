@@ -20,6 +20,7 @@ ASMGPlayer_YMH::ASMGPlayer_YMH()
 	attackDistance = 1000;
 	weaponeGrade = 1;
 	bulletCount = SMGBulletCount;
+	recoilValue = 10.0;
 }
 
 void ASMGPlayer_YMH::BeginPlay()

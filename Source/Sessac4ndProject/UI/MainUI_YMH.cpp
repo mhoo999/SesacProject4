@@ -3,6 +3,7 @@
 
 #include "UI/MainUI_YMH.h"
 
+#include "GPUMessaging.h"
 #include "Components/Border.h"
 #include "Components/Image.h"
 
@@ -75,4 +76,8 @@ void UMainUI_YMH::DisableSlot(UBorder* slot, UImage* img)
 {
 	slot->SetBrushColor(FColor::White);
 	img->SetOpacity(0.8f);
+}
+
+void UMainUI_YMH::weaponRecoil(float value)
+{
 }

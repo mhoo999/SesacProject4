@@ -114,6 +114,8 @@ void UPlayerBuildComp_LDJ::DoBuildSpikeTrap(const FInputActionValue& value)
 	if (player)
 	{
 		PlayerController->mainUI->SelectSlot(1);
+		PlayerController->mainUI->img_cresshair->SetVisibility(ESlateVisibility::Hidden);
+		PlayerController->mainUI->img_pointer->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -125,6 +127,9 @@ void UPlayerBuildComp_LDJ::DoBuildFreezeTrap(const FInputActionValue& value)
 	if (player)
 	{
 		PlayerController->mainUI->SelectSlot(2);
+		PlayerController->mainUI->img_cresshair->SetVisibility(ESlateVisibility::Hidden);
+		PlayerController->mainUI->img_pointer->SetVisibility(ESlateVisibility::Hidden);
+
 	}
 }
 
@@ -136,6 +141,9 @@ void UPlayerBuildComp_LDJ::DoBuildPoisonTrap(const FInputActionValue& value)
 	if (player)
 	{
 		PlayerController->mainUI->SelectSlot(3);
+		PlayerController->mainUI->img_cresshair->SetVisibility(ESlateVisibility::Hidden);
+		PlayerController->mainUI->img_pointer->SetVisibility(ESlateVisibility::Hidden);
+
 	}
 }
 
@@ -147,6 +155,9 @@ void UPlayerBuildComp_LDJ::DoBuildFlameTrap(const FInputActionValue& value)
 	if (player)
 	{
 		PlayerController->mainUI->SelectSlot(4);
+		PlayerController->mainUI->img_cresshair->SetVisibility(ESlateVisibility::Hidden);
+		PlayerController->mainUI->img_pointer->SetVisibility(ESlateVisibility::Hidden);
+
 	}
 }
 
@@ -163,6 +174,8 @@ void UPlayerBuildComp_LDJ::DoEquipGun(const FInputActionValue& value)
 	if (player)
 	{
 		PlayerController->mainUI->SelectSlot(0);
+		PlayerController->mainUI->img_cresshair->SetVisibility(ESlateVisibility::Visible);
+		PlayerController->mainUI->img_pointer->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 

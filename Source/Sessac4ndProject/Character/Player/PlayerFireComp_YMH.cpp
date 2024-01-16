@@ -10,6 +10,8 @@
 #include "Camera/CameraComponent.h"
 #include "Character/Enemy/ZombieAnim.h"
 #include "Kismet/GameplayStatics.h"
+#include "PlayerController/PlayerController_YMH.h"
+#include "UI/MainUI_YMH.h"
 
 UPlayerFireComp_YMH::UPlayerFireComp_YMH()
 {
@@ -94,6 +96,11 @@ void UPlayerFireComp_YMH::FireBullet()
 	{
 		player->bIsCombat = false;
 	}), 5, true);
+
+	float pitchInput = FMath::RandRange(-1.0f, -0.7f);
+	// float YawInput = FMath::RandRange(-1.0f, -0.5f);
+	player->AddControllerPitchInput(pitchInput);
+	// player->AddControllerYawInput(YawInput);
 }
 
 void UPlayerFireComp_YMH::Reload(const FInputActionValue& value)
