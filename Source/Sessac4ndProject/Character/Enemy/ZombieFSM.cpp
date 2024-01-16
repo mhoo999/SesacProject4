@@ -8,6 +8,7 @@
 #include "Actor/DestinationActor_KJY.h"
 #include "ZombieBase_KJY.h"
 #include "Character/Player/PlayerBase_YMH.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
@@ -50,13 +51,13 @@ void UZombieFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 	case EZombieState::Move:
 		MoveState();
 		break;
-	case EZombieState::Chase:
+	/*case EZombieState::Chase:
 		ChaseState();
 		break;
 		
 	case EZombieState::Attack:
 		AttackState();
-		break;
+		break;*/
 	case EZombieState::Damage:
 		DamageState();
 		break;
@@ -77,27 +78,29 @@ void UZombieFSM::MoveState()
 	// 목적지 향해 가다가
 	//Me->AddMovementInput(TargetDir.GetSafeNormal());
 	ai->MoveToLocation(Destination);
+
 	
-	// 플레이어와 가까워지면 플레이어 향해 이동
-	if (PlayerDir.Size()<ChaseRange)
+	if (PlayerDir.Size()<AttackRange)
+	{
+		mState = EZombieState::Attack;
+		Anim->AnimState = mState;
+		//Anim->bAttackPlay = true;
+		CurrentTime = AttackTime;
+	}
+}
+
+/*void UZombieFSM::ChaseState()
+{
+	FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
+	
+	if (PlayerDir.Size()<AttackRange)
 	{
 		mState = EZombieState::Attack;
 		Anim->AnimState = mState;
 		Anim->bAttackPlay = true;
 		CurrentTime = AttackTime;
 	}
-}
-
-void UZombieFSM::ChaseState()
-{
-	/*if (PlayerDir.Size()<AttackRange)
-	{
-		mState = EZombieState::Attack;
-		Anim->AnimState = mState;
-		Anim->bAttackPlay = true;
-		CurrentTime = AttackTime;
-	}*/
-}
+}*/
 
 void UZombieFSM::AttackState()
 {
@@ -105,12 +108,13 @@ void UZombieFSM::AttackState()
 	CurrentTime += GetWorld()->DeltaTimeSeconds;
 	if (CurrentTime > AttackTime)
 	{
-		ai->SetFocus(Player, EAIFocusPriority::Gameplay); 
+		//ai->SetFocus(Player, EAIFocusPriority::Gameplay); 
 		UE_LOG(LogTemp, Warning, TEXT("Attack"));
+		Anim->AnimState = mState;	
 		// 플레이어 공격 에니메이션
 		// 플레이어 체력 닳음
 		CurrentTime = 0;
-		Anim->bAttackPlay = true;
+		//Anim->bAttackPlay = true;
 	}
 
 	FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
@@ -123,29 +127,49 @@ void UZombieFSM::AttackState()
 
 void UZombieFSM::DamageState()
 {
+	auto anim = Cast<UZombieAnim>(Me->GetMesh()->GetAnimInstance());
+	//anim->PlayDamageAnim();
+	
 	CurrentTime += GetWorld()->DeltaTimeSeconds;
 	if (CurrentTime > DamageTime)
 	{
+		Me->GetCharacterMovement()->MaxWalkSpeed = 400;
 		mState = EZombieState::Move;
 		CurrentTime = 0;
 		Anim->AnimState = mState;	
 	}
+	
 }
 
 void UZombieFSM::DieState()
 {
-	Me->Destroy();
+	auto anim = Cast<UZombieAnim>(Me->GetMesh()->GetAnimInstance());
+
+	if (!anim->Montage_IsPlaying(anim->DieAnimMontage))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Die"));
+		anim->PlayDieAnim();
+		anim->Montage_Play(anim->DieAnimMontage);
+	}
+	
+	CurrentTime += GetWorld()->DeltaTimeSeconds;
+	if (CurrentTime > DeathTime)
+	{
+		Me->Destroy();
+	}
 }
 
 void UZombieFSM::Damage()
 {
 	Hp--;
+	Me->GetCharacterMovement()->MaxWalkSpeed = 0;
+	
 	if(Hp>0)
 	{
 		mState = EZombieState::Damage;
 
 		CurrentTime = 0;
-		Anim->PlayDamageAnim();
+		Anim->AnimState = mState;	
 	}
 	else
 	{

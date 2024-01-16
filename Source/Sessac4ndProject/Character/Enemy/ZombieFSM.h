@@ -31,7 +31,7 @@ public:
 	EZombieState mState = EZombieState::Move;
 
 	void MoveState();
-	void ChaseState();
+	//void ChaseState();
 	void AttackState();
 	void DamageState();
 	void DieState();
@@ -61,15 +61,19 @@ public:
 	float AttackTime = 3.0f;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=FSM)
-	float Hp = 3.0f;
+	float Hp = 2.0f;
 
 	// 피격 대기 시간
 	UPROPERTY(EditAnywhere, Category=FSM)
 	float DamageTime = 2.0f;
 
+	UPROPERTY(EditAnywhere, Category=FSM)
+	float DeathTime = 1.0f;
+
 	UPROPERTY()
 	class UZombieAnim* Anim;
 
 	UPROPERTY()
-	class AAIController* ai;	
+	class AAIController* ai;
+	
 };

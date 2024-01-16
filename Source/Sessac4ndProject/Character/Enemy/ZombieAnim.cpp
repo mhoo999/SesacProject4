@@ -3,8 +3,13 @@
 
 #include "ZombieAnim.h"
 
-void UZombieAnim::OnEndAttackAnimation()
+
+void UZombieAnim::PlayDamageAnim()
 {
-	bAttackPlay = false;
+	Montage_Play(DamageAnimMontage);
 }
 
+void UZombieAnim::PlayDieAnim()
+{
+	Montage_Play(DieAnimMontage);
+}
