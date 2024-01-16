@@ -7,7 +7,7 @@
 #include "ZombieFSM.generated.h"
 
 UENUM(BlueprintType)
-enum class EZombieState : uint8 { Move, Attack, Damage, Die, };
+enum class EZombieState : uint8 { Move, Chase, Attack, Damage, Die, };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SESSAC4NDPROJECT_API UZombieFSM : public UActorComponent
@@ -31,6 +31,7 @@ public:
 	EZombieState mState = EZombieState::Move;
 
 	void MoveState();
+	void ChaseState();
 	void AttackState();
 	void DamageState();
 	void DieState();
@@ -47,7 +48,10 @@ public:
 	class AZombieBase_KJY* Me;
 
 	UPROPERTY(EditAnywhere, Category=FSM)
-	float AttackRange = 5.0f;
+	float ChaseRange = 1000.0f;
+	
+	UPROPERTY(EditAnywhere, Category=FSM)
+	float AttackRange = 100.0f;
 
 	UPROPERTY(EditAnywhere, Category=FSM)
 	float CurrentTime = 0;
@@ -57,7 +61,7 @@ public:
 	float AttackTime = 3.0f;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=FSM)
-	float Hp = 1.0f;
+	float Hp = 3.0f;
 
 	// 피격 대기 시간
 	UPROPERTY(EditAnywhere, Category=FSM)
@@ -65,4 +69,7 @@ public:
 
 	UPROPERTY()
 	class UZombieAnim* Anim;
+
+	UPROPERTY()
+	class AAIController* ai;	
 };

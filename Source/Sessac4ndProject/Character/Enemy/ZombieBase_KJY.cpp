@@ -12,6 +12,7 @@ AZombieBase_KJY::AZombieBase_KJY()
 	PrimaryActorTick.bCanEverTick = true;
 
 	fsm = CreateDefaultSubobject<UZombieFSM>(TEXT("FSM"));
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
 void AZombieBase_KJY::BeginPlay()

@@ -3,6 +3,7 @@
 
 #include "ZombieFSM.h"
 
+#include "AIController.h"
 #include "ZombieAnim.h"
 #include "Actor/DestinationActor_KJY.h"
 #include "ZombieBase_KJY.h"
@@ -32,7 +33,8 @@ void UZombieFSM::BeginPlay()
 	Me = Cast<AZombieBase_KJY>(GetOwner());
 
 	Anim = Cast<UZombieAnim>(Me->GetMesh()->GetAnimInstance());
-	
+
+	ai = Cast<AAIController>(Me->GetController());
 }
 
 
@@ -48,6 +50,10 @@ void UZombieFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 	case EZombieState::Move:
 		MoveState();
 		break;
+	case EZombieState::Chase:
+		ChaseState();
+		break;
+		
 	case EZombieState::Attack:
 		AttackState();
 		break;
@@ -62,16 +68,18 @@ void UZombieFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 
 void UZombieFSM::MoveState()
 {
+	FVector Destination = Target->GetActorLocation();
 	// 목적지 - 에너미
-	FVector TargetDir = Target->GetActorLocation() - Me->GetActorLocation();
+	FVector TargetDir = Destination - Me->GetActorLocation();
 	// 플레이어 - 에너미
 	FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
 
 	// 목적지 향해 가다가
-	Me->AddMovementInput(TargetDir.GetSafeNormal());
+	//Me->AddMovementInput(TargetDir.GetSafeNormal());
+	ai->MoveToLocation(Destination);
 	
-	// 플레이어와 가까워지면 플레이어 공격
-	if (PlayerDir.Size()<AttackRange)
+	// 플레이어와 가까워지면 플레이어 향해 이동
+	if (PlayerDir.Size()<ChaseRange)
 	{
 		mState = EZombieState::Attack;
 		Anim->AnimState = mState;
@@ -80,11 +88,25 @@ void UZombieFSM::MoveState()
 	}
 }
 
+void UZombieFSM::ChaseState()
+{
+	/*if (PlayerDir.Size()<AttackRange)
+	{
+		mState = EZombieState::Attack;
+		Anim->AnimState = mState;
+		Anim->bAttackPlay = true;
+		CurrentTime = AttackTime;
+	}*/
+}
+
 void UZombieFSM::AttackState()
 {
+	
 	CurrentTime += GetWorld()->DeltaTimeSeconds;
 	if (CurrentTime > AttackTime)
 	{
+		ai->SetFocus(Player, EAIFocusPriority::Gameplay); 
+		UE_LOG(LogTemp, Warning, TEXT("Attack"));
 		// 플레이어 공격 에니메이션
 		// 플레이어 체력 닳음
 		CurrentTime = 0;
