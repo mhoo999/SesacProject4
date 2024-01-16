@@ -79,5 +79,7 @@ public:
 public:
 	// --------------- 플레이어 체력 --------------------
 	virtual void BeShot(float damage) override;
+
+	
 };
 

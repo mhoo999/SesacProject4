@@ -26,6 +26,4 @@ public:
 	UMainUI_YMH* mainUI;
 	
 	void InitUIWidget();
-
-	void SelectSlot(int32 num);
 };

@@ -71,4 +71,10 @@ void APlayerBase_YMH::BeShot(float damage)
 	Super::BeShot(damage);
 
 	float percent = currentHealth / maxHelth;
+	APlayerController_YMH* pc = Cast<APlayerController_YMH>(Controller);
+	
+	if (pc->mainUI)
+	{
+		pc->mainUI->hp = percent;
+	}
 }
