@@ -31,7 +31,7 @@ public:
 	EZombieState mState = EZombieState::Move;
 
 	void MoveState();
-	//void ChaseState();
+	void ChaseState();
 	void AttackState();
 	void DamageState();
 	void DieState();

@@ -22,11 +22,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=FSM)
 	bool bAttackPlay = false;
 
-	UPROPERTY(EditDefaultsOnly)
-	class UAnimMontage* DamageAnimMontage;
+	UFUNCTION(BlueprintImplementableEvent, Category=FSM)
 	void PlayDamageAnim();
 	
-	UPROPERTY(EditDefaultsOnly)
-	class UAnimMontage* DieAnimMontage;
-	void PlayDieAnim();
 };
