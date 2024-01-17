@@ -3,29 +3,28 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "TrapBase.h"
-#include "SpikeTrap_LDJ.generated.h"
+#include "Trap/TrapBase.h"
+#include "PoisonTrap_LDJ.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SESSAC4NDPROJECT_API ASpikeTrap_LDJ : public ATrapBase
+class SESSAC4NDPROJECT_API APoisonTrap_LDJ : public ATrapBase
 {
 	GENERATED_BODY()
 
-	ASpikeTrap_LDJ();
-	
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UStaticMeshComponent* SpikeMeshComp;
+	APoisonTrap_LDJ();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UStaticMeshComponent* SpikeMeshComp2;
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
+	class UStaticMeshComponent* PoisonBottleMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
+	class UStaticMeshComponent* PoisonLiquid;
 	
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-
 	virtual void UpgradeCost() override;
 	virtual void UpgradeAbility() override;
 	virtual void ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef) override;
@@ -33,4 +32,6 @@ public:
 	FTimerHandle THandle;
 
 	bool GoalArrived = false;
+
+	
 };

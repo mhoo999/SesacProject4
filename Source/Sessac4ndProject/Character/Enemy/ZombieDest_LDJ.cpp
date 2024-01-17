@@ -43,7 +43,7 @@ void AZombieDest_LDJ::OnZombieOverlap(UPrimitiveComponent* OverlappedComponent, 
 	auto temp = Cast<AActor>(OtherActor);
 	if (!temp) return;
 
-	GameState->Life--;
+	// GameState->Life--;
 	temp->Destroy();
 }
 

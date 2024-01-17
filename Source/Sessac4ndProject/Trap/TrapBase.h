@@ -33,8 +33,9 @@ public:
 	class UBoxComponent* ReactionCollision;
 
 	// TO DO :
-	// UPROPERTY()
-	// class AZombieBase* Enemy;
+	UPROPERTY()
+	TArray<class AZombieBase_KJY*> EnemyArray;
+	// class AZombieBase_KJY* Enemy;
 
 	// TO DO :
 	// UPROPERTY()
@@ -49,7 +50,7 @@ public:
 	FTimerHandle Handle;
 
 	UFUNCTION()
-	virtual void OnEnemyOverlapped(UPrimitiveComponent* OverlappedComponent,
+	virtual void OnEnemyBeginOverlapped(UPrimitiveComponent* OverlappedComponent,
 		AActor* OtherActor,
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex,
@@ -64,5 +65,5 @@ public:
 	
 	virtual void UpgradeCost();
 	virtual void UpgradeAbility();
-	virtual void ReactTrap();
+	virtual void ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef);
 };

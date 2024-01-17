@@ -4,18 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "PlayerBaseComp.generated.h"
+#include "PlayerBaseComp_YMH.generated.h"
 
 
+class APlayerController_YMH;
+class UMainUI_YMH;
 class APlayerBase_YMH;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class SESSAC4NDPROJECT_API UPlayerBaseComp : public UActorComponent
+class SESSAC4NDPROJECT_API UPlayerBaseComp_YMH : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
-	UPlayerBaseComp();
+	UPlayerBaseComp_YMH();
 
 protected:
 	virtual void BeginPlay() override;
@@ -30,4 +32,7 @@ public:
 public:
 	UPROPERTY()
 	APlayerBase_YMH* player;
+
+	UPROPERTY()
+	APlayerController_YMH* PlayerController;
 };

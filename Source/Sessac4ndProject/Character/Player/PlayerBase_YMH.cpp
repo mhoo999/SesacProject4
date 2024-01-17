@@ -6,8 +6,10 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "PlayerFireComp.h"
+#include "PlayerBuildComp_LDJ.h"
+#include "PlayerFireComp_YMH.h"
 #include "PlayerMoveComp_YMH.h"
+#include "PlayerController/PlayerController_YMH.h"
 
 APlayerBase_YMH::APlayerBase_YMH()
 {
@@ -34,7 +36,8 @@ APlayerBase_YMH::APlayerBase_YMH()
 	FollowCamera->bUsePawnControlRotation = false;
 
 	MoveComp = CreateDefaultSubobject<UPlayerMoveComp_YMH>(TEXT("Movement Component"));
-	FireComp = CreateDefaultSubobject<UPlayerFireComp>(TEXT("Fire Component"));
+	FireComp = CreateDefaultSubobject<UPlayerFireComp_YMH>(TEXT("Fire Component"));
+	BuildComp = CreateDefaultSubobject<UPlayerBuildComp_LDJ>(TEXT("Build Componenet"));
 }
 
 void APlayerBase_YMH::BeginPlay()
@@ -60,12 +63,4 @@ void APlayerBase_YMH::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	OnSetupInputDelegate.Broadcast(PlayerInputComponent);
-}
-
-void APlayerBase_YMH::InstallTrap()
-{
-}
-
-void APlayerBase_YMH::Selector()
-{
 }
