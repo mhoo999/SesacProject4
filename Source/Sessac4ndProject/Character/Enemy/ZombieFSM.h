@@ -60,16 +60,20 @@ public:
 	UPROPERTY(EditAnywhere, Category=FSM)
 	float AttackTime = 3.0f;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=FSM)
-	float Hp = 3.0f;
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category=FSM)
+	float Hp = 10.0f;
 
 	// 피격 대기 시간
 	UPROPERTY(EditAnywhere, Category=FSM)
 	float DamageTime = 2.0f;
 
+	UPROPERTY(EditAnywhere, Category=FSM)
+	float DeathTime = 1.0f;
+
 	UPROPERTY()
 	class UZombieAnim* Anim;
 
 	UPROPERTY()
-	class AAIController* ai;	
+	class AAIController* ai;
+	
 };

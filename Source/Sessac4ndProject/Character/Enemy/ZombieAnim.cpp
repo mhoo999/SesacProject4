@@ -3,8 +3,4 @@
 
 #include "ZombieAnim.h"
 
-void UZombieAnim::OnEndAttackAnimation()
-{
-	bAttackPlay = false;
-}
 
