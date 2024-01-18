@@ -34,8 +34,13 @@ void UPlayerAnimInstance_YMH::PlayFireAnimation()
 {
 	if (fireMontage)
 	{
-		Montage_Play(fireMontage);
+		Montage_Play(fireMontage, 2);
 	}
+}
+
+void UPlayerAnimInstance_YMH::AnimNotify_EndFireDispatcher()
+{
+	Player->fireDispatcher = false;
 }
 
 void UPlayerAnimInstance_YMH::PlayReloadAnimation()
@@ -50,6 +55,10 @@ void UPlayerAnimInstance_YMH::PlayReloadAnimation()
 void UPlayerAnimInstance_YMH::AnimNotify_Reload()
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnReload"));
-	Player->bulletCount = SMGBulletCount;
+	Player->bulletCount += Player->reloadBulletCount;
+	if (Player->bulletCount > Player->MaxBulletCount)
+	{
+		Player->bulletCount = Player->MaxBulletCount;
+	}
 	Player->bIsReloading = false;
 }

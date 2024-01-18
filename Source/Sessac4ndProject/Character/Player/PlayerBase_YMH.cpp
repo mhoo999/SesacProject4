@@ -36,6 +36,8 @@ APlayerBase_YMH::APlayerBase_YMH()
 	// Pawn 기준으로 Rotation 값을 가져올 것인가?
 	FollowCamera->bUsePawnControlRotation = false;
 
+	GetMesh()->SetRelativeRotation(FRotator(0, -65, 0));
+
 	MoveComp = CreateDefaultSubobject<UPlayerMoveComp_YMH>(TEXT("Movement Component"));
 	FireComp = CreateDefaultSubobject<UPlayerFireComp_YMH>(TEXT("Fire Component"));
 	BuildComp = CreateDefaultSubobject<UPlayerBuildComp_LDJ>(TEXT("Build Componenet"));
@@ -52,6 +54,8 @@ void APlayerBase_YMH::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	playerController = Cast<APlayerController_YMH>(Controller);
 }
 
 void APlayerBase_YMH::Tick(float DeltaSeconds)
@@ -71,10 +75,9 @@ void APlayerBase_YMH::BeShot(float damage)
 	Super::BeShot(damage);
 
 	float percent = currentHealth / maxHelth;
-	APlayerController_YMH* pc = Cast<APlayerController_YMH>(Controller);
 	
-	if (pc->mainUI)
+	if (playerController->mainUI)
 	{
-		pc->mainUI->hp = percent;
+		playerController->mainUI->hp = percent;
 	}
 }

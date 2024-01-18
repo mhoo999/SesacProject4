@@ -7,6 +7,7 @@
 #include "InputActionValue.h"
 #include "PlayerBase_YMH.generated.h"
 
+class UMainUI_YMH;
 class APlayerController_YMH;
 class UPlayerBuildComp_LDJ;
 class UPlayerFireComp_YMH;
@@ -58,10 +59,6 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	UPlayerBuildComp_LDJ* BuildComp;
 	
-	// 탄창
-	UPROPERTY()
-	int32 bulletCount;
-	
 	// 무기 레벨
 	int32 weaponeGrade;
 
@@ -75,11 +72,26 @@ public:
 	bool bIsReloading = false;
 	// 빌드 모드 여부
 	bool bIsBuildMode = false;
+	// 반동 크기
+	float MaxRecoilValue;
+	float MinRecoilValue;
+	float crosshairRecoilValue;
+	// 공격 대기 상태 여부
+	bool fireDispatcher = false;
 	
 public:
 	// --------------- 플레이어 체력 --------------------
 	virtual void BeShot(float damage) override;
 
-	
+public:
+	// --------------- 플레이어 BulletCount --------------------
+	int32 MaxBulletCount;
+	int32 reloadBulletCount;
+	UPROPERTY()
+	int32 bulletCount;
+
+public:
+	UPROPERTY()
+	APlayerController_YMH* playerController;
 };
 
