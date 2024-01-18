@@ -51,5 +51,13 @@ public:
 	UFUNCTION()
 	void AnimNotify_Reload();
 
+	// 승리 몽타주
+	UPROPERTY(EditDefaultsOnly, Category="Anim")
+	UAnimMontage* victoryMontage;
+	void PlayVictoryMontage();
 	
+	// 설치 몽타주
+	UPROPERTY(EditDefaultsOnly, Category="Anim")
+	UAnimMontage* installMontage;
+	void PlayInstallMontage();
 };
