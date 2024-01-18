@@ -26,6 +26,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(BindWidget))
 	UImage* img_cresshair;
 	void ShowCrosshair(bool isShow);
+	FVector2D LerpSize;
+	FTimerHandle restoreHandle;
+
+	FVector2D crosshairSize = FVector2D(1);
+	void restoreCrosshair();
 
 	// ------------------ Skill Slot ------------------------
 
@@ -67,4 +72,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="HP")
 	float hp = 1.0f;
 
+public:
+	void weaponRecoil();
 };

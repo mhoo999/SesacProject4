@@ -28,8 +28,6 @@ public:
 	UPROPERTY()
 	APlayerBase_YMH* Player;
 
-	int32 SMGBulletCount = 30;
-
 public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
@@ -40,6 +38,9 @@ public:
 	UAnimMontage* fireMontage;
 	void PlayFireAnimation();
 
+	UFUNCTION()
+	void AnimNotify_EndFireDispatcher();
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="MySettings")
 	float pitchAngle;
 
@@ -49,5 +50,14 @@ public:
 	void PlayReloadAnimation();
 	UFUNCTION()
 	void AnimNotify_Reload();
+
+	// 승리 몽타주
+	UPROPERTY(EditDefaultsOnly, Category="Anim")
+	UAnimMontage* victoryMontage;
+	void PlayVictoryMontage();
 	
+	// 설치 몽타주
+	UPROPERTY(EditDefaultsOnly, Category="Anim")
+	UAnimMontage* installMontage;
+	void PlayInstallMontage();
 };

@@ -14,6 +14,7 @@
 #include "Trap/PoisonTrap_LDJ.h"
 #include "Trap/SpikeTrap_LDJ.h"
 #include "InputAction.h"
+#include "Animation/PlayerAnimInstance_YMH.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
 
@@ -114,6 +115,8 @@ void UPlayerBuildComp_LDJ::DoBuildSpikeTrap(const FInputActionValue& value)
 	if (PlayerController)
 	{
 		PlayerController->mainUI->SelectSlot(1);
+		PlayerController->mainUI->img_cresshair->SetVisibility(ESlateVisibility::Hidden);
+		PlayerController->mainUI->img_pointer->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -125,6 +128,9 @@ void UPlayerBuildComp_LDJ::DoBuildFreezeTrap(const FInputActionValue& value)
 	if (PlayerController)
 	{
 		PlayerController->mainUI->SelectSlot(2);
+		PlayerController->mainUI->img_cresshair->SetVisibility(ESlateVisibility::Hidden);
+		PlayerController->mainUI->img_pointer->SetVisibility(ESlateVisibility::Hidden);
+
 	}
 }
 
@@ -136,6 +142,9 @@ void UPlayerBuildComp_LDJ::DoBuildPoisonTrap(const FInputActionValue& value)
 	if (PlayerController)
 	{
 		PlayerController->mainUI->SelectSlot(3);
+		PlayerController->mainUI->img_cresshair->SetVisibility(ESlateVisibility::Hidden);
+		PlayerController->mainUI->img_pointer->SetVisibility(ESlateVisibility::Hidden);
+
 	}
 }
 
@@ -147,6 +156,9 @@ void UPlayerBuildComp_LDJ::DoBuildFlameTrap(const FInputActionValue& value)
 	if (PlayerController)
 	{
 		PlayerController->mainUI->SelectSlot(4);
+		PlayerController->mainUI->img_cresshair->SetVisibility(ESlateVisibility::Hidden);
+		PlayerController->mainUI->img_pointer->SetVisibility(ESlateVisibility::Hidden);
+
 	}
 }
 
@@ -163,6 +175,8 @@ void UPlayerBuildComp_LDJ::DoEquipGun(const FInputActionValue& value)
 	if (PlayerController)
 	{
 		PlayerController->mainUI->SelectSlot(0);
+		PlayerController->mainUI->img_cresshair->SetVisibility(ESlateVisibility::Visible);
+		PlayerController->mainUI->img_pointer->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
@@ -215,6 +229,9 @@ void UPlayerBuildComp_LDJ::PressPlaceBuild()
 {
 	if (player->bIsBuildMode && bBuildEnable)
 	{
+		auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
+		anim->PlayInstallMontage();
+		
 		BuildPreviewTransform.SetScale3D(FVector(0.98));
 		GetWorld()->SpawnActor<ATrapBase>(TrapFactory, BuildPreviewTransform);
 	}

@@ -87,7 +87,7 @@ void UPlayerMoveComp_YMH::Jump(const FInputActionValue& value)
 
 void UPlayerMoveComp_YMH::OnStartWalk(const FInputActionValue& value)
 {
-	player->GetCharacterMovement()->MaxWalkSpeed = 300;
+	player->GetCharacterMovement()->MaxWalkSpeed = 200;
 }
 
 void UPlayerMoveComp_YMH::OnEndWalk(const FInputActionValue& value)
