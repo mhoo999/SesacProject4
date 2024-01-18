@@ -19,8 +19,6 @@ void APlayerController_YMH::InitUIWidget()
 		mainUI = Cast<UMainUI_YMH>(CreateWidget(GetWorld(), mainUIWidget));
 		mainUI->AddToViewport();
 		mainUI->ShowPointer();
-		mainUI->ShowCrosshair(true);
-
 		mainUI->SelectSlot(0);
 	}
 }

@@ -25,8 +25,5 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 public:
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Components")
-	USkeletalMeshComponent* weapon;*/
-	
 	int32 SMGBulletCount = 30;
 };

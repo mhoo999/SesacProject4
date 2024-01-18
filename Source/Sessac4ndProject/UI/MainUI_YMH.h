@@ -17,7 +17,7 @@ UCLASS()
 class SESSAC4NDPROJECT_API UMainUI_YMH : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 public:
 	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(BindWidget))
 	UImage* img_pointer;
@@ -26,6 +26,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(BindWidget))
 	UImage* img_cresshair;
 	void ShowCrosshair(bool isShow);
+	FVector2D LerpSize;
+	FTimerHandle restoreHandle;
+
+	FVector2D crosshairSize = FVector2D(1);
+	void restoreCrosshair();
 
 	// ------------------ Skill Slot ------------------------
 
@@ -68,5 +73,5 @@ public:
 	float hp = 1.0f;
 
 public:
-	void weaponRecoil(float value);
+	void weaponRecoil();
 };

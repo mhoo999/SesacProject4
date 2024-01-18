@@ -3,6 +3,7 @@
 
 #include "UI/MainUI_YMH.h"
 
+#include "FrameTypes.h"
 #include "GPUMessaging.h"
 #include "Components/Border.h"
 #include "Components/Image.h"
@@ -21,6 +22,16 @@ void UMainUI_YMH::ShowCrosshair(bool isShow)
 	else
 	{
 		img_cresshair->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
+void UMainUI_YMH::restoreCrosshair()
+{
+	LerpSize =	FMath::Lerp(LerpSize, FVector2D(1.0, 1.0), GetWorld()->GetDeltaSeconds() * 4);
+	img_cresshair->SetRenderScale(LerpSize);
+	if (LerpSize == FVector2D(1.0))
+	{
+		GetWorld()->GetTimerManager().ClearTimer(restoreHandle);
 	}
 }
 
@@ -78,6 +89,14 @@ void UMainUI_YMH::DisableSlot(UBorder* slot, UImage* img)
 	img->SetOpacity(0.8f);
 }
 
-void UMainUI_YMH::weaponRecoil(float value)
+void UMainUI_YMH::weaponRecoil()
 {
+	img_cresshair->SetRenderScale(FVector2D(3.0));
+	LerpSize = FVector2D(3.0, 3.0);
+	
+	GetWorld()->GetTimerManager().ClearTimer(restoreHandle);
+	GetWorld()->GetTimerManager().SetTimer(restoreHandle, FTimerDelegate::CreateLambda([&]
+	{
+		restoreCrosshair();
+	}), GetWorld()->GetDeltaSeconds(), true, 1.5);
 }

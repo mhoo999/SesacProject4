@@ -9,18 +9,18 @@
 
 ASMGPlayer_YMH::ASMGPlayer_YMH()
 {
-	/*weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
-	weapon->SetupAttachment(GetMesh());
-	weapon->GetAttachSocketName(FName("WeaponSocket"));*/
-
 	maxHelth = 10.0f;
 	currentHealth = maxHelth;
 	attackSpeed = 2.0f;
 	Damage = 10.0f;
-	attackDistance = 1000;
+	attackDistance = 4000;
 	weaponeGrade = 1;
+	MaxBulletCount = SMGBulletCount;
 	bulletCount = SMGBulletCount;
-	recoilValue = 10.0;
+	reloadBulletCount = SMGBulletCount;
+	MaxRecoilValue = -0.7f;
+	MinRecoilValue = -1.0f;
+	crosshairRecoilValue = 2.0;
 }
 
 void ASMGPlayer_YMH::BeginPlay()
