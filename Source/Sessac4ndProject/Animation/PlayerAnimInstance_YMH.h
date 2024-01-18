@@ -23,8 +23,11 @@ public:
 	float speed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MyAnimSettings")
-	bool bIsCombat = false;
+	bool bIsCombat;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MyAnimSettings")
+	bool bIsDead;
+	
 	UPROPERTY()
 	APlayerBase_YMH* Player;
 
@@ -60,4 +63,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Anim")
 	UAnimMontage* installMontage;
 	void PlayInstallMontage();
+
+	// 죽음 노티파이
+	UFUNCTION()
+	void AnimNotify_DieEnd();
 };
