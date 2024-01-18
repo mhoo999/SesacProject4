@@ -83,7 +83,10 @@ void UPlayerFireComp_YMH::Fire(const FInputActionValue& value)
 	auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
 	anim->PlayFireAnimation();
 
-	PlayerController->mainUI->weaponRecoil();
+	if (PlayerController)
+	{
+		PlayerController->mainUI->weaponRecoil();
+	}
 	
 	player->bIsCombat = true;
 
