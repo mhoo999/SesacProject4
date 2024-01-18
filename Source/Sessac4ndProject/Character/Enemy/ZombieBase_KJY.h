@@ -27,5 +27,15 @@ public:
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UZombieFSM* fsm;
+		
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=FSM)
+	float MaxHp = 10.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=FSM)
+	float CurrentHp = MaxHp;
+
+	void Damage();
+	void Die();
+
 	
 };

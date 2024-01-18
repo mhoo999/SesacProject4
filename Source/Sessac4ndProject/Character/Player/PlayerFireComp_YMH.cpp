@@ -9,6 +9,7 @@
 #include "Animation/PlayerAnimInstance_YMH.h"
 #include "Camera/CameraComponent.h"
 #include "Character/Enemy/ZombieAnim.h"
+#include "Character/Enemy/ZombieBase_KJY.h"
 #include "Kismet/GameplayStatics.h"
 
 UPlayerFireComp_YMH::UPlayerFireComp_YMH()
@@ -72,11 +73,11 @@ void UPlayerFireComp_YMH::FireBullet()
 	if (bHit)
 	{
 		//enemy 체력--
-		auto Enemy = hitInfo.GetActor()->GetDefaultSubobjectByName(TEXT("FSM"));
+		auto Enemy = hitInfo.GetActor()->GetDefaultSubobjectByName(TEXT("Fsm"));
 		if (Enemy)
 		{
-			auto EnemyFSM = Cast<UZombieFSM>(Enemy);
-			EnemyFSM->Damage();
+			auto Zombie = Cast<AZombieBase_KJY>(hitInfo.GetActor());
+			Zombie->Damage();
 		}
 		
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), bulletMark, hitInfo.Location, FRotator());

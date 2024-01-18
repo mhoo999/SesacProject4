@@ -4,6 +4,7 @@
 #include "ZombieFSM.h"
 
 #include "AIController.h"
+#include "NavigationSystem.h"
 #include "ZombieAnim.h"
 #include "Actor/DestinationActor_KJY.h"
 #include "ZombieBase_KJY.h"
@@ -36,6 +37,11 @@ void UZombieFSM::BeginPlay()
 	Anim = Cast<UZombieAnim>(Me->GetMesh()->GetAnimInstance());
 
 	ai = Cast<AAIController>(Me->GetController());
+
+	if (GetOwner()->GetActorLocation().Y < -3500)
+	{
+		isLeft = true;
+	}
 }
 
 
@@ -75,10 +81,22 @@ void UZombieFSM::MoveState()
 	// 플레이어 - 에너미
 	FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
 
+	if (bFlagDoOnce == false)
+	{
+		if (isLeft)
+		{
+			ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft));
+		}
+		else
+		{
+			ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft));
+		}
+		bFlagDoOnce = true;
+	}
+
 	// 목적지 향해 가다가
 	//Me->AddMovementInput(TargetDir.GetSafeNormal());
-	ai->MoveToLocation(TargetLoc);
-	
+
 	if (PlayerDir.Size()<ChaseRange)
 	{
 		mState = EZombieState::Chase;
@@ -97,6 +115,7 @@ void UZombieFSM::ChaseState()
 	{
 		mState = EZombieState::Attack;
 		Anim->AnimState = mState;
+		CurrentTime = AttackTime;
 		Me->GetCharacterMovement()->MaxWalkSpeed = 0;
 	}
 	
@@ -106,38 +125,35 @@ void UZombieFSM::AttackState()
 {
 	//ai->SetFocus(Player, EAIFocusPriority::Gameplay);
 
-	//if (// 플레이어와 닿으면  )
-		{
-			//FHitOverlap
-			// 플레이어 체력 닳음
-		}
-		
 	CurrentTime += GetWorld()->DeltaTimeSeconds;
 	if (CurrentTime > AttackTime)
 	{
-		mState = EZombieState::Move;
-		Anim->AnimState = mState;
-		Me->GetCharacterMovement()->MaxWalkSpeed = 400;
 		CurrentTime = 0;
+		Anim->bAttackPlay = true;
+
+		/*if (플레이어와 닿으면  )
+		{
+			//FHitOverlap
+			// 플레이어 체력 닳음
+		}*/
 	}
 	
-	/*FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
+	FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
 	if (PlayerDir.Size()>AttackRange)
 	{
 		mState = EZombieState::Move;
 		Anim->AnimState = mState;
-		Me->GetCharacterMovement()->MaxWalkSpeed = 400;
-	}*/
+		Me->GetCharacterMovement()->MaxWalkSpeed = 300;
+	}
 }
 
 void UZombieFSM::DamageState()
 {
-	
 	CurrentTime += GetWorld()->DeltaTimeSeconds;
 	if (CurrentTime > DamageTime)
 	{
-		Me->GetCharacterMovement()->MaxWalkSpeed = 400;
 		mState = EZombieState::Move;
+		Me->GetCharacterMovement()->MaxWalkSpeed = 300;
 		CurrentTime = 0;
 		Anim->AnimState = mState;	
 	}
@@ -154,23 +170,41 @@ void UZombieFSM::DieState()
 	}
 }
 
-void UZombieFSM::Damage()
-{
-	Hp--;
-	Me->GetCharacterMovement()->MaxWalkSpeed = 0;
-	
-	if(Hp>0)
-	{
-		mState = EZombieState::Damage;
 
-		CurrentTime = 0;
-		
-		Anim->PlayDamageAnim();
+FVector UZombieFSM::GetRandomLocationInNavMesh(bool bDirection)
+{
+	//FVector Origin;
+	//FVector BoxExtent(500.0f, 500.0f, 0.0f);  // 원하는 영역 크기 설정
+
+	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
+
+	if (bDirection)
+	{
+		if (NavSystem)
+		{
+			FNavLocation RandomLocation;
+			if (NavSystem->GetRandomPointInNavigableRadius(FVector(-910.0f,-6480.0f,0.0f), 500, RandomLocation))
+			{
+				return RandomLocation.Location;
+			}
+		}
+		// 기본적으로 원점 반환
+		return FVector(-910.0f,-6480.0f,0.0f);
 	}
 	else
 	{
-		mState = EZombieState::Die;
+		if (NavSystem)
+		{
+			FNavLocation RandomLocation;
+			if (NavSystem->GetRandomPointInNavigableRadius(FVector(-910.0f,-1030.0f,0.0f), 500, RandomLocation))
+			{
+				return RandomLocation.Location;
+			}
+		}
+		// 기본적으로 원점 반환
+		return FVector(-910.0f,-1030.0f,0.0f);
 	}
-	Anim->AnimState = mState;	
+	
+	
 }
 

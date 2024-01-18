@@ -35,8 +35,6 @@ public:
 	void AttackState();
 	void DamageState();
 	void DieState();
-	// Enemy Hp 감소 함수
-	void Damage();
 
 	UPROPERTY(VisibleAnywhere, Category=FSM)
 	class ADestinationActor_KJY* Target;
@@ -48,21 +46,19 @@ public:
 	class AZombieBase_KJY* Me;
 
 	UPROPERTY(EditAnywhere, Category=FSM)
-	float ChaseRange = 1000.0f;
+	float ChaseRange = 300.0f;
 	
 	UPROPERTY(EditAnywhere, Category=FSM)
-	float AttackRange = 100.0f;
+	float AttackRange = 150.0f;
 
 	UPROPERTY(EditAnywhere, Category=FSM)
 	float CurrentTime = 0;
 
 	// 공격 대기 시간
 	UPROPERTY(EditAnywhere, Category=FSM)
-	float AttackTime = 3.0f;
-	
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category=FSM)
-	float Hp = 10.0f;
+	float AttackTime = 2.0f;
 
+    	
 	// 피격 대기 시간
 	UPROPERTY(EditAnywhere, Category=FSM)
 	float DamageTime = 2.0f;
@@ -76,4 +72,9 @@ public:
 	UPROPERTY()
 	class AAIController* ai;
 	
+	FVector GetRandomLocationInNavMesh(bool bDirection);
+
+	bool bFlagDoOnce;
+
+	bool isLeft;
 };

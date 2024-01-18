@@ -44,7 +44,7 @@ void ASpikeTrap_LDJ::UpgradeAbility()
 
 void ASpikeTrap_LDJ::ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef)
 {
-	for (auto e : EnemyBoxRef) e->fsm->Damage();
+	for (auto e : EnemyBoxRef) e->Damage();
 	GetWorld()->GetTimerManager().SetTimer(THandle, FTimerDelegate::CreateLambda([&]
 	{
 		SpikeMeshComp->SetVisibility(false);

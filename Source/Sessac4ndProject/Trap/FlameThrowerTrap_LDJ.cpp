@@ -55,7 +55,7 @@ void AFlameThrowerTrap_LDJ::UpgradeAbility()
 
 void AFlameThrowerTrap_LDJ::ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef)
 {
-	for (auto e : EnemyBoxRef) e->fsm->Damage();
+	for (auto e : EnemyBoxRef) e->Damage();
 	GetWorld()->GetTimerManager().SetTimer(THandle, FTimerDelegate::CreateLambda([&]
 	{
 		FireFX1->SetVisibility(true);
