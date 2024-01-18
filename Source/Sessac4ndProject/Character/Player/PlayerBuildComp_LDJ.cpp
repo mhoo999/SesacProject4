@@ -14,6 +14,7 @@
 #include "Trap/PoisonTrap_LDJ.h"
 #include "Trap/SpikeTrap_LDJ.h"
 #include "InputAction.h"
+#include "Animation/PlayerAnimInstance_YMH.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
 
@@ -228,6 +229,9 @@ void UPlayerBuildComp_LDJ::PressPlaceBuild()
 {
 	if (player->bIsBuildMode && bBuildEnable)
 	{
+		auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
+		anim->PlayInstallMontage();
+		
 		BuildPreviewTransform.SetScale3D(FVector(0.98));
 		GetWorld()->SpawnActor<ATrapBase>(TrapFactory, BuildPreviewTransform);
 	}
