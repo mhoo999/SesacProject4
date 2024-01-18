@@ -72,9 +72,13 @@ public:
 	UPROPERTY()
 	class AAIController* ai;
 	
-	FVector GetRandomLocationInNavMesh(bool bDirection);
+	FVector GetRandomLocationInNavMesh(bool& bisLeft, FVector DestLoc, FVector RightDestLoc);
 
 	bool bFlagDoOnce;
 
 	bool isLeft;
+
+	int32 Temp2;
+
+	FVector FirstStop;
 };

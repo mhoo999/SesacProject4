@@ -85,14 +85,22 @@ void UZombieFSM::MoveState()
 	{
 		if (isLeft)
 		{
-			ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft));
+			ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-910.0f,-6480.0f,0.0f), FVector(-910.0f,-1030.0f,0.0f)));
 		}
 		else
 		{
-			ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft));
+			ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-910.0f,-6480.0f,0.0f), FVector(-910.0f,-1030.0f,0.0f)));
 		}
 		bFlagDoOnce = true;
 	}
+	
+	if (Temp2 == 0 && Me->GetActorLocation().X < FirstStop.X+100)
+	{
+		// 첫번째 경유지에 도착했을때 다음 경유지로 간다
+		ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-910.0f,-3240.0f,0.0f),FVector(-910.0f,-3240.0f,0.0f)));
+		Temp2++;
+	}
+		
 
 	// 목적지 향해 가다가
 	//Me->AddMovementInput(TargetDir.GetSafeNormal());
@@ -171,40 +179,44 @@ void UZombieFSM::DieState()
 }
 
 
-FVector UZombieFSM::GetRandomLocationInNavMesh(bool bDirection)
+FVector UZombieFSM::GetRandomLocationInNavMesh(bool& bisLeft, FVector DestLoc, FVector RightDestLoc)
 {
 	//FVector Origin;
 	//FVector BoxExtent(500.0f, 500.0f, 0.0f);  // 원하는 영역 크기 설정
 
 	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
 
-	if (bDirection)
+	if (bisLeft)
 	{
 		if (NavSystem)
 		{
 			FNavLocation RandomLocation;
-			if (NavSystem->GetRandomPointInNavigableRadius(FVector(-910.0f,-6480.0f,0.0f), 500, RandomLocation))
+			if (NavSystem->GetRandomPointInNavigableRadius(DestLoc, 500, RandomLocation))
 			{
+				FirstStop = RandomLocation.Location;
 				return RandomLocation.Location;
 			}
 		}
 		// 기본적으로 원점 반환
-		return FVector(-910.0f,-6480.0f,0.0f);
+		return DestLoc;
 	}
 	else
 	{
 		if (NavSystem)
 		{
 			FNavLocation RandomLocation;
-			if (NavSystem->GetRandomPointInNavigableRadius(FVector(-910.0f,-1030.0f,0.0f), 500, RandomLocation))
+			if (NavSystem->GetRandomPointInNavigableRadius(RightDestLoc, 500, RandomLocation))
 			{
+				FirstStop = RandomLocation.Location;
 				return RandomLocation.Location;
 			}
 		}
 		// 기본적으로 원점 반환
-		return FVector(-910.0f,-1030.0f,0.0f);
+		return RightDestLoc;
+
 	}
 	
 	
 }
 
+//return FVector(-910.0f,-1030.0f,0.0f);
