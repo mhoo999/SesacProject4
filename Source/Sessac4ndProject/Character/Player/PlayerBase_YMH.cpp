@@ -9,6 +9,8 @@
 #include "PlayerBuildComp_LDJ.h"
 #include "PlayerFireComp_YMH.h"
 #include "PlayerMoveComp_YMH.h"
+#include "Animation/PlayerAnimInstance_YMH.h"
+#include "Components/CapsuleComponent.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
 
@@ -74,10 +76,39 @@ void APlayerBase_YMH::BeShot(float damage)
 {
 	Super::BeShot(damage);
 
+	currentHealth -= damage;
+	UE_LOG(LogTemp, Warning, TEXT("Damege!"));
+
+	if (currentHealth <= 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Dead!"));
+		bIsDead = true;
+
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetCharacterMovement()->DisableMovement();
+		CameraBoom->bUsePawnControlRotation = false;
+		// CameraBoom->SetWorldRotation(FRotator(-45, 0, 0));
+	}
+	
 	float percent = currentHealth / maxHelth;
 	
-	if (playerController->mainUI)
+	if (playerController)
 	{
 		playerController->mainUI->hp = percent;
+	}
+}
+
+void APlayerBase_YMH::DieProcess()
+{
+	
+	// FollowCamera->PostProcessSettings.ColorSaturation = FVector4(0, 0, 0, 1);
+
+	auto pc = Cast<APlayerController>(Controller);
+	pc->SetShowMouseCursor(true);
+	
+	if(playerController)
+	{
+		playerController->mainUI->img_pointer->SetVisibility(ESlateVisibility::Hidden);
+		playerController->mainUI->img_cresshair->SetVisibility(ESlateVisibility::Hidden);
 	}
 }

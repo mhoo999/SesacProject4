@@ -27,6 +27,7 @@ void UPlayerAnimInstance_YMH::NativeUpdateAnimation(float DeltaSeconds)
 		pitchAngle = FMath::Clamp(pitchAngle, -60, 60);
 
 		bIsCombat = Player->bIsCombat;
+		bIsDead = Player->bIsDead;
 	}
 }
 
@@ -76,5 +77,13 @@ void UPlayerAnimInstance_YMH::PlayInstallMontage()
 	if (installMontage)
 	{
 		Montage_Play(installMontage, 4, EMontagePlayReturnType::MontageLength, 1.5f);
+	}
+}
+
+void UPlayerAnimInstance_YMH::AnimNotify_DieEnd()
+{
+	if (Player && Player->IsLocallyControlled())
+	{
+		Player->DieProcess();
 	}
 }
