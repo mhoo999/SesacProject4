@@ -13,5 +13,5 @@ UCLASS()
 class SESSAC4NDPROJECT_API AZombie_KJY : public AZombieBase_KJY
 {
 	GENERATED_BODY()
-	
+
 };
