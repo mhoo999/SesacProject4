@@ -7,6 +7,7 @@
 #include "GPUMessaging.h"
 #include "Components/Border.h"
 #include "Components/Image.h"
+#include "Components/UniformGridPanel.h"
 
 void UMainUI_YMH::ShowPointer()
 {
@@ -33,6 +34,22 @@ void UMainUI_YMH::restoreCrosshair()
 	{
 		GetWorld()->GetTimerManager().ClearTimer(restoreHandle);
 	}
+}
+
+void UMainUI_YMH::AddBullet()
+{
+	auto bulletWidget = CreateWidget(GetWorld(), BulletUIFactory);
+	BulletPanel->AddChildToUniformGrid(bulletWidget, 0, BulletPanel->GetChildrenCount());
+}
+
+void UMainUI_YMH::PopBullet(int32 index)
+{
+	BulletPanel->RemoveChildAt(index);
+}
+
+void UMainUI_YMH::RemoveAllAmmo()
+{
+	BulletPanel->ClearChildren();
 }
 
 void UMainUI_YMH::SelectSlot(int32 num)
