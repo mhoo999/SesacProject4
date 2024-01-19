@@ -7,6 +7,7 @@
 #include "InputActionValue.h"
 #include "PlayerBase_YMH.generated.h"
 
+class UPointLightComponent;
 class UMainUI_YMH;
 class APlayerController_YMH;
 class UPlayerBuildComp_LDJ;
@@ -46,6 +47,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Components")
 	UCameraComponent* FollowCamera;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Components")
+	USpringArmComponent* SelfCameraBoom;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Components")
+	USceneCaptureComponent2D* SelfCapture;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|COmponents")
+	UPointLightComponent* PointLightComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
 	UInputMappingContext* DefaultMappingContext;

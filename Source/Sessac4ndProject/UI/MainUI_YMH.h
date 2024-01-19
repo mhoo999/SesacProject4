@@ -7,6 +7,7 @@
 #include "Components/Image.h"
 #include "MainUI_YMH.generated.h"
 
+class UUniformGridPanel;
 class UBorder;
 class UImage;
 
@@ -31,7 +32,22 @@ public:
 
 	FVector2D crosshairSize = FVector2D(1);
 	void restoreCrosshair();
+	
+public:
+	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(BindWidget))
+	UUniformGridPanel* BulletPanel;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Bullet")
+	TSubclassOf<UUserWidget> BulletUIFactory;
+
+	// 총알 위젯 추가
+	void AddBullet();
+	// 총알 제거
+	void PopBullet(int32 index);
+	// 모든 총알 UI 제거
+	void RemoveAllAmmo();
+
+public:
 	// ------------------ Skill Slot ------------------------
 
 	UPROPERTY(BlueprintReadWrite, Category="Slot", meta=(BindWidget))
