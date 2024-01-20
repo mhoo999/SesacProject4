@@ -5,6 +5,7 @@
 
 #include "CascadeParticleSystemComponent.h"
 #include "Character/Enemy/ZombieBase_KJY.h"
+#include "Character/Enemy/Zombie_KJY.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 AFreezeTrap_LDJ::AFreezeTrap_LDJ()
