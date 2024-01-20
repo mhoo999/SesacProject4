@@ -33,7 +33,7 @@ public:
 
 	virtual void UpgradeCost() override;
 	virtual void UpgradeAbility() override;
-	virtual void ReactTrap() override;
+	virtual void ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef) override;
 
 	FTimerHandle THandle;
 
