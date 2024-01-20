@@ -4,6 +4,9 @@
 #include "PlayerAnimInstance_YMH.h"
 
 #include "Character/Player/PlayerBase_YMH.h"
+#include "Components/TextBlock.h"
+#include "PlayerController/PlayerController_YMH.h"
+#include "UI/MainUI_YMH.h"
 
 void UPlayerAnimInstance_YMH::NativeInitializeAnimation()
 {
@@ -27,6 +30,7 @@ void UPlayerAnimInstance_YMH::NativeUpdateAnimation(float DeltaSeconds)
 		pitchAngle = FMath::Clamp(pitchAngle, -60, 60);
 
 		bIsCombat = Player->bIsCombat;
+		bIsDead = Player->bIsDead;
 	}
 }
 
@@ -34,8 +38,13 @@ void UPlayerAnimInstance_YMH::PlayFireAnimation()
 {
 	if (fireMontage)
 	{
-		Montage_Play(fireMontage);
+		Montage_Play(fireMontage, 2);
 	}
+}
+
+void UPlayerAnimInstance_YMH::AnimNotify_EndFireDispatcher()
+{
+	Player->fireDispatcher = false;
 }
 
 void UPlayerAnimInstance_YMH::PlayReloadAnimation()
@@ -50,6 +59,41 @@ void UPlayerAnimInstance_YMH::PlayReloadAnimation()
 void UPlayerAnimInstance_YMH::AnimNotify_Reload()
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnReload"));
-	Player->bulletCount = SMGBulletCount;
+	Player->bulletCount += Player->reloadBulletCount;
+	if (Player->bulletCount > Player->MaxBulletCount)
+	{
+		Player->bulletCount = Player->MaxBulletCount;
+	}
 	Player->bIsReloading = false;
+
+	// MainUI의 CurrentBullet의 값에 Player의 ReloadBullet 값을 더하고 싶다.
+	auto pc = Cast<APlayerController_YMH>(Player->GetOwner());
+	if (pc)
+	{
+		pc->mainUI->CurrentBullet->SetText(FText::AsNumber(Player->bulletCount));
+	}
+}
+
+void UPlayerAnimInstance_YMH::PlayVictoryMontage()
+{
+	if (victoryMontage)
+	{
+		Montage_Play(victoryMontage);
+	}
+}
+
+void UPlayerAnimInstance_YMH::PlayInstallMontage()
+{
+	if (installMontage)
+	{
+		Montage_Play(installMontage, 4, EMontagePlayReturnType::MontageLength, 1.5f);
+	}
+}
+
+void UPlayerAnimInstance_YMH::AnimNotify_DieEnd()
+{
+	if (Player && Player->IsLocallyControlled())
+	{
+		Player->DieProcess();
+	}
 }

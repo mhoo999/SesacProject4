@@ -7,6 +7,8 @@
 #include "InputActionValue.h"
 #include "PlayerBase_YMH.generated.h"
 
+class UPointLightComponent;
+class UMainUI_YMH;
 class APlayerController_YMH;
 class UPlayerBuildComp_LDJ;
 class UPlayerFireComp_YMH;
@@ -46,6 +48,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Components")
 	UCameraComponent* FollowCamera;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Components")
+	USpringArmComponent* SelfCameraBoom;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Components")
+	USceneCaptureComponent2D* SelfCapture;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|COmponents")
+	UPointLightComponent* PointLightComp;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
 	UInputMappingContext* DefaultMappingContext;
 	
@@ -57,10 +68,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	UPlayerBuildComp_LDJ* BuildComp;
-	
-	// 탄창
-	UPROPERTY()
-	int32 bulletCount;
 	
 	// 무기 레벨
 	int32 weaponeGrade;
@@ -75,7 +82,27 @@ public:
 	bool bIsReloading = false;
 	// 빌드 모드 여부
 	bool bIsBuildMode = false;
-public:
+	// 반동 크기
+	float MaxRecoilValue;
+	float MinRecoilValue;
+	float crosshairRecoilValue;
+	// 공격 대기 상태 여부
+	bool fireDispatcher = false;
 	
+public:
+	// --------------- 플레이어 체력 --------------------
+	virtual void BeShot(float damage) override;
+	void DieProcess();
+
+public:
+	// --------------- 플레이어 BulletCount --------------------
+	int32 MaxBulletCount;
+	int32 reloadBulletCount;
+	UPROPERTY()
+	int32 bulletCount;
+
+public:
+	UPROPERTY()
+	APlayerController_YMH* playerController;
 };
 

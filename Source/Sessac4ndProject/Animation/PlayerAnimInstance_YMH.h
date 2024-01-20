@@ -23,12 +23,13 @@ public:
 	float speed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MyAnimSettings")
-	bool bIsCombat = false;
+	bool bIsCombat;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MyAnimSettings")
+	bool bIsDead;
+	
 	UPROPERTY()
 	APlayerBase_YMH* Player;
-
-	int32 SMGBulletCount = 30;
 
 public:
 	virtual void NativeInitializeAnimation() override;
@@ -40,6 +41,9 @@ public:
 	UAnimMontage* fireMontage;
 	void PlayFireAnimation();
 
+	UFUNCTION()
+	void AnimNotify_EndFireDispatcher();
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="MySettings")
 	float pitchAngle;
 
@@ -49,5 +53,18 @@ public:
 	void PlayReloadAnimation();
 	UFUNCTION()
 	void AnimNotify_Reload();
+
+	// 승리 몽타주
+	UPROPERTY(EditDefaultsOnly, Category="Anim")
+	UAnimMontage* victoryMontage;
+	void PlayVictoryMontage();
 	
+	// 설치 몽타주
+	UPROPERTY(EditDefaultsOnly, Category="Anim")
+	UAnimMontage* installMontage;
+	void PlayInstallMontage();
+
+	// 죽음 노티파이
+	UFUNCTION()
+	void AnimNotify_DieEnd();
 };

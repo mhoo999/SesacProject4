@@ -28,11 +28,11 @@ public:
 
 public:
 	// 최대 체력
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stat")
 	float maxHelth;
 	
 	// 현재 체력
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category="Stat")
 	float currentHealth;
 
 	// 공격 속도
@@ -49,6 +49,7 @@ public:
 	virtual void Attack();
 
 	// 피격
+	UFUNCTION(BlueprintCallable)
 	virtual void BeShot(float damage);
 	bool bIsDead = false;
 

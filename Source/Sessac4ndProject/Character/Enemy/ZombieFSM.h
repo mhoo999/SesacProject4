@@ -31,7 +31,7 @@ public:
 	EZombieState mState = EZombieState::Move;
 
 	void MoveState();
-	//void ChaseState();
+	void ChaseState();
 	void AttackState();
 	void DamageState();
 	void DieState();
@@ -60,8 +60,8 @@ public:
 	UPROPERTY(EditAnywhere, Category=FSM)
 	float AttackTime = 3.0f;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=FSM)
-	float Hp = 2.0f;
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category=FSM)
+	float Hp = 10.0f;
 
 	// 피격 대기 시간
 	UPROPERTY(EditAnywhere, Category=FSM)

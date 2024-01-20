@@ -4,12 +4,17 @@
 #include "PlayerFireComp_YMH.h"
 
 #include "EnhancedInputComponent.h"
+#include "FrameTypes.h"
 #include "Animation/AnimInstance.h"
 #include "PlayerBase_YMH.h"
 #include "Animation/PlayerAnimInstance_YMH.h"
 #include "Camera/CameraComponent.h"
 #include "Character/Enemy/ZombieAnim.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
+#include "PlayerController/PlayerController_YMH.h"
+#include "UI/MainUI_YMH.h"
 
 UPlayerFireComp_YMH::UPlayerFireComp_YMH()
 {
@@ -25,7 +30,8 @@ void UPlayerFireComp_YMH::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	bIsReloading = player->bIsReloading;
+	// bIsReloading = player->bIsReloading;
+	// fireDispatcher = player->fireDispatcher;
 }
 
 void UPlayerFireComp_YMH::SetupPlayerInput(UInputComponent* PlayerInputComponent)
@@ -44,31 +50,21 @@ void UPlayerFireComp_YMH::SetupPlayerInput(UInputComponent* PlayerInputComponent
 
 void UPlayerFireComp_YMH::Fire(const FInputActionValue& value)
 {
-	if (player->bulletCount <= 0 || bIsReloading || player->bIsBuildMode)
+	if (player->bulletCount <= 0 || player->bIsReloading || player->bIsBuildMode || player->fireDispatcher)
 	{
 		return;
 	}
-	
-	currentTime += 0.1f;
 
-	if (currentTime > player->attackSpeed)
-	{
-		FireBullet();
-		currentTime = 0;
-	}
-}
-
-void UPlayerFireComp_YMH::FireBullet()
-{
+	player->fireDispatcher = true;
 	GetWorld()->GetTimerManager().ClearTimer(combatHandle);
-	
+
 	FHitResult hitInfo;
 	FVector startPos = player->FollowCamera->GetComponentLocation();
 	FVector endPos = startPos + player->FollowCamera->GetForwardVector() * player->attackDistance;
 	FCollisionQueryParams params;
 	params.AddIgnoredActor(player);
 	bool bHit = GetWorld()->LineTraceSingleByChannel(hitInfo, startPos, endPos, ECC_Visibility, params);
-	
+
 	if (bHit)
 	{
 		//enemy 체력--
@@ -78,7 +74,7 @@ void UPlayerFireComp_YMH::FireBullet()
 			auto EnemyFSM = Cast<UZombieFSM>(Enemy);
 			EnemyFSM->Damage();
 		}
-		
+	
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), bulletMark, hitInfo.Location, FRotator());
 	}
 
@@ -88,19 +84,29 @@ void UPlayerFireComp_YMH::FireBullet()
 	auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
 	anim->PlayFireAnimation();
 
+	if (PlayerController)
+	{
+		PlayerController->mainUI->weaponRecoil();
+		// MainUI의 CurrentBullet의 값을 빼고 싶다.
+		PlayerController->mainUI->CurrentBullet->SetText(FText::AsNumber(player->bulletCount));
+	}
+	
 	player->bIsCombat = true;
 
 	GetWorld()->GetTimerManager().SetTimer(combatHandle, FTimerDelegate::CreateLambda([&]
 	{
 		player->bIsCombat = false;
 	}), 5, true);
+	
+	float pitchInput = FMath::RandRange(player->MinRecoilValue, player->MaxRecoilValue);
+	player->AddControllerPitchInput(pitchInput);
 }
 
 void UPlayerFireComp_YMH::Reload(const FInputActionValue& value)
 {
 	// UE_LOG(LogTemp, Warning, TEXT("Reload"));
 
-	if (bIsReloading || player->bIsBuildMode)
+	if (player->bIsReloading || player->bIsBuildMode || player->fireDispatcher)
 	{
 		return;
 	}
@@ -108,5 +114,5 @@ void UPlayerFireComp_YMH::Reload(const FInputActionValue& value)
 	auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
 	anim->PlayReloadAnimation();
 
-	bIsReloading = true;
+	player->bIsReloading = true;
 }

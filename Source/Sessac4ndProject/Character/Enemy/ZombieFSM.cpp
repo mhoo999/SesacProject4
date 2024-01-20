@@ -51,13 +51,13 @@ void UZombieFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 	case EZombieState::Move:
 		MoveState();
 		break;
-	/*case EZombieState::Chase:
+	case EZombieState::Chase:
 		ChaseState();
 		break;
 		
 	case EZombieState::Attack:
 		AttackState();
-		break;*/
+		break;
 	case EZombieState::Damage:
 		DamageState();
 		break;
@@ -69,66 +69,69 @@ void UZombieFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 
 void UZombieFSM::MoveState()
 {
-	FVector Destination = Target->GetActorLocation();
+	FVector TargetLoc = Target->GetActorLocation();
 	// 목적지 - 에너미
-	FVector TargetDir = Destination - Me->GetActorLocation();
+	FVector TargetDir = TargetLoc - Me->GetActorLocation();
 	// 플레이어 - 에너미
 	FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
 
 	// 목적지 향해 가다가
 	//Me->AddMovementInput(TargetDir.GetSafeNormal());
-	ai->MoveToLocation(Destination);
-
+	ai->MoveToLocation(TargetLoc);
 	
-	if (PlayerDir.Size()<AttackRange)
+	if (PlayerDir.Size()<ChaseRange)
 	{
-		mState = EZombieState::Attack;
+		mState = EZombieState::Chase;
 		Anim->AnimState = mState;
-		//Anim->bAttackPlay = true;
-		CurrentTime = AttackTime;
 	}
 }
 
-/*void UZombieFSM::ChaseState()
+void UZombieFSM::ChaseState()
 {
-	FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
+	FVector PlayerLoc = Player->GetActorLocation();
+	FVector PlayerDir = PlayerLoc - Me->GetActorLocation();
+
+	ai->MoveToLocation(PlayerLoc);
 	
 	if (PlayerDir.Size()<AttackRange)
 	{
 		mState = EZombieState::Attack;
 		Anim->AnimState = mState;
-		Anim->bAttackPlay = true;
-		CurrentTime = AttackTime;
+		Me->GetCharacterMovement()->MaxWalkSpeed = 0;
 	}
-}*/
+	
+}
 
 void UZombieFSM::AttackState()
 {
-	
+	//ai->SetFocus(Player, EAIFocusPriority::Gameplay);
+
+	//if (// 플레이어와 닿으면  )
+		{
+			//FHitOverlap
+			// 플레이어 체력 닳음
+		}
+		
 	CurrentTime += GetWorld()->DeltaTimeSeconds;
 	if (CurrentTime > AttackTime)
 	{
-		//ai->SetFocus(Player, EAIFocusPriority::Gameplay); 
-		UE_LOG(LogTemp, Warning, TEXT("Attack"));
-		Anim->AnimState = mState;	
-		// 플레이어 공격 에니메이션
-		// 플레이어 체력 닳음
+		mState = EZombieState::Move;
+		Anim->AnimState = mState;
+		Me->GetCharacterMovement()->MaxWalkSpeed = 400;
 		CurrentTime = 0;
-		//Anim->bAttackPlay = true;
 	}
-
-	FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
+	
+	/*FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
 	if (PlayerDir.Size()>AttackRange)
 	{
 		mState = EZombieState::Move;
-		Anim->AnimState = mState;	
-	}
+		Anim->AnimState = mState;
+		Me->GetCharacterMovement()->MaxWalkSpeed = 400;
+	}*/
 }
 
 void UZombieFSM::DamageState()
 {
-	auto anim = Cast<UZombieAnim>(Me->GetMesh()->GetAnimInstance());
-	//anim->PlayDamageAnim();
 	
 	CurrentTime += GetWorld()->DeltaTimeSeconds;
 	if (CurrentTime > DamageTime)
@@ -143,14 +146,6 @@ void UZombieFSM::DamageState()
 
 void UZombieFSM::DieState()
 {
-	auto anim = Cast<UZombieAnim>(Me->GetMesh()->GetAnimInstance());
-
-	if (!anim->Montage_IsPlaying(anim->DieAnimMontage))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Die"));
-		anim->PlayDieAnim();
-		anim->Montage_Play(anim->DieAnimMontage);
-	}
 	
 	CurrentTime += GetWorld()->DeltaTimeSeconds;
 	if (CurrentTime > DeathTime)
@@ -169,7 +164,8 @@ void UZombieFSM::Damage()
 		mState = EZombieState::Damage;
 
 		CurrentTime = 0;
-		Anim->AnimState = mState;	
+		
+		Anim->PlayDamageAnim();
 	}
 	else
 	{

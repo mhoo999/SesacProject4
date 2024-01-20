@@ -3,6 +3,10 @@
 
 #include "PlayerController/PlayerController_YMH.h"
 
+#include "NetworkMessage.h"
+#include "Character/Player/PlayerBase_YMH.h"
+#include "Components/Border.h"
+#include "Components/TextBlock.h"
 #include "UI/MainUI_YMH.h"
 
 void APlayerController_YMH::BeginPlay()
@@ -19,8 +23,6 @@ void APlayerController_YMH::InitUIWidget()
 		mainUI = Cast<UMainUI_YMH>(CreateWidget(GetWorld(), mainUIWidget));
 		mainUI->AddToViewport();
 		mainUI->ShowPointer();
-		mainUI->ShowCrosshair(true);
-
 		mainUI->SelectSlot(0);
 	}
 }
