@@ -5,6 +5,8 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "PlayerBaseComp_YMH.h"
+#include "PlayerController/PlayerController_YMH.h"
+#include "UI/MainUI_YMH.h"
 
 
 ASMGPlayer_YMH::ASMGPlayer_YMH()
@@ -26,6 +28,7 @@ ASMGPlayer_YMH::ASMGPlayer_YMH()
 void ASMGPlayer_YMH::BeginPlay()
 {
 	Super::BeginPlay();
+
 }
 
 void ASMGPlayer_YMH::Tick(float DeltaSeconds)

@@ -36,22 +36,6 @@ void UMainUI_YMH::restoreCrosshair()
 	}
 }
 
-void UMainUI_YMH::AddBullet()
-{
-	auto bulletWidget = CreateWidget(GetWorld(), BulletUIFactory);
-	BulletPanel->AddChildToUniformGrid(bulletWidget, 0, BulletPanel->GetChildrenCount());
-}
-
-void UMainUI_YMH::PopBullet(int32 index)
-{
-	BulletPanel->RemoveChildAt(index);
-}
-
-void UMainUI_YMH::RemoveAllAmmo()
-{
-	BulletPanel->ClearChildren();
-}
-
 void UMainUI_YMH::SelectSlot(int32 num)
 {
 	switch (num)

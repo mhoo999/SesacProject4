@@ -3,6 +3,8 @@
 
 #include "Character/Player/ShotgunPlayer_YMH.h"
 
+#include "Components/SceneCaptureComponent2D.h"
+#include "Engine/TextureRenderTarget2D.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
 
@@ -20,6 +22,7 @@ AShotgunPlayer_YMH::AShotgunPlayer_YMH()
 	MaxRecoilValue = -1.0;
 	MinRecoilValue = -1.5;
 	crosshairRecoilValue = 3.0f;
+
 }
 
 void AShotgunPlayer_YMH::BeginPlay()
