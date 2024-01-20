@@ -7,6 +7,7 @@
 #include "Components/Image.h"
 #include "MainUI_YMH.generated.h"
 
+class UTextBlock;
 class UUniformGridPanel;
 class UBorder;
 class UImage;
@@ -35,17 +36,14 @@ public:
 	
 public:
 	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(BindWidget))
-	UUniformGridPanel* BulletPanel;
+	UTextBlock* CurrentBullet;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Bullet")
-	TSubclassOf<UUserWidget> BulletUIFactory;
+	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(BindWidget))
+	UTextBlock* MaxBullet;
 
-	// 총알 위젯 추가
-	void AddBullet();
-	// 총알 제거
-	void PopBullet(int32 index);
-	// 모든 총알 UI 제거
-	void RemoveAllAmmo();
+public:
+	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(BindWidget))
+	UBorder* CharacterFrame;
 
 public:
 	// ------------------ Skill Slot ------------------------
