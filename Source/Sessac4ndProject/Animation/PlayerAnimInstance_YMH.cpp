@@ -2,8 +2,8 @@
 
 
 #include "PlayerAnimInstance_YMH.h"
-
 #include "Character/Player/PlayerBase_YMH.h"
+#include "Character/Player/PlayerFireComp_YMH.h"
 #include "Components/TextBlock.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
@@ -58,11 +58,13 @@ void UPlayerAnimInstance_YMH::PlayReloadAnimation()
 
 void UPlayerAnimInstance_YMH::AnimNotify_Reload()
 {
+	UPlayerFireComp_YMH* fireComp = Player->FireComp;
+	
 	UE_LOG(LogTemp, Warning, TEXT("OnReload"));
-	Player->bulletCount += Player->reloadBulletCount;
-	if (Player->bulletCount > Player->MaxBulletCount)
+	fireComp->bulletCount += fireComp->reloadBulletCount;
+	if (fireComp->bulletCount > fireComp->MaxBulletCount)
 	{
-		Player->bulletCount = Player->MaxBulletCount;
+		fireComp->bulletCount = fireComp->MaxBulletCount;
 	}
 	Player->bIsReloading = false;
 
@@ -70,7 +72,7 @@ void UPlayerAnimInstance_YMH::AnimNotify_Reload()
 	auto pc = Cast<APlayerController_YMH>(Player->GetOwner());
 	if (pc)
 	{
-		pc->mainUI->CurrentBullet->SetText(FText::AsNumber(Player->bulletCount));
+		pc->mainUI->CurrentBullet->SetText(FText::AsNumber(fireComp->bulletCount));
 	}
 }
 
