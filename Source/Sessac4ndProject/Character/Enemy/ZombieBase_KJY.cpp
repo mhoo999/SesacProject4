@@ -4,6 +4,8 @@
 #include "Character/Enemy/ZombieBase_KJY.h"
 #include "Character/Enemy/ZombieFSM.h"
 #include "ZombieAnim.h"
+#include "Blueprint/UserWidget.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 // 기본적으로 목적지(지켜야 하는곳)를 향해 감
@@ -19,6 +21,7 @@ AZombieBase_KJY::AZombieBase_KJY()
 void AZombieBase_KJY::BeginPlay()
 {
 	Super::BeginPlay();
+	ZombieHPUI = CreateWidget(GetWorld(), ZombieHPUIFactory);
 }
 
 void AZombieBase_KJY::Tick(float DeltaTime)
@@ -28,7 +31,10 @@ void AZombieBase_KJY::Tick(float DeltaTime)
 
 void AZombieBase_KJY::Damage()
 {
-	
+	ZombieHPUI->AddToViewport();
+
+	GetCharacterMovement()->MaxWalkSpeed = 0;
+
 	auto Anim = Cast<UZombieAnim>(GetMesh()->GetAnimInstance());
 	Anim->PlayDamageAnim();
 	
@@ -38,11 +44,12 @@ void AZombieBase_KJY::Damage()
 	{
 		Die();
 	}
-	//Me->GetCharacterMovement()->MaxWalkSpeed = 0;
 }
 
 void AZombieBase_KJY::Die()
 {
+	GetCharacterMovement()->MaxWalkSpeed = 0;
+
 	auto Anim = Cast<UZombieAnim>(GetMesh()->GetAnimInstance());
 	Anim->PlayDieAnim();
 

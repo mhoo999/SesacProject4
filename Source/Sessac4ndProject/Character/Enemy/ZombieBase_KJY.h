@@ -37,5 +37,7 @@ public:
 	void Damage();
 	void Die();
 
-	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> ZombieHPUIFactory;
+	class UUserWidget* ZombieHPUI;
 };
