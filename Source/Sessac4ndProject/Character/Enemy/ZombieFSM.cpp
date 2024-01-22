@@ -64,12 +64,12 @@ void UZombieFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 	case EZombieState::Attack:
 		AttackState();
 		break;
-	case EZombieState::Damage:
-		DamageState();
-		break;
-	case EZombieState::Die:
-		DieState();
-		break;
+	// case EZombieState::Damage:
+	// 	DamageState();
+	// 	break;
+	// case EZombieState::Die:
+	// 	DieState();
+	// 	break;
 	}
 }
 
@@ -144,6 +144,7 @@ void UZombieFSM::AttackState()
 		CurrentTime = 0;
 		Anim->bAttackPlay = true;
 
+		
 		/*if (플레이어와 닿으면  )
 		{
 			//FHitOverlap
@@ -160,7 +161,7 @@ void UZombieFSM::AttackState()
 	}
 }
 
-void UZombieFSM::DamageState()
+/*void UZombieFSM::DamageState()
 {
 	CurrentTime += GetWorld()->DeltaTimeSeconds;
 	if (CurrentTime > DamageTime)
@@ -181,7 +182,7 @@ void UZombieFSM::DieState()
 	{
 		Me->Destroy();
 	}
-}
+}*/
 
 
 FVector UZombieFSM::GetRandomLocationInNavMesh(bool& bisLeft, FVector DestLoc, FVector RightDestLoc)

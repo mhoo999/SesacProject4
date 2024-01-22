@@ -5,6 +5,7 @@
 
 ATankerZombie_KJY::ATankerZombie_KJY()
 {
+	MaxHp = 20;
 }
 
 void ATankerZombie_KJY::BeginPlay()

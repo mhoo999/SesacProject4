@@ -3,7 +3,7 @@
 
 #include "Character/Enemy/ZombieManagerBase_KJY.h"
 
-#include "Zombie_KJY.h"
+#include "Character/Enemy/ZombieBase_KJY.h"
 
 
 // Sets default values
@@ -19,8 +19,7 @@ void AZombieManagerBase_KJY::BeginPlay()
 {
 	Super::BeginPlay();
 
-	float CreateTime = FMath::RandRange(MinTime, MaxTime);
-	GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &AZombieManagerBase_KJY::CreateZombie, CreateTime);
+	StartSpawning();
 }
 
 // Called every frame
@@ -30,17 +29,35 @@ void AZombieManagerBase_KJY::Tick(float DeltaTime)
 
 }
 
-void AZombieManagerBase_KJY::CreateZombie()
+void AZombieManagerBase_KJY::StartSpawning()
 {
-	UE_LOG(LogTemp, Warning, TEXT("zombie"));
-	auto tempX = GetActorLocation().X;
-	auto tempY = GetActorLocation().Y;
-	RandSpawnX = FMath::RandRange(tempX - 100, tempX + 100);
-	RandSpawnY = FMath::RandRange(tempY - 500, tempY + 500);
-	FVector TempVec = FVector(RandSpawnX, RandSpawnY, 0);
-	GetWorld()->SpawnActor<AZombie_KJY>(ZombieFactory, TempVec, FRotator(0));
-	
 	float CreateTime = FMath::RandRange(MinTime, MaxTime);
-	GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &AZombieManagerBase_KJY::CreateZombie, CreateTime);
+	GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &AZombieManagerBase_KJY::CreateZombie, CreateTime, true, CreateTime);
 }
 
+void AZombieManagerBase_KJY::StopSpawning()
+{
+	GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+}
+
+void AZombieManagerBase_KJY::CreateZombie()
+{
+	int32 RandomValue = FMath::RandRange(0, ZombieFactoryArray.Num() - 1);
+	
+	if (SpawnCount < MaxSpawnCount)
+	{
+		auto tempX = GetActorLocation().X;
+		auto tempY = GetActorLocation().Y;
+		RandSpawnX = FMath::RandRange(tempX - 100, tempX + 100);
+		RandSpawnY = FMath::RandRange(tempY - 500, tempY + 500);
+		FVector TempVec = FVector(RandSpawnX, RandSpawnY, 0);
+		GetWorld()->SpawnActor<AZombieBase_KJY>(ZombieFactoryArray[RandomValue], TempVec, FRotator(0));
+
+		SpawnCount++;
+
+		if (SpawnCount >= MaxSpawnCount)
+		{
+			StopSpawning();
+		}
+	}
+}

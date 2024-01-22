@@ -5,6 +5,7 @@
 #include "Character/Enemy/ZombieFSM.h"
 #include "ZombieAnim.h"
 #include "Blueprint/UserWidget.h"
+#include "Character/Player/PlayerBase_YMH.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 
@@ -22,6 +23,10 @@ void AZombieBase_KJY::BeginPlay()
 {
 	Super::BeginPlay();
 	ZombieHPUI = CreateWidget(GetWorld(), ZombieHPUIFactory);
+
+	GetMesh()->OnComponentBeginOverlap.AddDynamic(this, &AZombieBase_KJY::OnAttackBeginOverlap);
+
+	Anim = Cast<UZombieAnim>(GetMesh()->GetAnimInstance());
 }
 
 void AZombieBase_KJY::Tick(float DeltaTime)
@@ -35,11 +40,11 @@ void AZombieBase_KJY::Damage()
 
 	GetCharacterMovement()->MaxWalkSpeed = 0;
 
-	auto Anim = Cast<UZombieAnim>(GetMesh()->GetAnimInstance());
+	//auto Anim = Cast<UZombieAnim>(GetMesh()->GetAnimInstance());
 	Anim->PlayDamageAnim();
 	
-	CurrentHp--;
-	UE_LOG(LogTemp, Warning, TEXT("Hp--"));
+	//CurrentHp -= HP;
+	UE_LOG(LogTemp, Warning, TEXT("Damage"));
 	if(	CurrentHp <= 0)
 	{
 		Die();
@@ -50,10 +55,26 @@ void AZombieBase_KJY::Die()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 0;
 
-	auto Anim = Cast<UZombieAnim>(GetMesh()->GetAnimInstance());
+	//auto Anim = Cast<UZombieAnim>(GetMesh()->GetAnimInstance());
 	Anim->PlayDieAnim();
 
 	Destroy();
 
 }
 
+void AZombieBase_KJY::OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	auto player = Cast<APlayerBase_YMH>(OtherActor);
+	UE_LOG(LogTemp, Warning, TEXT("Attack!"));
+
+	if (player&&Anim->bAttackCollision == true)
+	{
+		player->BeShot(1.0f);
+		Anim->bAttackCollision = false;
+	}
+	// if (player == false)
+	// {
+	// 	return;
+	// }
+}

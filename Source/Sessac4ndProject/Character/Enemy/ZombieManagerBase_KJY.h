@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "ZombieManagerBase_KJY.generated.h"
 
+class AZombieBase_KJY;
 UCLASS()
 class SESSAC4NDPROJECT_API AZombieManagerBase_KJY : public AActor
 {
@@ -28,13 +29,22 @@ public:
 	UPROPERTY(EditAnywhere)
 	float MaxTime = 3;
 	UPROPERTY(EditAnywhere)
-	TArray<class AActor*> SpawnPoints;	
+	TArray<class AActor*> SpawnPoints;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<class AZombie_KJY> ZombieFactory;
+	TArray<TSubclassOf<AZombieBase_KJY>> ZombieFactoryArray;
 	
 	FTimerHandle SpawnTimerHandle;
 	void CreateZombie();
 
 	double RandSpawnX;
 	double RandSpawnY;
+
+	UPROPERTY(EditAnywhere)
+	int SpawnCount = 0;
+	UPROPERTY(EditAnywhere)
+	int MaxSpawnCount = 30;
+	
+	void StartSpawning();
+	void StopSpawning();
+	
 };

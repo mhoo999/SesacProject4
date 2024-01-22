@@ -40,4 +40,10 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUserWidget> ZombieHPUIFactory;
 	class UUserWidget* ZombieHPUI;
+
+	UFUNCTION()
+	void OnAttackBeginOverlap( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+
+	UPROPERTY()
+	class UZombieAnim* Anim;
 };
