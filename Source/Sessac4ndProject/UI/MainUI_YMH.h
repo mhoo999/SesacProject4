@@ -7,6 +7,8 @@
 #include "Components/Image.h"
 #include "MainUI_YMH.generated.h"
 
+class UTextBlock;
+class UUniformGridPanel;
 class UBorder;
 class UImage;
 
@@ -31,7 +33,19 @@ public:
 
 	FVector2D crosshairSize = FVector2D(1);
 	void restoreCrosshair();
+	
+public:
+	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(BindWidget))
+	UTextBlock* CurrentBullet;
 
+	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(BindWidget))
+	UTextBlock* MaxBullet;
+
+public:
+	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(BindWidget))
+	UBorder* CharacterFrame;
+
+public:
 	// ------------------ Skill Slot ------------------------
 
 	UPROPERTY(BlueprintReadWrite, Category="Slot", meta=(BindWidget))

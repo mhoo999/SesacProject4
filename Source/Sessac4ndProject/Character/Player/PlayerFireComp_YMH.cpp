@@ -12,6 +12,7 @@
 #include "Character/Enemy/ZombieAnim.h"
 #include "Character/Enemy/ZombieBase_KJY.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
@@ -88,6 +89,8 @@ void UPlayerFireComp_YMH::Fire(const FInputActionValue& value)
 	if (PlayerController)
 	{
 		PlayerController->mainUI->weaponRecoil();
+		// MainUI의 CurrentBullet의 값을 빼고 싶다.
+		PlayerController->mainUI->CurrentBullet->SetText(FText::AsNumber(player->bulletCount));
 	}
 	
 	player->bIsCombat = true;

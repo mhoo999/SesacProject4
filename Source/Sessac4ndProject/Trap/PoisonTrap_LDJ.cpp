@@ -5,6 +5,7 @@
 
 #include "Character/Enemy/ZombieBase_KJY.h"
 #include "Character/Enemy/ZombieFSM.h"
+#include "Character/Enemy/Zombie_KJY.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 

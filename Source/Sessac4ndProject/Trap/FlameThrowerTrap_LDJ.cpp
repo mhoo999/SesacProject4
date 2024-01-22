@@ -5,6 +5,7 @@
 
 #include "Character/Enemy/ZombieBase_KJY.h"
 #include "Character/Enemy/ZombieFSM.h"
+#include "Character/Enemy/Zombie_KJY.h"
 #include "Particles/ParticleSystemComponent.h"
 
 AFlameThrowerTrap_LDJ::AFlameThrowerTrap_LDJ()
@@ -55,7 +56,14 @@ void AFlameThrowerTrap_LDJ::UpgradeAbility()
 
 void AFlameThrowerTrap_LDJ::ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef)
 {
-	for (auto e : EnemyBoxRef) e->Damage();
+	for (auto e : EnemyBoxRef)
+	{
+		auto temp = Cast<UZombieFSM>(e->fsm);
+		if (temp)
+		{
+			temp->Damage();
+		}
+	}
 	GetWorld()->GetTimerManager().SetTimer(THandle, FTimerDelegate::CreateLambda([&]
 	{
 		FireFX1->SetVisibility(true);

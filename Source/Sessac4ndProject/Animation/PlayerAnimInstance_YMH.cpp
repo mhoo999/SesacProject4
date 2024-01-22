@@ -4,6 +4,9 @@
 #include "PlayerAnimInstance_YMH.h"
 
 #include "Character/Player/PlayerBase_YMH.h"
+#include "Components/TextBlock.h"
+#include "PlayerController/PlayerController_YMH.h"
+#include "UI/MainUI_YMH.h"
 
 void UPlayerAnimInstance_YMH::NativeInitializeAnimation()
 {
@@ -62,6 +65,13 @@ void UPlayerAnimInstance_YMH::AnimNotify_Reload()
 		Player->bulletCount = Player->MaxBulletCount;
 	}
 	Player->bIsReloading = false;
+
+	// MainUI의 CurrentBullet의 값에 Player의 ReloadBullet 값을 더하고 싶다.
+	auto pc = Cast<APlayerController_YMH>(Player->GetOwner());
+	if (pc)
+	{
+		pc->mainUI->CurrentBullet->SetText(FText::AsNumber(Player->bulletCount));
+	}
 }
 
 void UPlayerAnimInstance_YMH::PlayVictoryMontage()

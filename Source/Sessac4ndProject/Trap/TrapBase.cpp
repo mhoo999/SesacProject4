@@ -4,6 +4,7 @@
 #include "TrapBase.h"
 
 #include "Character/Enemy/ZombieBase_KJY.h"
+#include "Character/Enemy/Zombie_KJY.h"
 #include "Character/Player/PlayerBase_YMH.h"
 #include "Components/BoxComponent.h"
 
@@ -54,7 +55,7 @@ void ATrapBase::OnEnemyBeginOverlapped(UPrimitiveComponent* OverlappedComponent,
 	{
 		TrapInArea++;
 		EnemyArray.Push(Temp);
-		for (auto e : EnemyArray) UE_LOG(LogTemp,Warning, TEXT("%p"), e)
+		for (auto e : EnemyArray) UE_LOG(LogTemp,Warning, TEXT("%p"), e->fsm)
 	}
 	if (!GetWorld()->GetTimerManager().IsTimerActive(Handle))
 	{

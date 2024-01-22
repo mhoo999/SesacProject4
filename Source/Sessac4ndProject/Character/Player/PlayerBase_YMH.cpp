@@ -11,6 +11,9 @@
 #include "PlayerMoveComp_YMH.h"
 #include "Animation/PlayerAnimInstance_YMH.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/PointLightComponent.h"
+#include "Components/SceneCaptureComponent2D.h"
+#include "Components/TextBlock.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
 
@@ -38,6 +41,21 @@ APlayerBase_YMH::APlayerBase_YMH()
 	// Pawn 기준으로 Rotation 값을 가져올 것인가?
 	FollowCamera->bUsePawnControlRotation = false;
 
+	SelfCameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("Self CameraBoom"));
+	SelfCameraBoom->SetupAttachment(RootComponent);
+	SelfCameraBoom->TargetArmLength = 100.0f;
+	SelfCameraBoom->SetRelativeRotation(FRotator(0, -145, 0));
+	SelfCameraBoom->SetRelativeLocation(FVector(0, 0, 30));
+
+	SelfCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("Self Capture"));
+	SelfCapture->SetupAttachment(SelfCameraBoom);
+
+	PointLightComp = CreateDefaultSubobject<UPointLightComponent>(TEXT("PointLight Component"));
+	PointLightComp->SetupAttachment(RootComponent);
+	PointLightComp->SetRelativeLocation(FVector(55, 15, 20));
+	PointLightComp->SetIntensity(1000.0f);
+	PointLightComp->SetAttenuationRadius(80.0f);
+
 	GetMesh()->SetRelativeRotation(FRotator(0, -65, 0));
 
 	MoveComp = CreateDefaultSubobject<UPlayerMoveComp_YMH>(TEXT("Movement Component"));
@@ -58,6 +76,12 @@ void APlayerBase_YMH::BeginPlay()
 	}
 
 	playerController = Cast<APlayerController_YMH>(Controller);
+	if (playerController)
+	{
+		// UIWidget이 Init될 때, MainUI의 MaxBullet값과 CurrentBullet값에 Player의 MaxBullet값을 넣고 싶다.
+		playerController->mainUI->MaxBullet->SetText(FText::AsNumber(MaxBulletCount));
+		playerController->mainUI->CurrentBullet->SetText(FText::AsNumber(MaxBulletCount));
+	}
 }
 
 void APlayerBase_YMH::Tick(float DeltaSeconds)
