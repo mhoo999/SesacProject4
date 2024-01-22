@@ -79,8 +79,8 @@ void APlayerBase_YMH::BeginPlay()
 	if (playerController)
 	{
 		// UIWidget이 Init될 때, MainUI의 MaxBullet값과 CurrentBullet값에 Player의 MaxBullet값을 넣고 싶다.
-		playerController->mainUI->MaxBullet->SetText(FText::AsNumber(MaxBulletCount));
-		playerController->mainUI->CurrentBullet->SetText(FText::AsNumber(MaxBulletCount));
+		playerController->mainUI->MaxBullet->SetText(FText::AsNumber(FireComp->MaxBulletCount));
+		playerController->mainUI->CurrentBullet->SetText(FText::AsNumber(FireComp->MaxBulletCount));
 	}
 }
 
@@ -98,8 +98,6 @@ void APlayerBase_YMH::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void APlayerBase_YMH::BeShot(float damage)
 {
-	Super::BeShot(damage);
-
 	currentHealth -= damage;
 	UE_LOG(LogTemp, Warning, TEXT("Damege!"));
 
@@ -120,6 +118,10 @@ void APlayerBase_YMH::BeShot(float damage)
 	{
 		playerController->mainUI->hp = percent;
 	}
+}
+
+void APlayerBase_YMH::RestorationHealth()
+{
 }
 
 void APlayerBase_YMH::DieProcess()

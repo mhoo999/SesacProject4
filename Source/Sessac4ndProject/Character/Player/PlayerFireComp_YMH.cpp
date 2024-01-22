@@ -51,7 +51,7 @@ void UPlayerFireComp_YMH::SetupPlayerInput(UInputComponent* PlayerInputComponent
 
 void UPlayerFireComp_YMH::Fire(const FInputActionValue& value)
 {
-	if (player->bulletCount <= 0 || player->bIsReloading || player->bIsBuildMode || player->fireDispatcher)
+	if (bulletCount <= 0 || player->bIsReloading || player->bIsBuildMode || player->fireDispatcher)
 	{
 		return;
 	}
@@ -61,7 +61,7 @@ void UPlayerFireComp_YMH::Fire(const FInputActionValue& value)
 
 	FHitResult hitInfo;
 	FVector startPos = player->FollowCamera->GetComponentLocation();
-	FVector endPos = startPos + player->FollowCamera->GetForwardVector() * player->attackDistance;
+	FVector endPos = startPos + player->FollowCamera->GetForwardVector() * attackDistance;
 	FCollisionQueryParams params;
 	params.AddIgnoredActor(player);
 	bool bHit = GetWorld()->LineTraceSingleByChannel(hitInfo, startPos, endPos, ECC_Visibility, params);
@@ -80,8 +80,8 @@ void UPlayerFireComp_YMH::Fire(const FInputActionValue& value)
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), bulletMark, hitInfo.Location, FRotator());
 	}
 
-	player->bulletCount--;
-	UE_LOG(LogTemp, Warning, TEXT("Bullet Count : %u"), player->bulletCount);
+	bulletCount--;
+	UE_LOG(LogTemp, Warning, TEXT("Bullet Count : %u"), bulletCount);
 
 	auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
 	anim->PlayFireAnimation();
@@ -90,7 +90,7 @@ void UPlayerFireComp_YMH::Fire(const FInputActionValue& value)
 	{
 		PlayerController->mainUI->weaponRecoil();
 		// MainUI의 CurrentBullet의 값을 빼고 싶다.
-		PlayerController->mainUI->CurrentBullet->SetText(FText::AsNumber(player->bulletCount));
+		PlayerController->mainUI->CurrentBullet->SetText(FText::AsNumber(bulletCount));
 	}
 	
 	player->bIsCombat = true;
@@ -100,7 +100,7 @@ void UPlayerFireComp_YMH::Fire(const FInputActionValue& value)
 		player->bIsCombat = false;
 	}), 5, true);
 	
-	float pitchInput = FMath::RandRange(player->MinRecoilValue, player->MaxRecoilValue);
+	float pitchInput = FMath::RandRange(MinRecoilValue, MaxRecoilValue);
 	player->AddControllerPitchInput(pitchInput);
 }
 

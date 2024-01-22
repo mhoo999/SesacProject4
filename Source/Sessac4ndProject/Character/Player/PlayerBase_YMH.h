@@ -68,41 +68,34 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	UPlayerBuildComp_LDJ* BuildComp;
-	
-	// 무기 레벨
-	int32 weaponeGrade;
-
-	// 재화
-	UPROPERTY()
-	int32 wallet;
-
-	// 교전 여부
-	bool bIsCombat = false;
-	// 재장전 여부
-	bool bIsReloading = false;
-	// 빌드 모드 여부
-	bool bIsBuildMode = false;
-	// 반동 크기
-	float MaxRecoilValue;
-	float MinRecoilValue;
-	float crosshairRecoilValue;
-	// 공격 대기 상태 여부
-	bool fireDispatcher = false;
-	
-public:
-	// --------------- 플레이어 체력 --------------------
-	virtual void BeShot(float damage) override;
-	void DieProcess();
-
-public:
-	// --------------- 플레이어 BulletCount --------------------
-	int32 MaxBulletCount;
-	int32 reloadBulletCount;
-	UPROPERTY()
-	int32 bulletCount;
 
 public:
 	UPROPERTY()
 	APlayerController_YMH* playerController;
+	
+public:
+	// ------------------- player HP ----------------------
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stat")
+	float maxHelth;
+	
+	UPROPERTY(BlueprintReadOnly, Category="Stat")
+	float currentHealth;
+	
+	UFUNCTION(BlueprintCallable)
+	virtual void BeShot(float damage);
+	
+	void DieProcess();
+	void RestorationHealth();
+
+	// ------------------- player mode --------------------
+	bool bIsDead = false;				// 생사 여부
+	bool bIsCombat = false;				// 전투중
+	bool fireDispatcher = false;		// 공격 대기 상태 
+	bool bIsBuildMode = false;			// 설치 모드
+	bool bIsReloading = false;			// 장전중
+
+	// ------------------- player inventory --------------------
+	UPROPERTY()
+	int32 wallet;
 };
 
