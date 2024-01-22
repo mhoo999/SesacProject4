@@ -16,17 +16,17 @@ class SESSAC4NDPROJECT_API AFlameThrowerTrap_LDJ : public ATrapBase
 
 public:
 	AFlameThrowerTrap_LDJ();
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UParticleSystemComponent* FireFX1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UParticleSystemComponent* FireFX2;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UParticleSystemComponent* FireFX3;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UParticleSystemComponent* FireFX4;
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	// class UParticleSystemComponent* FireFX1;
+	//
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	// class UParticleSystemComponent* FireFX2;
+	//
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	// class UParticleSystemComponent* FireFX3;
+	//
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	// class UParticleSystemComponent* FireFX4;
 	
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
