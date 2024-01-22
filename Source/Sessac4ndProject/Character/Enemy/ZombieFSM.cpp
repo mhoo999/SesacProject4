@@ -38,7 +38,7 @@ void UZombieFSM::BeginPlay()
 
 	ai = Cast<AAIController>(Me->GetController());
 
-	if (GetOwner()->GetActorLocation().Y < )
+	if (GetOwner()->GetActorLocation().Y < -1500)
 	{
 		isLeft = true;
 	}

@@ -28,6 +28,7 @@ void AZombieBase_KJY::Tick(float DeltaTime)
 
 void AZombieBase_KJY::Damage()
 {
+	
 	auto Anim = Cast<UZombieAnim>(GetMesh()->GetAnimInstance());
 	Anim->PlayDamageAnim();
 	

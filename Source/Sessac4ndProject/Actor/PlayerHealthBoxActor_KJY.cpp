@@ -38,9 +38,9 @@ void APlayerHealthBoxActor_KJY::OnEnemyBeginOverlapped(UPrimitiveComponent* Over
 {
 	// 플레이어 체력 회복
 	// 추후 모든 캐릭터 대상으로 변경
-	auto Playeractor = UGameplayStatics::GetActorOfClass(GetWorld(), ASMGPlayer_YMH::StaticClass());
-	Player = Cast<ASMGPlayer_YMH>(Playeractor);
+	auto Playeractor = UGameplayStatics::GetActorOfClass(GetWorld(), APlayerBase_YMH::StaticClass());
+	Player = Cast<APlayerBase_YMH>(Playeractor);
 	Player->currentHealth++;
-
+	UE_LOG(LogTemp, Warning, TEXT("HP++"));
 }
 

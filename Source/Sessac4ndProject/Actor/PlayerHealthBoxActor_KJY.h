@@ -30,6 +30,6 @@ public:
 	class USphereComponent* collisionComp;
 
 	UPROPERTY(VisibleAnywhere, Category=FSM)
-	class ASMGPlayer_YMH* Player; 
+	class APlayerBase_YMH* Player; 
 };
 

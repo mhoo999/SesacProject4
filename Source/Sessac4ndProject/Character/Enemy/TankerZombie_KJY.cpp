@@ -16,3 +16,4 @@ void ATankerZombie_KJY::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 }
+ 
