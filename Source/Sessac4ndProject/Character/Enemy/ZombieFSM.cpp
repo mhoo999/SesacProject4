@@ -4,6 +4,7 @@
 #include "ZombieFSM.h"
 
 #include "AIController.h"
+#include "NavigationSystem.h"
 #include "ZombieAnim.h"
 #include "Actor/DestinationActor_KJY.h"
 #include "ZombieBase_KJY.h"
@@ -36,6 +37,11 @@ void UZombieFSM::BeginPlay()
 	Anim = Cast<UZombieAnim>(Me->GetMesh()->GetAnimInstance());
 
 	ai = Cast<AAIController>(Me->GetController());
+
+	if (GetOwner()->GetActorLocation().Y < -1500)
+	{
+		isLeft = true;
+	}
 }
 
 
@@ -75,10 +81,35 @@ void UZombieFSM::MoveState()
 	// 플레이어 - 에너미
 	FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
 
+	if (bFlagDoOnce == false)
+	{
+		if (isLeft)
+		{
+			//ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-910.0f,-6480.0f,0.0f), FVector(-910.0f,-1030.0f,0.0f)));
+			//ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-2460.0, -2990.0f, -20.0f), FVector(-2460.0,-990.0f,0.0f)));
+			ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-1010.0, -2990.0f, -20.0f), FVector(-2460.0,-990.0f,0.0f)));
+		}
+		else
+		{
+			ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-910.0f,-6480.0f,0.0f), FVector(-910.0f,-1030.0f,0.0f)));
+		}
+		bFlagDoOnce = true;
+	}
+	
+	if (Temp2 == 0 && Me->GetActorLocation().X < FirstStop.X+100)
+	{
+		// 첫번째 경유지에 도착했을때 다음 경유지로 간다
+		//ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-910.0f,-3240.0f,0.0f),FVector(-910.0f,-3240.0f,0.0f)));
+		ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-7030.0f, -2070.0f, 0.0f),FVector(-7030.0f, -2070.0f, 0.0f)));
+		//Temp2++;
+		//ai->MoveToLocation(TargetLoc);
+
+	}
+		
+
 	// 목적지 향해 가다가
 	//Me->AddMovementInput(TargetDir.GetSafeNormal());
-	ai->MoveToLocation(TargetLoc);
-	
+
 	if (PlayerDir.Size()<ChaseRange)
 	{
 		mState = EZombieState::Chase;
@@ -97,6 +128,7 @@ void UZombieFSM::ChaseState()
 	{
 		mState = EZombieState::Attack;
 		Anim->AnimState = mState;
+		CurrentTime = AttackTime;
 		Me->GetCharacterMovement()->MaxWalkSpeed = 0;
 	}
 	
@@ -106,38 +138,35 @@ void UZombieFSM::AttackState()
 {
 	//ai->SetFocus(Player, EAIFocusPriority::Gameplay);
 
-	//if (// 플레이어와 닿으면  )
-		{
-			//FHitOverlap
-			// 플레이어 체력 닳음
-		}
-		
 	CurrentTime += GetWorld()->DeltaTimeSeconds;
 	if (CurrentTime > AttackTime)
 	{
-		mState = EZombieState::Move;
-		Anim->AnimState = mState;
-		Me->GetCharacterMovement()->MaxWalkSpeed = 400;
 		CurrentTime = 0;
+		Anim->bAttackPlay = true;
+
+		/*if (플레이어와 닿으면  )
+		{
+			//FHitOverlap
+			// 플레이어 체력 닳음
+		}*/
 	}
 	
-	/*FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
+	FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
 	if (PlayerDir.Size()>AttackRange)
 	{
 		mState = EZombieState::Move;
 		Anim->AnimState = mState;
-		Me->GetCharacterMovement()->MaxWalkSpeed = 400;
-	}*/
+		Me->GetCharacterMovement()->MaxWalkSpeed = 300;
+	}
 }
 
 void UZombieFSM::DamageState()
 {
-	
 	CurrentTime += GetWorld()->DeltaTimeSeconds;
 	if (CurrentTime > DamageTime)
 	{
-		Me->GetCharacterMovement()->MaxWalkSpeed = 400;
 		mState = EZombieState::Move;
+		Me->GetCharacterMovement()->MaxWalkSpeed = 300;
 		CurrentTime = 0;
 		Anim->AnimState = mState;	
 	}
@@ -154,23 +183,45 @@ void UZombieFSM::DieState()
 	}
 }
 
-void UZombieFSM::Damage()
-{
-	Hp--;
-	Me->GetCharacterMovement()->MaxWalkSpeed = 0;
-	
-	if(Hp>0)
-	{
-		mState = EZombieState::Damage;
 
-		CurrentTime = 0;
-		
-		Anim->PlayDamageAnim();
+FVector UZombieFSM::GetRandomLocationInNavMesh(bool& bisLeft, FVector DestLoc, FVector RightDestLoc)
+{
+	//FVector Origin;
+	//FVector BoxExtent(500.0f, 500.0f, 0.0f);  // 원하는 영역 크기 설정
+
+	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
+
+	if (bisLeft)
+	{
+		if (NavSystem)
+		{
+			FNavLocation RandomLocation;
+			if (NavSystem->GetRandomPointInNavigableRadius(DestLoc, 500, RandomLocation))
+			{
+				FirstStop = RandomLocation.Location;
+				return RandomLocation.Location;
+			}
+		}
+		// 기본적으로 원점 반환
+		return DestLoc;
 	}
 	else
 	{
-		mState = EZombieState::Die;
+		if (NavSystem)
+		{
+			FNavLocation RandomLocation;
+			if (NavSystem->GetRandomPointInNavigableRadius(RightDestLoc, 500, RandomLocation))
+			{
+				FirstStop = RandomLocation.Location;
+				return RandomLocation.Location;
+			}
+		}
+		// 기본적으로 원점 반환
+		return RightDestLoc;
+
 	}
-	Anim->AnimState = mState;	
+	
+	
 }
 
+//return FVector(-910.0f,-1030.0f,0.0f);

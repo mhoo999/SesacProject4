@@ -3,6 +3,7 @@
 
 #include "Character/Enemy/ZombieBase_KJY.h"
 #include "Character/Enemy/ZombieFSM.h"
+#include "ZombieAnim.h"
 
 
 // 기본적으로 목적지(지켜야 하는곳)를 향해 감
@@ -24,4 +25,28 @@ void AZombieBase_KJY::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
-                                                           
+
+void AZombieBase_KJY::Damage()
+{
+	
+	auto Anim = Cast<UZombieAnim>(GetMesh()->GetAnimInstance());
+	Anim->PlayDamageAnim();
+	
+	CurrentHp--;
+	UE_LOG(LogTemp, Warning, TEXT("Hp--"));
+	if(	CurrentHp <= 0)
+	{
+		Die();
+	}
+	//Me->GetCharacterMovement()->MaxWalkSpeed = 0;
+}
+
+void AZombieBase_KJY::Die()
+{
+	auto Anim = Cast<UZombieAnim>(GetMesh()->GetAnimInstance());
+	Anim->PlayDieAnim();
+
+	Destroy();
+
+}
+

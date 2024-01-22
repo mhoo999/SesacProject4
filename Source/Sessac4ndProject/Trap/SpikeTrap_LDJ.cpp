@@ -48,7 +48,7 @@ void ASpikeTrap_LDJ::ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef)
 {
 	for (auto e : EnemyBoxRef)
 	{
-		auto temp = Cast<UZombieFSM>(e->fsm);
+		auto temp = Cast<AZombieBase_KJY>(e);
 		if (temp)
 		{
 			temp->Damage();
