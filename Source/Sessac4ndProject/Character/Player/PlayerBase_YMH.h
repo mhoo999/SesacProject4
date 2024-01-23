@@ -71,10 +71,13 @@ public:
 	UPlayerBuildComp_LDJ* BuildComp;
 
 public:
+	// ------------------- Init ----------------------
 	UPROPERTY()
 	APlayerController_YMH* playerController;
 	
 	void VictoryProcess();
+
+	virtual void SetCrosshair();
 public:
 	// ------------------- player HP ----------------------
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stat")

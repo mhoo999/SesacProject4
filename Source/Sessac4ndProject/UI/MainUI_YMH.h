@@ -27,7 +27,7 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(BindWidget))
 	UImage* img_cresshair;
-	void ShowCrosshair(bool isShow);
+	void ShowCrosshair();
 	FVector2D LerpSize;
 	FTimerHandle restoreHandle;
 

@@ -26,14 +26,21 @@ AShotgunPlayer_YMH::AShotgunPlayer_YMH()
 void AShotgunPlayer_YMH::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (playerController->mainUI)
-	{
-		playerController->mainUI->ShowCrosshair(true);
-	}
 }
 
 void AShotgunPlayer_YMH::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+}
+
+void AShotgunPlayer_YMH::SetCrosshair()
+{
+	Super::SetCrosshair();
+
+	auto pc = Cast<APlayerController_YMH>(Controller);
+	if (pc)
+	{
+		pc->mainUI->ShowPointer();
+		pc->mainUI->ShowCrosshair();
+	}
 }
