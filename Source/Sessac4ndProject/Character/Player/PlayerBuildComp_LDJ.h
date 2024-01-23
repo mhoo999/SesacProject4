@@ -104,7 +104,9 @@ public:
 
 	UPROPERTY()
 	TArray<AActor*> ZombieManagerArray;
-	
+
+	UPROPERTY()
+	TArray<AActor*> LivingZombieArray;
 	
 	FTransform BuildPreviewTransform;
 
@@ -158,5 +160,5 @@ public:
 	int32 CollisionMeshCnt = 0;
 	bool bBuildEnable = true;
 
-	//KillCount == 100 이면 승리
+	bool bWaveClear = true; 
 };

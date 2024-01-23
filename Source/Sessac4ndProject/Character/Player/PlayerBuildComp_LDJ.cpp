@@ -16,6 +16,7 @@
 #include "InputAction.h"
 #include "Animation/PlayerAnimInstance_YMH.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Character/Enemy/ZombieBase_KJY.h"
 #include "Character/Enemy/ZombieManagerBase_KJY.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -261,13 +262,61 @@ void UPlayerBuildComp_LDJ::LevelUp(const FInputActionValue& value)
 	}
 }
 
-void UPlayerBuildComp_LDJ::WaveStart(const FInputActionValue& value)
+void UPlayerBuildComp_LDJ::WaveStart(const FInputActionValue& value) //임시로 쓰는 웨이브 시작 트래커
 {
-	WaveInforUI->SetWaveText(FText::GetEmpty());
-	for (const auto e : ZombieManagerArray)
+	if (bWaveClear)
 	{
-		auto Temp = Cast<AZombieManagerBase_KJY>(e);
-		GetWorld()->GetTimerManager().UnPauseTimer(Temp->SpawnTimerHandle);
+		for (const auto e : ZombieManagerArray)
+		{
+			auto Temp = Cast<AZombieManagerBase_KJY>(e);
+			Temp->CurrentWave++;
+			GetWorld()->GetTimerManager().UnPauseTimer(Temp->SpawnTimerHandle);
+		}
+		
+	
+		FTimerHandle TextHandle;
+		GetWorld()->GetTimerManager().SetTimer(TextHandle, FTimerDelegate::CreateLambda([&]
+		{
+			WaveInforUI->SetWaveText(FText::GetEmpty());
+		}), 2 , false);
+		bWaveClear = false;
+
+		
+		//임시로 쓰는 좀비 사망 트래커
+
+		FTimerHandle ZombieDieHandle;
+		if (GetWorld()->GetTimerManager().IsTimerActive(ZombieDieHandle))
+		{
+			GetWorld()->GetTimerManager().ClearTimer(ZombieDieHandle);
+			GEngine->AddOnScreenDebugMessage(-1,1,FColor::Green, FString::Printf(TEXT("Enemy : %d"), LivingZombieArray.Num()));
+
+		}
+		GetWorld()->GetTimerManager().SetTimer(ZombieDieHandle, FTimerDelegate::CreateLambda([&]
+		{
+			UGameplayStatics::GetAllActorsOfClass(GetWorld(), AZombieBase_KJY::StaticClass(), LivingZombieArray);
+			GEngine->AddOnScreenDebugMessage(-1,1,FColor::Green, FString::Printf(TEXT("Enemy : %d"), LivingZombieArray.Num()));
+			if (LivingZombieArray.Num() == 0)
+			{
+				WaveInforUI->SetWaveText(FText::FromString(FString::Printf(TEXT("GET READY FOR THE NEXT LEVEL\r\n PRESS 'G' KEY"))));
+				bWaveClear = true;
+			}
+			// else if(LivingZombieArray.Num() == 0 && ZombieSpawnManager->CurrentWave > 3)
+			// {
+			// 	GetWorld()->GetTimerManager().ClearTimer(ZombieDieHandle);
+			// 	WaveInforUI->SetWaveText(FText::FromString(FString::Printf(TEXT("YOU WIN"))));
+			// 	// 승리모션 넣어야 할 곳
+			// 	auto AnimTemp = Cast<UPlayerAnimInstance_YMH>(GetWorld()->GetFirstPlayerController()->GetCharacter()->GetMesh()->GetAnimInstance());
+			// 	AnimTemp->PlayVictoryMontage();
+			// 	FTimerHandle WinHandle;
+			// 	GetWorld()->GetTimerManager().SetTimer(WinHandle, FTimerDelegate::CreateLambda([&]
+			// 	{
+			// 		UKismetSystemLibrary::QuitGame(GetWorld(), GetWorld()->GetFirstPlayerController(), EQuitPreference::Quit, false);
+			// 	}), 10, false);
+			// }
+		}), 1 , true, 5);
+		
+		ZombieSpawnManager = Cast<AZombieManagerBase_KJY>(ZombieManagerArray[0]);
+		WaveInforUI->SetWaveText(FText::FromString(FString::Printf(TEXT("Wave%d Start"), ZombieSpawnManager->CurrentWave)));
 	}
 }
 
