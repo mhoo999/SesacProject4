@@ -32,21 +32,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UBoxComponent* ReactionCollision;
 
-	// TO DO :
 	UPROPERTY()
 	TArray<class AZombieBase_KJY*> EnemyArray;
-	// class AZombieBase_KJY* Enemy;
 
-	// TO DO :
-	// UPROPERTY()
-	// class APlayerBase* Player;
+	UPROPERTY()
+	class UPlayerBuildComp_LDJ* PlayerBuildComp;
+
+	UPROPERTY()
+	class APlayerBase_YMH* Player;
 
 	int32 Cost = 350;
 	int32 TrapAttackDamage = 0;
 	float AttackCoolTime = 5;
 	float CurrentTime = 0;
 	int32 TrapInArea = 0;
-
+	int32 TrapLevel = 1;
 	FTimerHandle Handle;
 
 	UFUNCTION()

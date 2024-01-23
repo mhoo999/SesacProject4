@@ -7,6 +7,8 @@
 #include "Character/Enemy/ZombieFSM.h"
 #include "Character/Enemy/Zombie_KJY.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Character/Player/PlayerBuildComp_LDJ.h"
+
 
 AFlameThrowerTrap_LDJ::AFlameThrowerTrap_LDJ()
 {
@@ -39,6 +41,7 @@ AFlameThrowerTrap_LDJ::AFlameThrowerTrap_LDJ()
 void AFlameThrowerTrap_LDJ::BeginPlay()
 {
 	Super::BeginPlay();
+	TrapLevel = PlayerBuildComp->FlameTrapLevel;
 }
 
 void AFlameThrowerTrap_LDJ::Tick(float DeltaTime)
@@ -61,7 +64,11 @@ void AFlameThrowerTrap_LDJ::ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef)
 		auto temp = Cast<AZombieBase_KJY>(e);
 		if (temp)
 		{
-			temp->Damage();
+			for (int32 i = 0; i < TrapLevel; i++)
+			{
+				temp->Damage();
+				//널 에러가 뜬다면, 좀비베이스의 Die함수를 Timer로 씌워서 2초 늦게 죽자.
+			}
 		}
 	}
 	GetWorld()->GetTimerManager().SetTimer(THandle, FTimerDelegate::CreateLambda([&]
