@@ -75,6 +75,8 @@ void UZombieFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 
 void UZombieFSM::MoveState()
 {
+	Me->GetCharacterMovement()->MaxWalkSpeed = 300;
+
 	FVector TargetLoc = Target->GetActorLocation();
 	// 목적지 - 에너미
 	FVector TargetDir = TargetLoc - Me->GetActorLocation();

@@ -6,7 +6,10 @@
 #include "ZombieAnim.h"
 #include "Blueprint/UserWidget.h"
 #include "Character/Player/PlayerBase_YMH.h"
+#include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "UI/HPWidget_KJY.h"
 
 
 // 기본적으로 목적지(지켜야 하는곳)를 향해 감
@@ -22,11 +25,18 @@ AZombieBase_KJY::AZombieBase_KJY()
 void AZombieBase_KJY::BeginPlay()
 {
 	Super::BeginPlay();
-	ZombieHPUI = CreateWidget(GetWorld(), ZombieHPUIFactory);
+	if (HPWidget != nullptr)
+	{
+		ZombieHPUI = CreateWidget<UHPWidget_KJY>(GetWorld(), HPWidget);
+	}
 
+	CurrentHp = MaxHp;
+
+	
 	GetMesh()->OnComponentBeginOverlap.AddDynamic(this, &AZombieBase_KJY::OnAttackBeginOverlap);
 
 	Anim = Cast<UZombieAnim>(GetMesh()->GetAnimInstance());
+	
 }
 
 void AZombieBase_KJY::Tick(float DeltaTime)
@@ -36,14 +46,20 @@ void AZombieBase_KJY::Tick(float DeltaTime)
 
 void AZombieBase_KJY::Damage()
 {
-	ZombieHPUI->AddToViewport();
-
 	GetCharacterMovement()->MaxWalkSpeed = 0;
 
+	if (ZombieHPUI != nullptr)
+	{
+		ZombieHPUI->AddToViewport();
+		//ZombieHPUI->SetPercent(CurrentHp, MaxHp);
+	}
+
+	CurrentHp --;
+	PrintHP();
+	
 	//auto Anim = Cast<UZombieAnim>(GetMesh()->GetAnimInstance());
 	Anim->PlayDamageAnim();
 	
-	//CurrentHp -= HP;
 	UE_LOG(LogTemp, Warning, TEXT("Damage"));
 	if(	CurrentHp <= 0)
 	{
@@ -63,9 +79,9 @@ void AZombieBase_KJY::Die()
 }
 
 void AZombieBase_KJY::OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                           UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	auto player = Cast<APlayerBase_YMH>(OtherActor);
+	auto player = Cast<APlayerBase_YMH>(OtherActor );
 	UE_LOG(LogTemp, Warning, TEXT("Attack!"));
 
 	if (player&&Anim->bAttackCollision == true)
@@ -77,4 +93,12 @@ void AZombieBase_KJY::OnAttackBeginOverlap(UPrimitiveComponent* OverlappedCompon
 	// {
 	// 	return;
 	// }
+}
+
+void AZombieBase_KJY::PrintHP()
+{
+	if (ZombieHPUI != nullptr)
+	{
+		ZombieHPUI->HPText->SetText(FText::AsNumber(CurrentHp));
+	}
 }

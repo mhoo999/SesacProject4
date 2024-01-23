@@ -32,18 +32,20 @@ public:
 	float MaxHp = 10.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=FSM)
-	float CurrentHp = MaxHp;
+	float CurrentHp = 0;
 
 	void Damage();
 	void Die();
 
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUserWidget> ZombieHPUIFactory;
-	class UUserWidget* ZombieHPUI;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UHPWidget_KJY> HPWidget;
+	class UHPWidget_KJY* ZombieHPUI;
 
 	UFUNCTION()
 	void OnAttackBeginOverlap( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
 	UPROPERTY()
 	class UZombieAnim* Anim;
+
+	void PrintHP();
 };
