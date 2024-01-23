@@ -14,4 +14,6 @@ class SESSAC4NDPROJECT_API AZombie_KJY : public AZombieBase_KJY
 {
 	GENERATED_BODY()
 
+public:
+	virtual void BeginPlay() override;
 };
