@@ -62,8 +62,10 @@ void AZombieManagerBase_KJY::CreateZombie()
 	{
 		GetWorld()->SpawnActor<AZombie_KJY>(ZombieFactory, TempVec, FRotator(0));
 		Wave2--;
-		// GetWorld()->SpawnActor<ATankerZombie_KJY>(TankerZombieFactory, TempVec, FRotator(0));
-		// Wave2--;
+		GetWorld()->SpawnActor<AZombie_KJY>(ZombieFactory, TempVec, FRotator(0));
+		Wave2--;
+		GetWorld()->SpawnActor<ATankerZombie_KJY>(TankerZombieFactory, TempVec, FRotator(0));
+		Wave2--;
 	}
 	else if (!Wave1&&!Wave2&& CurrentWave == 2)
 	{
@@ -75,10 +77,12 @@ void AZombieManagerBase_KJY::CreateZombie()
 	{
 		GetWorld()->SpawnActor<AZombie_KJY>(ZombieFactory, TempVec, FRotator(0));
 		Wave3--;
-		// GetWorld()->SpawnActor<ATankerZombie_KJY>(TankerZombieFactory, TempVec, FRotator(0));
-		// Wave3--;
-		// GetWorld()->SpawnActor<AFastZombie_KJY>(FastZombieFactory, TempVec, FRotator(0));
-		// Wave3--;
+		GetWorld()->SpawnActor<AZombie_KJY>(ZombieFactory, TempVec, FRotator(0));
+		Wave3--;
+		GetWorld()->SpawnActor<ATankerZombie_KJY>(TankerZombieFactory, TempVec, FRotator(0));
+		Wave3--;
+		GetWorld()->SpawnActor<AFastZombie_KJY>(FastZombieFactory, TempVec, FRotator(0));
+		Wave3--;
 	}
 	else if (!Wave1&&!Wave2&&!Wave3&& CurrentWave == 3)
 	{
