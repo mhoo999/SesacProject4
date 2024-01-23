@@ -29,16 +29,3 @@ void ACharacterBase_YMH::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
-
-void ACharacterBase_YMH::Attack()
-{
-}
-
-void ACharacterBase_YMH::BeShot(float damage)
-{
-}
-
-void ACharacterBase_YMH::RestorationHealth()
-{
-}
-

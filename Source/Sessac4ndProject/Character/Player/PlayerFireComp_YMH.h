@@ -34,19 +34,30 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
 	UInputAction* IA_Reload;
 
-public:
-	// 사격
-	void Fire(const FInputActionValue& value);
-	// bool fireDispatcher;
-	
-	FTimerHandle combatHandle;
-	// void FireBullet();
-	// float currentTime = 0;
-
 	UPROPERTY(EditDefaultsOnly, Category="WeaponEffect")
 	UParticleSystem* bulletMark;
 
-	// 재장전
+	FTimerHandle combatHandle;
+	
+public:
+	// ------------------------ Bullet ---------------------------
+	int32 MaxBulletCount;
+	int32 reloadBulletCount;
+	UPROPERTY()
+	int32 bulletCount;
+
+	// ------------------------ Weapon Info ------------------------
+	int32 weaponeGrade;
+	float Damage;
+	float attackDistance;
+	float attackSpeed;
+	
+	float MaxRecoilValue;
+	float MinRecoilValue;
+	float crosshairRecoilValue;
+
+	// ------------------------ weapon action -------------------------
+	void Fire(const FInputActionValue& value);
 	void Reload(const FInputActionValue& value);
-	// bool bIsReloading;
+	
 };

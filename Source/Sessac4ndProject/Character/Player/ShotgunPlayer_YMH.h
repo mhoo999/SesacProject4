@@ -22,7 +22,4 @@ protected:
 
 public:
 	virtual void Tick(float DeltaSeconds) override;
-
-public:
-	int32 shotgunBulletCount = 5;
 };
