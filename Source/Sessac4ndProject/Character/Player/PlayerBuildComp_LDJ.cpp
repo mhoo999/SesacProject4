@@ -301,6 +301,8 @@ void UPlayerBuildComp_LDJ::WaveStart(const FInputActionValue& value) //임시로
 				// 승리모션 넣어야 할 곳
 				auto AnimTemp = Cast<UPlayerAnimInstance_YMH>(GetWorld()->GetFirstPlayerController()->GetCharacter()->GetMesh()->GetAnimInstance());
 				AnimTemp->PlayVictoryMontage();
+				player->GetCharacterMovement()->bUseControllerDesiredRotation = false;
+				
 				FTimerHandle WinHandle;
 				GetWorld()->GetTimerManager().SetTimer(WinHandle, FTimerDelegate::CreateLambda([&]
 				{
@@ -331,8 +333,8 @@ void UPlayerBuildComp_LDJ::PreviewLoop()
 	FVector TempVec = FVector(HitInfo.Location.X, HitInfo.Location.Y, HitInfo.Location.Z);
 	TempVec.X = FMath::Floor(HitInfo.Location.X / 350) * 350 + 190;
 	TempVec.Y = FMath::Floor(HitInfo.Location.Y / 350) * 350 + 250;
-	TempVec.Z = FMath::CeilToFloat(HitInfo.Location.Z);
-
+	// TempVec.Z = FMath::CeilToFloat(HitInfo.Location.Z);
+	TempVec.Z = 0;
 	BuildPreviewTransform.SetLocation(TempVec);
 	BuildPreviewTransform.SetScale3D(FVector(2.15, 2.15, 1));	
 
