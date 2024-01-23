@@ -211,8 +211,7 @@ void UPlayerBuildComp_LDJ::DoEquipGun(const FInputActionValue& value)
 	if (PlayerController)
 	{
 		PlayerController->mainUI->SelectSlot(0);
-		PlayerController->mainUI->img_cresshair->SetVisibility(ESlateVisibility::Visible);
-		PlayerController->mainUI->img_pointer->SetVisibility(ESlateVisibility::Visible);
+		player->SetCrosshair();
 	}
 }
 

@@ -37,10 +37,10 @@ void AShotgunPlayer_YMH::SetCrosshair()
 {
 	Super::SetCrosshair();
 
-	auto ui = Cast<UMainUI_YMH>(Controller);
-	if (ui)
+	auto pc = Cast<APlayerController_YMH>(Controller);
+	if (pc)
 	{
-		ui->ShowPointer();
-		ui->ShowCrosshair();
+		pc->mainUI->ShowPointer();
+		pc->mainUI->ShowCrosshair();
 	}
 }
