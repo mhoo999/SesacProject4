@@ -82,6 +82,8 @@ void APlayerBase_YMH::BeginPlay()
 		playerController->mainUI->MaxBullet->SetText(FText::AsNumber(FireComp->MaxBulletCount));
 		playerController->mainUI->CurrentBullet->SetText(FText::AsNumber(FireComp->MaxBulletCount));
 	}
+
+	SetCrosshair();
 }
 
 void APlayerBase_YMH::Tick(float DeltaSeconds)
@@ -103,6 +105,10 @@ void APlayerBase_YMH::VictoryProcess()
 	
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->DisableMovement();
+}
+
+void APlayerBase_YMH::SetCrosshair()
+{
 }
 
 void APlayerBase_YMH::BeShot(float damage)

@@ -14,16 +14,9 @@ void UMainUI_YMH::ShowPointer()
 	img_pointer->SetVisibility(ESlateVisibility::Visible);
 }
 
-void UMainUI_YMH::ShowCrosshair(bool isShow)
+void UMainUI_YMH::ShowCrosshair()
 {
-	if (isShow)
-	{
-		img_cresshair->SetVisibility(ESlateVisibility::Visible);
-	}
-	else
-	{
-		img_cresshair->SetVisibility(ESlateVisibility::Hidden);
-	}
+	img_cresshair->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UMainUI_YMH::restoreCrosshair()

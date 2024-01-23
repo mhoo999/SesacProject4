@@ -3,6 +3,7 @@
 
 #include "SMGPlayer_YMH.h"
 #include "PlayerFireComp_YMH.h"
+#include "UI/MainUI_YMH.h"
 
 ASMGPlayer_YMH::ASMGPlayer_YMH()
 {
@@ -28,4 +29,15 @@ void ASMGPlayer_YMH::BeginPlay()
 void ASMGPlayer_YMH::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+}
+
+void ASMGPlayer_YMH::SetCrosshair()
+{
+	Super::SetCrosshair();
+
+	auto ui = Cast<UMainUI_YMH>(Controller);
+	if (ui)
+	{
+		ui->ShowPointer();
+	}
 }
