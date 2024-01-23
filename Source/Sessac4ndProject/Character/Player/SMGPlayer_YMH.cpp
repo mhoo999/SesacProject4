@@ -17,7 +17,7 @@ ASMGPlayer_YMH::ASMGPlayer_YMH()
 	FireComp->reloadBulletCount = 30.0f;
 	FireComp->MaxRecoilValue = -0.7f;
 	FireComp->MinRecoilValue = -1.0f;
-	FireComp->crosshairRecoilValue = 2.0;
+	FireComp->crosshairRecoilValue = 2.0;	
 }
 
 void ASMGPlayer_YMH::BeginPlay()

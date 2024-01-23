@@ -27,6 +27,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MyAnimSettings")
 	bool bIsDead;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MyAnimSettings")
+	bool bIsDefeat;
 	
 	UPROPERTY()
 	APlayerBase_YMH* Player;

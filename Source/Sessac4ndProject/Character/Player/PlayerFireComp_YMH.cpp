@@ -51,7 +51,7 @@ void UPlayerFireComp_YMH::SetupPlayerInput(UInputComponent* PlayerInputComponent
 
 void UPlayerFireComp_YMH::Fire(const FInputActionValue& value)
 {
-	if (bulletCount <= 0 || player->bIsReloading || player->bIsBuildMode || player->fireDispatcher)
+	if (bulletCount <= 0 || player->bIsReloading || player->bIsBuildMode || player->fireDispatcher || player->bIsDead)
 	{
 		return;
 	}
@@ -108,7 +108,7 @@ void UPlayerFireComp_YMH::Reload(const FInputActionValue& value)
 {
 	// UE_LOG(LogTemp, Warning, TEXT("Reload"));
 
-	if (player->bIsReloading || player->bIsBuildMode || player->fireDispatcher)
+	if (player->bIsReloading || player->bIsBuildMode || player->fireDispatcher || player->bIsDead)
 	{
 		return;
 	}
