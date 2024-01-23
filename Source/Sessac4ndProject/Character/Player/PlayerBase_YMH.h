@@ -16,6 +16,7 @@ class UPlayerMoveComp_YMH;
 class UPlayerBaseComp_YMH;
 struct FInputActionValue;
 class UInputAction;
+class AGameModeBase;
 /**
  * 
  */
@@ -73,6 +74,7 @@ public:
 	UPROPERTY()
 	APlayerController_YMH* playerController;
 	
+	void VictoryProcess();
 public:
 	// ------------------- player HP ----------------------
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stat")
@@ -85,7 +87,7 @@ public:
 	virtual void BeShot(float damage);
 	
 	void DieProcess();
-	void RestorationHealth();
+	void RestorationHealth(float value);
 
 	// ------------------- player mode --------------------
 	bool bIsDead = false;				// 생사 여부
@@ -93,6 +95,7 @@ public:
 	bool fireDispatcher = false;		// 공격 대기 상태 
 	bool bIsBuildMode = false;			// 설치 모드
 	bool bIsReloading = false;			// 장전중
+	bool bIsDefeat = false;				// 패배 여부
 
 	// ------------------- player inventory --------------------
 	UPROPERTY()
