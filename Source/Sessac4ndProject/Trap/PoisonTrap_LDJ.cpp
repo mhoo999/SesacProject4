@@ -8,6 +8,8 @@
 #include "Character/Enemy/Zombie_KJY.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
+#include "Character/Player/PlayerBuildComp_LDJ.h"
+
 
 APoisonTrap_LDJ::APoisonTrap_LDJ()
 {
@@ -35,6 +37,7 @@ APoisonTrap_LDJ::APoisonTrap_LDJ()
 void APoisonTrap_LDJ::BeginPlay()
 {
 	Super::BeginPlay();
+	TrapLevel = PlayerBuildComp->PoisonTrapLevel;
 }
 
 void APoisonTrap_LDJ::Tick(float DeltaTime)
@@ -54,5 +57,5 @@ void APoisonTrap_LDJ::UpgradeAbility()
 
 void APoisonTrap_LDJ::ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef)
 {
-	for (auto e : EnemyBoxRef) e->CustomTimeDilation = 0.25;
+	for (auto e : EnemyBoxRef) e->CustomTimeDilation = (0.25f - 0.8 * TrapLevel);
 }

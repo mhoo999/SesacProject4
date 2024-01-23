@@ -21,6 +21,7 @@ void AZombieManagerBase_KJY::BeginPlay()
 
 	float CreateTime = FMath::RandRange(MinTime, MaxTime);
 	GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &AZombieManagerBase_KJY::CreateZombie, CreateTime);
+	GetWorld()->GetTimerManager().PauseTimer(SpawnTimerHandle);
 }
 
 // Called every frame
@@ -38,8 +39,11 @@ void AZombieManagerBase_KJY::CreateZombie()
 	RandSpawnX = FMath::RandRange(tempX - 100, tempX + 100);
 	RandSpawnY = FMath::RandRange(tempY - 500, tempY + 500);
 	FVector TempVec = FVector(RandSpawnX, RandSpawnY, 0);
-	GetWorld()->SpawnActor<AZombie_KJY>(ZombieFactory, TempVec, FRotator(0));
-	
+	if (Wave1)
+	{
+		GetWorld()->SpawnActor<AZombie_KJY>(ZombieFactory, TempVec, FRotator(0));
+		Wave1--;
+	}
 	float CreateTime = FMath::RandRange(MinTime, MaxTime);
 	GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &AZombieManagerBase_KJY::CreateZombie, CreateTime);
 }
