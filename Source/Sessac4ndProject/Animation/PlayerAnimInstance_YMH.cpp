@@ -31,6 +31,7 @@ void UPlayerAnimInstance_YMH::NativeUpdateAnimation(float DeltaSeconds)
 
 		bIsCombat = Player->bIsCombat;
 		bIsDead = Player->bIsDead;
+		bIsDefeat = Player->bIsDefeat;
 	}
 }
 

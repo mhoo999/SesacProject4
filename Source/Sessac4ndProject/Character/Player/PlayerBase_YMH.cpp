@@ -96,6 +96,15 @@ void APlayerBase_YMH::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	OnSetupInputDelegate.Broadcast(PlayerInputComponent);
 }
 
+void APlayerBase_YMH::VictoryProcess()
+{
+	auto anim = Cast<UPlayerAnimInstance_YMH>(GetMesh()->GetAnimInstance());
+	anim->PlayVictoryMontage();
+	
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->DisableMovement();
+}
+
 void APlayerBase_YMH::BeShot(float damage)
 {
 	currentHealth -= damage;
@@ -108,8 +117,6 @@ void APlayerBase_YMH::BeShot(float damage)
 
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetCharacterMovement()->DisableMovement();
-		CameraBoom->bUsePawnControlRotation = false;
-		// CameraBoom->SetWorldRotation(FRotator(-45, 0, 0));
 	}
 	
 	float percent = currentHealth / maxHelth;
@@ -120,17 +127,19 @@ void APlayerBase_YMH::BeShot(float damage)
 	}
 }
 
-void APlayerBase_YMH::RestorationHealth()
+void APlayerBase_YMH::RestorationHealth(float value)
 {
+	currentHealth += value;
 }
 
 void APlayerBase_YMH::DieProcess()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Green, TEXT("YOU DIE"));
 	
-	// FollowCamera->PostProcessSettings.ColorSaturation = FVector4(0, 0, 0, 1);
+	FollowCamera->PostProcessSettings.ColorSaturation = FVector4(0, 0, 0, 1);
 
 	auto pc = Cast<APlayerController>(Controller);
-	pc->SetShowMouseCursor(true);
+	// pc->SetShowMouseCursor(true);
 	
 	if(playerController)
 	{
