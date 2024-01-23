@@ -156,6 +156,7 @@ public:
 		const FHitResult& SweepResult);
 	
 	FTimerHandle Handle;
+	FTimerHandle ZombieDieHandle;
 
 	int32 CollisionMeshCnt = 0;
 	bool bBuildEnable = true;
