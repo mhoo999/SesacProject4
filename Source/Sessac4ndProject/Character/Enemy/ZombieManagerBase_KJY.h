@@ -6,7 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "ZombieManagerBase_KJY.generated.h"
 
-class AZombieBase_KJY;
 UCLASS()
 class SESSAC4NDPROJECT_API AZombieManagerBase_KJY : public AActor
 {
@@ -29,9 +28,18 @@ public:
 	UPROPERTY(EditAnywhere)
 	float MaxTime = 3;
 	UPROPERTY(EditAnywhere)
-	TArray<class AActor*> SpawnPoints;
+	TArray<class AActor*> SpawnPoints;	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TSubclassOf<AZombieBase_KJY>> ZombieFactoryArray;
+	TSubclassOf<class AZombie_KJY> ZombieFactory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class ATankerZombie_KJY> TankerZombieFactory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class AFastZombie_KJY> FastZombieFactory;
+
+	UPROPERTY()
+	class UPlayerBuildComp_LDJ* PlayerBuildComp;
 	
 	FTimerHandle SpawnTimerHandle;
 	void CreateZombie();
@@ -39,12 +47,9 @@ public:
 	double RandSpawnX;
 	double RandSpawnY;
 
-	UPROPERTY(EditAnywhere)
-	int SpawnCount = 0;
-	UPROPERTY(EditAnywhere)
-	int MaxSpawnCount = 30;
-	
-	void StartSpawning();
-	void StopSpawning();
-	
+	int32 Wave1 = 20; // *2
+	int32 Wave2 = 39; // Tanker 5
+	int32 Wave3 = 80; // Tanker 5, Faster 5
+
+	int32 CurrentWave = 0;
 };

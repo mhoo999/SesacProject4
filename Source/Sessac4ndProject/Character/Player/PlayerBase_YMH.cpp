@@ -79,9 +79,11 @@ void APlayerBase_YMH::BeginPlay()
 	if (playerController)
 	{
 		// UIWidget이 Init될 때, MainUI의 MaxBullet값과 CurrentBullet값에 Player의 MaxBullet값을 넣고 싶다.
-		playerController->mainUI->MaxBullet->SetText(FText::AsNumber(MaxBulletCount));
-		playerController->mainUI->CurrentBullet->SetText(FText::AsNumber(MaxBulletCount));
+		playerController->mainUI->MaxBullet->SetText(FText::AsNumber(FireComp->MaxBulletCount));
+		playerController->mainUI->CurrentBullet->SetText(FText::AsNumber(FireComp->MaxBulletCount));
 	}
+
+	SetCrosshair();
 }
 
 void APlayerBase_YMH::Tick(float DeltaSeconds)
@@ -96,10 +98,21 @@ void APlayerBase_YMH::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	OnSetupInputDelegate.Broadcast(PlayerInputComponent);
 }
 
+void APlayerBase_YMH::VictoryProcess()
+{
+	auto anim = Cast<UPlayerAnimInstance_YMH>(GetMesh()->GetAnimInstance());
+	anim->PlayVictoryMontage();
+	
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->DisableMovement();
+}
+
+void APlayerBase_YMH::SetCrosshair()
+{
+}
+
 void APlayerBase_YMH::BeShot(float damage)
 {
-	Super::BeShot(damage);
-
 	currentHealth -= damage;
 	UE_LOG(LogTemp, Warning, TEXT("Damege!"));
 
@@ -110,8 +123,6 @@ void APlayerBase_YMH::BeShot(float damage)
 
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetCharacterMovement()->DisableMovement();
-		CameraBoom->bUsePawnControlRotation = false;
-		// CameraBoom->SetWorldRotation(FRotator(-45, 0, 0));
 	}
 	
 	float percent = currentHealth / maxHelth;
@@ -122,13 +133,19 @@ void APlayerBase_YMH::BeShot(float damage)
 	}
 }
 
+void APlayerBase_YMH::RestorationHealth(float value)
+{
+	currentHealth += value;
+}
+
 void APlayerBase_YMH::DieProcess()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Green, TEXT("YOU DIE"));
 	
-	// FollowCamera->PostProcessSettings.ColorSaturation = FVector4(0, 0, 0, 1);
+	FollowCamera->PostProcessSettings.ColorSaturation = FVector4(0, 0, 0, 1);
 
 	auto pc = Cast<APlayerController>(Controller);
-	pc->SetShowMouseCursor(true);
+	// pc->SetShowMouseCursor(true);
 	
 	if(playerController)
 	{
