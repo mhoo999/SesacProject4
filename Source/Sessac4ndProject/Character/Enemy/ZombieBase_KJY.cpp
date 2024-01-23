@@ -4,6 +4,7 @@
 #include "Character/Enemy/ZombieBase_KJY.h"
 #include "Character/Enemy/ZombieFSM.h"
 #include "ZombieAnim.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 // 기본적으로 목적지(지켜야 하는곳)를 향해 감
@@ -34,7 +35,7 @@ void AZombieBase_KJY::Damage()
 	
 	CurrentHp--;
 	UE_LOG(LogTemp, Warning, TEXT("Hp--"));
-	if(	CurrentHp <= 0)
+	if(	CurrentHp == 0) // <= 에서 ==으로 변경
 	{
 		Die();
 	}
@@ -46,7 +47,12 @@ void AZombieBase_KJY::Die()
 	auto Anim = Cast<UZombieAnim>(GetMesh()->GetAnimInstance());
 	Anim->PlayDieAnim();
 
-	Destroy();
+	auto temp = Cast<AZombieBase_KJY>(GetMesh()->GetOwner());
+	temp->GetCharacterMovement()->MaxWalkSpeed = 0;
+	GetWorld()->GetTimerManager().SetTimer(ZombieBaseTimer, FTimerDelegate::CreateLambda([&]
+	{
+		Destroy();
+	}), 0.1, false);
 
 }
 

@@ -37,5 +37,5 @@ public:
 	void Damage();
 	void Die();
 
-	
+	FTimerHandle ZombieBaseTimer;
 };
