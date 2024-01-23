@@ -15,8 +15,14 @@
 #include "Trap/SpikeTrap_LDJ.h"
 #include "InputAction.h"
 #include "Animation/PlayerAnimInstance_YMH.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Character/Enemy/ZombieManagerBase_KJY.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
+#include "UI/TrapAndWeaponLevelUI_LDJ.h"
+#include "UI/WaveInformationUI_LDJ.h"
 
 
 UPlayerBuildComp_LDJ::UPlayerBuildComp_LDJ()
@@ -67,11 +73,31 @@ UPlayerBuildComp_LDJ::UPlayerBuildComp_LDJ()
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> IA_PlaceTrapRef(TEXT("/Game/YMH/Inputs/Actions/IA_Fire_YMH.IA_Fire_YMH"));
 	if (IA_PlaceTrapRef.Succeeded()) IA_PlaceTrap = IA_PlaceTrapRef.Object;
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> IA_MouseModeRef(TEXT("/Game/LDJ/Input/IA_MouseMode.IA_MouseMode"));
+	if (IA_MouseModeRef.Succeeded()) IA_MouseMode = IA_MouseModeRef.Object;
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> IA_LevelUpBtnRef(TEXT("/Game/LDJ/Input/IA_LevelUpBtn.IA_LevelUpBtn"));
+	if (IA_LevelUpBtnRef.Succeeded()) IA_LevelUpBtn = IA_LevelUpBtnRef.Object;
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> IA_WaveStartRef(TEXT("/Game/LDJ/Input/IA_WaveStart.IA_WaveStart"));
+	if (IA_WaveStartRef.Succeeded()) IA_WaveStart = IA_WaveStartRef.Object;
+	
+	static ConstructorHelpers::FClassFinder<UTrapAndWeaponLevelUI_LDJ> LevelUpUIRef(TEXT("/Game/LDJ/UI/WBP_TrapLevel.WBP_TrapLevel_C"));
+	if (LevelUpUIRef.Succeeded()) LevelUpUIFactory = LevelUpUIRef.Class;
+
+	static ConstructorHelpers::FClassFinder<UWaveInformationUI_LDJ> WaveInforUIRef(TEXT("/Game/LDJ/UI/WBP_WaveInfor.WBP_WaveInfor_C"));
+	if (WaveInforUIRef.Succeeded()) WaveInforUIFactory = WaveInforUIRef.Class;
 }
 
 void UPlayerBuildComp_LDJ::BeginPlay()
 {
 	Super::BeginPlay();
+	LevelUpUI = Cast<UTrapAndWeaponLevelUI_LDJ>(CreateWidget(GetWorld(), LevelUpUIFactory));
+	LevelUpUI->AddToViewport();
+	WaveInforUI = Cast<UWaveInformationUI_LDJ>(CreateWidget(GetWorld(), WaveInforUIFactory));
+	WaveInforUI->AddToViewport();
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AZombieManagerBase_KJY::StaticClass(), ZombieManagerArray);
 }
 
 void UPlayerBuildComp_LDJ::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -104,6 +130,17 @@ void UPlayerBuildComp_LDJ::SetupPlayerInput(UInputComponent* PlayerInputComponen
 		                                   &UPlayerBuildComp_LDJ::DoEquipGun);
 		EnhancedInputComponent->BindAction(IA_PlaceTrap, ETriggerEvent::Started, this,
 		                                   &UPlayerBuildComp_LDJ::PressPlaceBuild);
+		// Trap Upgrade Input
+		EnhancedInputComponent->BindAction(IA_ChooseTrap1, ETriggerEvent::Triggered, this,
+								   &UPlayerBuildComp_LDJ::UpgradeSpikeTrap);
+		EnhancedInputComponent->BindAction(IA_MouseMode, ETriggerEvent::Started, this,
+								   &UPlayerBuildComp_LDJ::SetMouseMode);
+		EnhancedInputComponent->BindAction(IA_MouseMode, ETriggerEvent::Completed, this,
+						   &UPlayerBuildComp_LDJ::SetMouseMode);
+		EnhancedInputComponent->BindAction(IA_LevelUpBtn, ETriggerEvent::Started, this,
+						   &UPlayerBuildComp_LDJ::LevelUp);
+		EnhancedInputComponent->BindAction(IA_WaveStart, ETriggerEvent::Started, this,
+				   &UPlayerBuildComp_LDJ::WaveStart);
 	}
 }
 
@@ -158,7 +195,6 @@ void UPlayerBuildComp_LDJ::DoBuildFlameTrap(const FInputActionValue& value)
 		PlayerController->mainUI->SelectSlot(4);
 		PlayerController->mainUI->img_cresshair->SetVisibility(ESlateVisibility::Hidden);
 		PlayerController->mainUI->img_pointer->SetVisibility(ESlateVisibility::Hidden);
-
 	}
 }
 
@@ -177,6 +213,61 @@ void UPlayerBuildComp_LDJ::DoEquipGun(const FInputActionValue& value)
 		PlayerController->mainUI->SelectSlot(0);
 		PlayerController->mainUI->img_cresshair->SetVisibility(ESlateVisibility::Visible);
 		PlayerController->mainUI->img_pointer->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+void UPlayerBuildComp_LDJ::UpgradeSpikeTrap(const FInputActionValue& value)
+{
+}
+
+void UPlayerBuildComp_LDJ::UpgradeFreezeTrap(const FInputActionValue& value)
+{
+}
+
+void UPlayerBuildComp_LDJ::UpgradePoisonTrap(const FInputActionValue& value)
+{
+}
+
+void UPlayerBuildComp_LDJ::UpgradeFlameTrap(const FInputActionValue& value)
+{
+}
+
+void UPlayerBuildComp_LDJ::SetMouseMode(const FInputActionValue& value)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("%d"), value.Get<bool>()));
+	if (value.Get<bool>())
+	{
+		GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(true);
+		player->bIsReloading = true;
+		player->GetCharacterMovement()->bUseControllerDesiredRotation = false;
+		player->CameraBoom->bUsePawnControlRotation = false;
+	}
+	else if (!value.Get<bool>())
+	{
+		GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(false);
+		player->bIsReloading = false;
+		player->GetCharacterMovement()->bUseControllerDesiredRotation = true;
+		player->CameraBoom->bUsePawnControlRotation = true;
+	}
+	
+}
+
+void UPlayerBuildComp_LDJ::LevelUp(const FInputActionValue& value)
+{
+	if (LevelUpUI)
+	{
+		LevelUpUI->LevelUpUI();
+		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red, TEXT("LevelUP!"));
+	}
+}
+
+void UPlayerBuildComp_LDJ::WaveStart(const FInputActionValue& value)
+{
+	WaveInforUI->SetWaveText(FText::GetEmpty());
+	for (const auto e : ZombieManagerArray)
+	{
+		auto Temp = Cast<AZombieManagerBase_KJY>(e);
+		GetWorld()->GetTimerManager().UnPauseTimer(Temp->SpawnTimerHandle);
 	}
 }
 

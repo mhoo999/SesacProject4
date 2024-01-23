@@ -37,4 +37,8 @@ public:
 
 	double RandSpawnX;
 	double RandSpawnY;
+
+	int32 Wave1 = 20;
+	int32 Wave2 = 30; // Tanker 10
+	int32 Wave3 = 40; // Tanker 10, Faster 10
 };

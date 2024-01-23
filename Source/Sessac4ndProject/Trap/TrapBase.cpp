@@ -7,6 +7,7 @@
 #include "Character/Enemy/Zombie_KJY.h"
 #include "Character/Player/PlayerBase_YMH.h"
 #include "Components/BoxComponent.h"
+#include "Character/Player/PlayerBuildComp_LDJ.h"
 
 // Sets default values
 ATrapBase::ATrapBase()
@@ -38,6 +39,8 @@ void ATrapBase::BeginPlay()
 	Super::BeginPlay();
 	ReactionCollision->OnComponentBeginOverlap.AddDynamic(this, &ATrapBase::OnEnemyBeginOverlapped);
 	ReactionCollision->OnComponentEndOverlap.AddDynamic(this, &ATrapBase::OnEnemyEndOverlapped);
+	Player = Cast<APlayerBase_YMH>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+	PlayerBuildComp = Player->FindComponentByClass<UPlayerBuildComp_LDJ>();
 }
 
 // Called every frame

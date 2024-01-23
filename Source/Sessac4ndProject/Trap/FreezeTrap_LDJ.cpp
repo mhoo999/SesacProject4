@@ -6,6 +6,7 @@
 #include "Character/Enemy/ZombieBase_KJY.h"
 #include "Character/Enemy/Zombie_KJY.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Character/Player/PlayerBuildComp_LDJ.h"
 
 AFreezeTrap_LDJ::AFreezeTrap_LDJ()
 {
@@ -38,6 +39,7 @@ AFreezeTrap_LDJ::AFreezeTrap_LDJ()
 void AFreezeTrap_LDJ::BeginPlay()
 {
 	Super::BeginPlay();
+	TrapLevel = PlayerBuildComp->FreezeTrapLevel;
 }
 
 void AFreezeTrap_LDJ::Tick(float DeltaTime)
@@ -57,7 +59,7 @@ void AFreezeTrap_LDJ::ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef)
 {
 	for (auto e : EnemyBoxRef)
 	{
-		e->GetCharacterMovement()->MaxWalkSpeed = 200;
+		e->GetCharacterMovement()->MaxWalkSpeed = (200 - 60 * TrapLevel);
 	}
 	GetWorld()->GetTimerManager().SetTimer(THandle, FTimerDelegate::CreateLambda([&]
 	{
