@@ -47,9 +47,9 @@ public:
 	double RandSpawnX;
 	double RandSpawnY;
 
-	int32 Wave1 = 10;
-	int32 Wave2 = 15; // Tanker 5
-	int32 Wave3 = 20; // Tanker 5, Faster 5
+	int32 Wave1 = 20; // *2
+	int32 Wave2 = 39; // Tanker 5
+	int32 Wave3 = 80; // Tanker 5, Faster 5
 
 	int32 CurrentWave = 0;
 };

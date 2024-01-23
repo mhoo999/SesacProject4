@@ -7,7 +7,7 @@
 #include "ZombieFSM.generated.h"
 
 UENUM(BlueprintType)
-enum class EZombieState : uint8 { Move, Chase, Attack, Damage, Die, };
+enum class EZombieState : uint8 { Move, Chase, Attack, };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SESSAC4NDPROJECT_API UZombieFSM : public UActorComponent
@@ -33,8 +33,8 @@ public:
 	void MoveState();
 	void ChaseState();
 	void AttackState();
-	void DamageState();
-	void DieState();
+	//void DamageState();
+	//void DieState();
 
 	UPROPERTY(VisibleAnywhere, Category=FSM)
 	class ADestinationActor_KJY* Target;

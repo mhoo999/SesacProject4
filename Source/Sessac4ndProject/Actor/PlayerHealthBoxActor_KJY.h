@@ -27,7 +27,7 @@ public:
 	                            const FHitResult& SweepResult);
 
 	UPROPERTY(VisibleAnywhere)
-	class USphereComponent* collisionComp;
+	class UCapsuleComponent* collisionComp;
 
 	UPROPERTY(VisibleAnywhere, Category=FSM)
 	class APlayerBase_YMH* Player; 
