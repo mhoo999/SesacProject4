@@ -37,6 +37,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="WeaponEffect")
 	UParticleSystem* bulletMark;
 
+	UPROPERTY(EditDefaultsOnly, Category="WeaponEffect")
+	UParticleSystem* defaultBulletMark;
+
 	FTimerHandle combatHandle;
 	
 public:
@@ -60,4 +63,9 @@ public:
 	void Fire(const FInputActionValue& value);
 	void Reload(const FInputActionValue& value);
 	
+	// ------------------- multi Play --------------------------
+	UFUNCTION(Server, Reliable)
+	void ServerRPCFire();
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPCFire(bool bHit, const FHitResult& hitInfo, const int bc);
 };

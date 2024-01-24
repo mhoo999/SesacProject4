@@ -56,52 +56,7 @@ void UPlayerFireComp_YMH::Fire(const FInputActionValue& value)
 		return;
 	}
 
-	player->fireDispatcher = true;
-	GetWorld()->GetTimerManager().ClearTimer(combatHandle);
-
-	FHitResult hitInfo;
-	FVector startPos = player->FollowCamera->GetComponentLocation();
-	FVector endPos = startPos + player->FollowCamera->GetForwardVector() * attackDistance;
-	FCollisionQueryParams params;
-	params.AddIgnoredActor(player);
-	bool bHit = GetWorld()->LineTraceSingleByChannel(hitInfo, startPos, endPos, ECC_Visibility, params);
-
-	if (bHit)
-	{
-		//enemy 체력--
-		auto Enemy = hitInfo.GetActor()->GetDefaultSubobjectByName(TEXT("FSM"));
-		auto Temp = Cast<UZombieFSM>(Enemy);
-		if (Temp)
-		{
-			auto MyEnemy = Cast<AZombieBase_KJY>(Temp->GetOwner());
-			MyEnemy->Damage();
-		}
-	
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), bulletMark, hitInfo.Location, FRotator());
-	}
-
-	bulletCount--;
-	UE_LOG(LogTemp, Warning, TEXT("Bullet Count : %u"), bulletCount);
-
-	auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
-	anim->PlayFireAnimation();
-
-	if (PlayerController)
-	{
-		PlayerController->mainUI->weaponRecoil();
-		// MainUI의 CurrentBullet의 값을 빼고 싶다.
-		PlayerController->mainUI->CurrentBullet->SetText(FText::AsNumber(bulletCount));
-	}
-	
-	player->bIsCombat = true;
-
-	GetWorld()->GetTimerManager().SetTimer(combatHandle, FTimerDelegate::CreateLambda([&]
-	{
-		player->bIsCombat = false;
-	}), 5, true);
-	
-	float pitchInput = FMath::RandRange(MinRecoilValue, MaxRecoilValue);
-	player->AddControllerPitchInput(pitchInput);
+	ServerRPCFire();
 }
 
 void UPlayerFireComp_YMH::Reload(const FInputActionValue& value)
@@ -117,4 +72,62 @@ void UPlayerFireComp_YMH::Reload(const FInputActionValue& value)
 	anim->PlayReloadAnimation();
 
 	player->bIsReloading = true;
+}
+
+void UPlayerFireComp_YMH::ServerRPCFire_Implementation()
+{
+	FHitResult hitInfo;
+	FVector startPos = player->FollowCamera->GetComponentLocation();
+	FVector endPos = startPos + player->FollowCamera->GetForwardVector() * attackDistance;
+	
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(player);
+	bool bHit = GetWorld()->LineTraceSingleByChannel(hitInfo, startPos, endPos, ECC_Visibility, params);
+	bool bHitPawn = GetWorld()->LineTraceSingleByChannel(hitInfo, startPos, endPos, ECC_Pawn, params);
+
+	if (bHit)
+	{
+		//enemy 체력--
+		auto Enemy = hitInfo.GetActor()->GetDefaultSubobjectByName(TEXT("FSM"));
+		auto Temp = Cast<UZombieFSM>(Enemy);
+		if (Temp)
+		{
+			auto MyEnemy = Cast<AZombieBase_KJY>(Temp->GetOwner());
+			MyEnemy->Damage();
+		}
+	}
+
+	bulletCount--;
+
+	MultiRPCFire(bHit, hitInfo, bulletCount);
+}
+
+void UPlayerFireComp_YMH::MultiRPCFire_Implementation(bool bHit, const FHitResult& hitInfo, const int bc)
+{
+	player->fireDispatcher = true;
+	GetWorld()->GetTimerManager().ClearTimer(combatHandle);
+
+	if (bHit)
+	{
+		// UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), bulletMark, hitInfo.Location, FRotator());
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), defaultBulletMark, hitInfo.Location, FRotator());
+	}
+
+	if (PlayerController)
+	{
+		PlayerController->mainUI->weaponRecoil();
+		PlayerController->mainUI->CurrentBullet->SetText(FText::AsNumber(bulletCount));
+	}
+	
+	auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
+	anim->PlayFireAnimation();
+	
+	player->bIsCombat = true;
+	GetWorld()->GetTimerManager().SetTimer(combatHandle, FTimerDelegate::CreateLambda([&]
+	{
+		player->bIsCombat = false;
+	}), 5, true);
+	
+	float pitchInput = FMath::RandRange(MinRecoilValue, MaxRecoilValue);
+	player->AddControllerPitchInput(pitchInput);
 }
