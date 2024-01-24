@@ -4,6 +4,11 @@
 #include "Character/Enemy/ZombieBase_KJY.h"
 #include "Character/Enemy/ZombieFSM.h"
 #include "ZombieAnim.h"
+#include "Blueprint/UserWidget.h"
+#include "Character/Player/PlayerBase_YMH.h"
+#include "Components/TextBlock.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "UI/HPWidget_KJY.h"
 
 
 // 기본적으로 목적지(지켜야 하는곳)를 향해 감
@@ -19,6 +24,17 @@ AZombieBase_KJY::AZombieBase_KJY()
 void AZombieBase_KJY::BeginPlay()
 {
 	Super::BeginPlay();
+	if (HPWidget != nullptr)
+	{
+		ZombieHPUI = CreateWidget<UHPWidget_KJY>(GetWorld(), HPWidget);
+	}
+
+	CurrentHp = MaxHp;
+
+	
+	GetMesh()->OnComponentBeginOverlap.AddDynamic(this, &AZombieBase_KJY::OnAttackBeginOverlap);
+
+	Anim = Cast<UZombieAnim>(GetMesh()->GetAnimInstance());
 }
 
 void AZombieBase_KJY::Tick(float DeltaTime)
@@ -28,25 +44,62 @@ void AZombieBase_KJY::Tick(float DeltaTime)
 
 void AZombieBase_KJY::Damage()
 {
-	
-	auto Anim = Cast<UZombieAnim>(GetMesh()->GetAnimInstance());
+
+	GetCharacterMovement()->MaxWalkSpeed = 0;
+
+	if (ZombieHPUI != nullptr)
+	{
+		ZombieHPUI->AddToViewport();
+		//ZombieHPUI->SetPercent(CurrentHp, MaxHp);
+	}
+
+	CurrentHp--;
+	PrintHP();
 	Anim->PlayDamageAnim();
 	
-	CurrentHp--;
 	UE_LOG(LogTemp, Warning, TEXT("Hp--"));
-	if(	CurrentHp <= 0)
+	if(	CurrentHp == 0) // <= 에서 ==으로 변경
 	{
 		Die();
 	}
-	//Me->GetCharacterMovement()->MaxWalkSpeed = 0;
 }
 
 void AZombieBase_KJY::Die()
 {
-	auto Anim = Cast<UZombieAnim>(GetMesh()->GetAnimInstance());
 	Anim->PlayDieAnim();
 
-	Destroy();
+	
+	auto temp = Cast<AZombieBase_KJY>(GetMesh()->GetOwner());
+	temp->GetCharacterMovement()->MaxWalkSpeed = 0;
+	GetWorld()->GetTimerManager().SetTimer(ZombieBaseTimer, FTimerDelegate::CreateLambda([&]
+	{
+		Destroy();
+	}), 0.1, false);
 
+}
+
+void AZombieBase_KJY::OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	auto player = Cast<APlayerBase_YMH>(OtherActor);
+	UE_LOG(LogTemp, Warning, TEXT("Attack!"));
+
+	if (player&&Anim->bAttackCollision == true)
+	{
+		player->BeShot(1.0f);
+		Anim->bAttackCollision = false;
+	}
+	// if (player == false)
+	// {
+	// 	return;
+	// }
+}
+
+void AZombieBase_KJY::PrintHP()
+{
+	if (ZombieHPUI != nullptr)
+	{
+		ZombieHPUI->HPText->SetText(FText::AsNumber(CurrentHp));
+	}
 }
 

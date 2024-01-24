@@ -33,5 +33,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnEndAttackAnimation();
 
-	
+	UFUNCTION()
+	void AnimNotify_Attack();
+
+	UPROPERTY()
+	class AZombieBase_KJY* Me;
+
+	virtual void NativeInitializeAnimation() override;
+
+	bool bAttackCollision;
 };

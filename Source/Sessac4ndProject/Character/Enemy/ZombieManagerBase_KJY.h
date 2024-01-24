@@ -31,6 +31,15 @@ public:
 	TArray<class AActor*> SpawnPoints;	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class AZombie_KJY> ZombieFactory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class ATankerZombie_KJY> TankerZombieFactory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class AFastZombie_KJY> FastZombieFactory;
+
+	UPROPERTY()
+	class UPlayerBuildComp_LDJ* PlayerBuildComp;
 	
 	FTimerHandle SpawnTimerHandle;
 	void CreateZombie();
@@ -38,7 +47,9 @@ public:
 	double RandSpawnX;
 	double RandSpawnY;
 
-	int32 Wave1 = 20;
-	int32 Wave2 = 30; // Tanker 10
-	int32 Wave3 = 40; // Tanker 10, Faster 10
+	int32 Wave1 = 20; // *2
+	int32 Wave2 = 39; // Tanker 5
+	int32 Wave3 = 80; // Tanker 5, Faster 5
+
+	int32 CurrentWave = 0;
 };
