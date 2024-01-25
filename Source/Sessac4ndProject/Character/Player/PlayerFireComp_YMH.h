@@ -44,11 +44,12 @@ private:
 	
 public:
 	// ------------------------ Bullet ---------------------------
+	UPROPERTY()
 	int32 MaxBulletCount;
 	int32 reloadBulletCount;
 	UPROPERTY()
 	int32 bulletCount;
-
+	
 	// ------------------------ Weapon Info ------------------------
 	int32 weaponeGrade;
 	float Damage;
@@ -62,10 +63,21 @@ public:
 	// ------------------------ weapon action -------------------------
 	void Fire(const FInputActionValue& value);
 	void Reload(const FInputActionValue& value);
+	UFUNCTION(Server, Reliable)
+	void ServerRPCInitAmmo();
+	UFUNCTION(Client, Reliable)
+	void ClientRPCInitAmmo(const int bc);
 	
 	// ------------------- multi Play --------------------------
 	UFUNCTION(Server, Reliable)
 	void ServerRPCFire();
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiRPCFire(bool bHit, const FHitResult& hitInfo, const int bc);
+	UFUNCTION(Client, Reliable)
+	void ClientRPCFire(const int bc);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPCReload();
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPCReload();
 };

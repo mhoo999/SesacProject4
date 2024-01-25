@@ -88,4 +88,8 @@ public:
 
 public:
 	void weaponRecoil();
+
+	// ------------------------ multi play -----------------------------
+	// UFUNCTION()
+	// void ServerRPC
 };
