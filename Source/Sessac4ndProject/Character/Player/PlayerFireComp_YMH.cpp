@@ -68,10 +68,41 @@ void UPlayerFireComp_YMH::Reload(const FInputActionValue& value)
 		return;
 	}
 	
+	player->bIsReloading = true;
+	ServerRPCReload();
+}
+
+void UPlayerFireComp_YMH::ServerRPCInitAmmo_Implementation()
+{
+	bulletCount += reloadBulletCount;
+
+	if (bulletCount > MaxBulletCount)
+	{
+		bulletCount = MaxBulletCount;
+	}
+	
+	ClientRPCInitAmmo(bulletCount);
+}
+
+void UPlayerFireComp_YMH::ClientRPCInitAmmo_Implementation(const int bc)
+{
+	player->bIsReloading = false;
+	
+	if (PlayerController)
+	{
+		PlayerController->mainUI->CurrentBullet->SetText(FText::AsNumber(bc));
+	}
+}
+
+void UPlayerFireComp_YMH::ServerRPCReload_Implementation()
+{
+	MultiRPCReload();
+}
+
+void UPlayerFireComp_YMH::MultiRPCReload_Implementation()
+{
 	auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
 	anim->PlayReloadAnimation();
-
-	player->bIsReloading = true;
 }
 
 void UPlayerFireComp_YMH::ServerRPCFire_Implementation()
@@ -100,6 +131,7 @@ void UPlayerFireComp_YMH::ServerRPCFire_Implementation()
 	bulletCount--;
 
 	MultiRPCFire(bHit, hitInfo, bulletCount);
+	ClientRPCFire(bulletCount);
 }
 
 void UPlayerFireComp_YMH::MultiRPCFire_Implementation(bool bHit, const FHitResult& hitInfo, const int bc)
@@ -112,12 +144,6 @@ void UPlayerFireComp_YMH::MultiRPCFire_Implementation(bool bHit, const FHitResul
 		// UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), bulletMark, hitInfo.Location, FRotator());
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), defaultBulletMark, hitInfo.Location, FRotator());
 	}
-
-	if (PlayerController)
-	{
-		PlayerController->mainUI->weaponRecoil();
-		PlayerController->mainUI->CurrentBullet->SetText(FText::AsNumber(bulletCount));
-	}
 	
 	auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
 	anim->PlayFireAnimation();
@@ -127,7 +153,16 @@ void UPlayerFireComp_YMH::MultiRPCFire_Implementation(bool bHit, const FHitResul
 	{
 		player->bIsCombat = false;
 	}), 5, true);
-	
+}
+
+void UPlayerFireComp_YMH::ClientRPCFire_Implementation(const int bc)
+{
+	if (PlayerController)
+	{
+		PlayerController->mainUI->weaponRecoil();
+		PlayerController->mainUI->CurrentBullet->SetText(FText::AsNumber(bc));
+	}
+
 	float pitchInput = FMath::RandRange(MinRecoilValue, MaxRecoilValue);
 	player->AddControllerPitchInput(pitchInput);
 }

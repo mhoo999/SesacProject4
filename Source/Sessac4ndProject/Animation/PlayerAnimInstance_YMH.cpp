@@ -59,22 +59,7 @@ void UPlayerAnimInstance_YMH::PlayReloadAnimation()
 
 void UPlayerAnimInstance_YMH::AnimNotify_Reload()
 {
-	UPlayerFireComp_YMH* fireComp = Player->FireComp;
-	
-	UE_LOG(LogTemp, Warning, TEXT("OnReload"));
-	fireComp->bulletCount += fireComp->reloadBulletCount;
-	if (fireComp->bulletCount > fireComp->MaxBulletCount)
-	{
-		fireComp->bulletCount = fireComp->MaxBulletCount;
-	}
-	Player->bIsReloading = false;
-
-	// MainUI의 CurrentBullet의 값에 Player의 ReloadBullet 값을 더하고 싶다.
-	auto pc = Cast<APlayerController_YMH>(Player->GetOwner());
-	if (pc)
-	{
-		pc->mainUI->CurrentBullet->SetText(FText::AsNumber(fireComp->bulletCount));
-	}
+	Player->FireComp->ServerRPCInitAmmo();
 }
 
 void UPlayerAnimInstance_YMH::PlayVictoryMontage()

@@ -75,14 +75,6 @@ void APlayerBase_YMH::BeginPlay()
 		}
 	}
 
-	playerController = Cast<APlayerController_YMH>(Controller);
-	if (playerController)
-	{
-		// UIWidget이 Init될 때, MainUI의 MaxBullet값과 CurrentBullet값에 Player의 MaxBullet값을 넣고 싶다.
-		playerController->mainUI->MaxBullet->SetText(FText::AsNumber(FireComp->MaxBulletCount));
-		playerController->mainUI->CurrentBullet->SetText(FText::AsNumber(FireComp->MaxBulletCount));
-	}
-
 	SetCrosshair();
 }
 
@@ -109,6 +101,7 @@ void APlayerBase_YMH::VictoryProcess()
 
 void APlayerBase_YMH::SetCrosshair()
 {
+	// virtual function
 }
 
 void APlayerBase_YMH::BeShot(float damage)
