@@ -20,6 +20,7 @@
 #include "Character/Enemy/ZombieManagerBase_KJY.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
 #include "UI/TrapAndWeaponLevelUI_LDJ.h"
@@ -94,10 +95,10 @@ UPlayerBuildComp_LDJ::UPlayerBuildComp_LDJ()
 void UPlayerBuildComp_LDJ::BeginPlay()
 {
 	Super::BeginPlay();
-	LevelUpUI = Cast<UTrapAndWeaponLevelUI_LDJ>(CreateWidget(GetWorld(), LevelUpUIFactory));
-	LevelUpUI->AddToViewport();
-	WaveInforUI = Cast<UWaveInformationUI_LDJ>(CreateWidget(GetWorld(), WaveInforUIFactory));
-	WaveInforUI->AddToViewport();
+	// LevelUpUI = Cast<UTrapAndWeaponLevelUI_LDJ>(CreateWidget(GetWorld(), LevelUpUIFactory));
+	// LevelUpUI->AddToViewport();
+	// WaveInforUI = Cast<UWaveInformationUI_LDJ>(CreateWidget(GetWorld(), WaveInforUIFactory));
+	// WaveInforUI->AddToViewport();
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AZombieManagerBase_KJY::StaticClass(), ZombieManagerArray);
 }
 
@@ -136,8 +137,6 @@ void UPlayerBuildComp_LDJ::SetupPlayerInput(UInputComponent* PlayerInputComponen
 								   &UPlayerBuildComp_LDJ::UpgradeSpikeTrap);
 		EnhancedInputComponent->BindAction(IA_MouseMode, ETriggerEvent::Started, this,
 								   &UPlayerBuildComp_LDJ::SetMouseMode);
-		EnhancedInputComponent->BindAction(IA_MouseMode, ETriggerEvent::Completed, this,
-						   &UPlayerBuildComp_LDJ::SetMouseMode);
 		EnhancedInputComponent->BindAction(IA_LevelUpBtn, ETriggerEvent::Started, this,
 						   &UPlayerBuildComp_LDJ::LevelUp);
 		EnhancedInputComponent->BindAction(IA_WaveStart, ETriggerEvent::Started, this,
@@ -148,6 +147,14 @@ void UPlayerBuildComp_LDJ::SetupPlayerInput(UInputComponent* PlayerInputComponen
 void UPlayerBuildComp_LDJ::DoBuildSpikeTrap(const FInputActionValue& value)
 {
 	player->bIsBuildMode = true;
+	if (GetOwner()->HasAuthority())
+	{
+		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red,TEXT("Server"));
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Blue,TEXT("Client"));
+	}
 	TrapFactory = SpikeTrapFactory;
 	
 	if (PlayerController)
@@ -202,11 +209,13 @@ void UPlayerBuildComp_LDJ::DoBuildFlameTrap(const FInputActionValue& value)
 void UPlayerBuildComp_LDJ::DoEquipGun(const FInputActionValue& value)
 {
 	player->bIsBuildMode = false;
+	
 	if (PreviewTrap)
 	{
 		PreviewTrap->SetStaticMesh(nullptr);
 		TrapFactory = nullptr;
 	}
+	GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red, FString::Printf(TEXT("%p"), *TrapFactory));
 	bDoOnceMeshSet = false;
 
 	if (PlayerController)
@@ -234,20 +243,23 @@ void UPlayerBuildComp_LDJ::UpgradeFlameTrap(const FInputActionValue& value)
 
 void UPlayerBuildComp_LDJ::SetMouseMode(const FInputActionValue& value)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("%d"), value.Get<bool>()));
-	if (value.Get<bool>())
+	if (!bMouseMode)
 	{
 		GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(true);
+		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(GetWorld()->GetFirstPlayerController());
 		player->bIsReloading = true;
 		player->GetCharacterMovement()->bUseControllerDesiredRotation = false;
 		player->CameraBoom->bUsePawnControlRotation = false;
+		bMouseMode = true;
 	}
-	else if (!value.Get<bool>())
+	else
 	{
 		GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(false);
+		UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetWorld()->GetFirstPlayerController());
 		player->bIsReloading = false;
 		player->GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		player->CameraBoom->bUsePawnControlRotation = true;
+		bMouseMode = false;
 	}
 	
 }
@@ -263,7 +275,7 @@ void UPlayerBuildComp_LDJ::LevelUp(const FInputActionValue& value)
 
 void UPlayerBuildComp_LDJ::WaveStart(const FInputActionValue& value) //임시로 쓰는 웨이브 시작 트래커
 {
-	if (bWaveClear)
+	if (bWaveClear && GetWorld()->GetFirstPlayerController()->HasAuthority())
 	{
 		for (const auto e : ZombieManagerArray)
 		{
@@ -271,7 +283,6 @@ void UPlayerBuildComp_LDJ::WaveStart(const FInputActionValue& value) //임시로
 			Temp->CurrentWave++;
 			GetWorld()->GetTimerManager().UnPauseTimer(Temp->SpawnTimerHandle);
 		}
-		
 	
 		FTimerHandle TextHandle;
 		GetWorld()->GetTimerManager().SetTimer(TextHandle, FTimerDelegate::CreateLambda([&]
@@ -279,7 +290,6 @@ void UPlayerBuildComp_LDJ::WaveStart(const FInputActionValue& value) //임시로
 			WaveInforUI->SetWaveText(FText::GetEmpty());
 		}), 2 , false);
 		bWaveClear = false;
-
 		
 		//임시로 쓰는 좀비 사망 트래커
 		
@@ -316,6 +326,8 @@ void UPlayerBuildComp_LDJ::WaveStart(const FInputActionValue& value) //임시로
 	}
 }
 
+
+
 void UPlayerBuildComp_LDJ::PreviewLoop()
 {
 	FVector StartPos = player->FollowCamera->GetComponentLocation();
@@ -324,19 +336,18 @@ void UPlayerBuildComp_LDJ::PreviewLoop()
 	Params.AddIgnoredActor(player);
 	FHitResult HitInfo;
 	auto temp = GetWorld()->LineTraceSingleByChannel(HitInfo, StartPos, EndPos, ECC_Visibility, Params);
-	DrawDebugLine(GetWorld(), StartPos, EndPos, FColor::Red, false);
 	if (temp)
 	{
 		if (!bDoOnceMeshSet) this->ResetPreviewMesh();
 	}
 	
-	FVector TempVec = FVector(HitInfo.Location.X, HitInfo.Location.Y, HitInfo.Location.Z);
+	TempVec = FVector(HitInfo.Location.X, HitInfo.Location.Y, HitInfo.Location.Z);
 	TempVec.X = FMath::Floor(HitInfo.Location.X / 350) * 350 + 190;
 	TempVec.Y = FMath::Floor(HitInfo.Location.Y / 350) * 350 + 250;
 	// TempVec.Z = FMath::CeilToFloat(HitInfo.Location.Z);
 	TempVec.Z = 0;
 	BuildPreviewTransform.SetLocation(TempVec);
-	BuildPreviewTransform.SetScale3D(FVector(2.15, 2.15, 1));	
+	BuildPreviewTransform.SetScale3D(FVector(2.15, 2.15, 1));
 
 	if (PreviewTrap)
 	{
@@ -353,6 +364,8 @@ void UPlayerBuildComp_LDJ::ResetPreviewMesh()
 		PreviewTrap->SetStaticMesh(PreviewTrapMesh);
 		PreviewTrap->SetMaterial(0, EnableMesh);
 		PreviewTrap->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		PreviewTrap->SetCollisionProfileName(FName("Trap"));
+		// PreviewTrap->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		PreviewTrap->SetGenerateOverlapEvents(true);
 
 		PreviewTrap->OnComponentBeginOverlap.AddDynamic(this, &UPlayerBuildComp_LDJ::OnTrapBeginOverlapped);
@@ -368,8 +381,8 @@ void UPlayerBuildComp_LDJ::PressPlaceBuild()
 		auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
 		anim->PlayInstallMontage();
 		
-		BuildPreviewTransform.SetScale3D(FVector(0.98));
-		GetWorld()->SpawnActor<ATrapBase>(TrapFactory, BuildPreviewTransform);
+		// GetWorld()->SpawnActor<ATrapBase>(TrapFactory, BuildPreviewTransform);
+		ServerRPC_PressPlaceBuild(TempVec, TrapFactory);
 	}
 }
 
@@ -402,4 +415,13 @@ void UPlayerBuildComp_LDJ::OnTrapBeginOverlapped(UPrimitiveComponent* Overlapped
 			bBuildEnable = false;
 		}
 	}
+}
+
+// 네트워크
+
+void UPlayerBuildComp_LDJ::ServerRPC_PressPlaceBuild_Implementation(const FVector& Vec, TSubclassOf<ATrapBase> RPCTrapFactory)
+{
+	BuildPreviewTransform.SetLocation(Vec);
+	BuildPreviewTransform.SetScale3D(FVector(0.98));
+	GetWorld()->SpawnActor<ATrapBase>(RPCTrapFactory, BuildPreviewTransform);
 }
