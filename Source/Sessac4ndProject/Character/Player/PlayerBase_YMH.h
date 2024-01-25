@@ -86,10 +86,15 @@ public:
 	float maxHelth;
 	
 	UPROPERTY(BlueprintReadOnly, Category="Stat")
-	float currentHealth;
-	
+	float currentHealth = maxHelth;
+
 	UFUNCTION(BlueprintCallable)
 	virtual void BeShot(float damage);
+	
+	/*UFUNCTION(BlueprintCallable, Server, Reliable)
+	virtual void ServerRPCBeShot(float damage);
+	UFUNCTION(Client, Reliable)
+	virtual void ClientRPCBeShot(float ch);*/
 	
 	void DieProcess();
 	void RestorationHealth(float value);
