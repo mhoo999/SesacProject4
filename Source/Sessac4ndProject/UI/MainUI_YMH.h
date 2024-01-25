@@ -19,7 +19,7 @@ UCLASS()
 class SESSAC4NDPROJECT_API UMainUI_YMH : public UUserWidget
 {
 	GENERATED_BODY()
-
+	
 public:
 	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(BindWidget))
 	UImage* img_pointer;
@@ -88,4 +88,8 @@ public:
 
 public:
 	void weaponRecoil();
+
+	// ------------------------ multi play -----------------------------
+	// UFUNCTION()
+	// void ServerRPC
 };

@@ -75,13 +75,7 @@ void APlayerBase_YMH::BeginPlay()
 		}
 	}
 
-	playerController = Cast<APlayerController_YMH>(Controller);
-	if (playerController)
-	{
-		// UIWidget이 Init될 때, MainUI의 MaxBullet값과 CurrentBullet값에 Player의 MaxBullet값을 넣고 싶다.
-		playerController->mainUI->MaxBullet->SetText(FText::AsNumber(FireComp->MaxBulletCount));
-		playerController->mainUI->CurrentBullet->SetText(FText::AsNumber(FireComp->MaxBulletCount));
-	}
+	playerController = Cast<APlayerController_YMH>(GetController());
 
 	SetCrosshair();
 }
@@ -109,6 +103,7 @@ void APlayerBase_YMH::VictoryProcess()
 
 void APlayerBase_YMH::SetCrosshair()
 {
+	// virtual function
 }
 
 void APlayerBase_YMH::BeShot(float damage)
@@ -129,13 +124,9 @@ void APlayerBase_YMH::BeShot(float damage)
 	
 	if (playerController)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("here!"));
 		playerController->mainUI->hp = percent;
 	}
-}
-
-void APlayerBase_YMH::RestorationHealth(float value)
-{
-	currentHealth += value;
 }
 
 void APlayerBase_YMH::DieProcess()
@@ -153,3 +144,31 @@ void APlayerBase_YMH::DieProcess()
 		playerController->mainUI->img_cresshair->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
+
+void APlayerBase_YMH::RestorationHealth(float value)
+{
+	currentHealth += value;
+}
+
+/*void APlayerBase_YMH::ServerRPCBeShot_Implementation(float damage)
+{
+	currentHealth -= damage;
+	ClientRPCBeShot_Implementation(currentHealth);
+}
+
+void APlayerBase_YMH::ClientRPCBeShot_Implementation(float ch)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Damege!"));
+	
+	if (currentHealth <= 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Dead!"));
+		DieProcess();
+	}
+	
+	float percent = ch / maxHelth;
+	if (mainUI)
+	{
+		mainUI->hp = percent;
+	}
+}*/

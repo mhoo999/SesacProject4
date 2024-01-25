@@ -74,9 +74,11 @@ public:
 	// ------------------- Init ----------------------
 	UPROPERTY()
 	APlayerController_YMH* playerController;
-	
-	void VictoryProcess();
 
+	UPROPERTY()
+	UMainUI_YMH* mainUI;
+
+	void VictoryProcess();
 	virtual void SetCrosshair();
 public:
 	// ------------------- player HP ----------------------
@@ -84,10 +86,15 @@ public:
 	float maxHelth;
 	
 	UPROPERTY(BlueprintReadOnly, Category="Stat")
-	float currentHealth;
-	
+	float currentHealth = maxHelth;
+
 	UFUNCTION(BlueprintCallable)
 	virtual void BeShot(float damage);
+	
+	/*UFUNCTION(BlueprintCallable, Server, Reliable)
+	virtual void ServerRPCBeShot(float damage);
+	UFUNCTION(Client, Reliable)
+	virtual void ClientRPCBeShot(float ch);*/
 	
 	void DieProcess();
 	void RestorationHealth(float value);
@@ -97,6 +104,7 @@ public:
 	bool bIsCombat = false;				// 전투중
 	bool fireDispatcher = false;		// 공격 대기 상태 
 	bool bIsBuildMode = false;			// 설치 모드
+	UPROPERTY()
 	bool bIsReloading = false;			// 장전중
 	bool bIsDefeat = false;				// 패배 여부
 
