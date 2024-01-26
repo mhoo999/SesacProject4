@@ -6,14 +6,18 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "NetworkMessage.h"
 #include "PlayerBuildComp_LDJ.h"
 #include "PlayerFireComp_YMH.h"
 #include "PlayerMoveComp_YMH.h"
+#include "PlayerUpgradeComp_YMH.h"
 #include "Animation/PlayerAnimInstance_YMH.h"
+#include "Components/Border.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/PointLightComponent.h"
 #include "Components/SceneCaptureComponent2D.h"
 #include "Components/TextBlock.h"
+#include "Engine/TextureRenderTarget2D.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
 
@@ -46,21 +50,26 @@ APlayerBase_YMH::APlayerBase_YMH()
 	SelfCameraBoom->TargetArmLength = 100.0f;
 	SelfCameraBoom->SetRelativeRotation(FRotator(0, -145, 0));
 	SelfCameraBoom->SetRelativeLocation(FVector(0, 0, 30));
-
+	
 	SelfCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("Self Capture"));
 	SelfCapture->SetupAttachment(SelfCameraBoom);
-
+	SelfCapture->PrimitiveRenderMode = ESceneCapturePrimitiveRenderMode::PRM_UseShowOnlyList;
+	
 	PointLightComp = CreateDefaultSubobject<UPointLightComponent>(TEXT("PointLight Component"));
 	PointLightComp->SetupAttachment(RootComponent);
 	PointLightComp->SetRelativeLocation(FVector(55, 15, 20));
 	PointLightComp->SetIntensity(1000.0f);
 	PointLightComp->SetAttenuationRadius(80.0f);
 
+	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon Mesh"));
+	Weapon->SetupAttachment(GetMesh(), TEXT("WeaponSocket"));
+
 	GetMesh()->SetRelativeRotation(FRotator(0, -65, 0));
 
 	MoveComp = CreateDefaultSubobject<UPlayerMoveComp_YMH>(TEXT("Movement Component"));
 	FireComp = CreateDefaultSubobject<UPlayerFireComp_YMH>(TEXT("Fire Component"));
-	BuildComp = CreateDefaultSubobject<UPlayerBuildComp_LDJ>(TEXT("Build Componenet"));
+	BuildComp = CreateDefaultSubobject<UPlayerBuildComp_LDJ>(TEXT("Build Component"));
+	UpgradeComp = CreateDefaultSubobject<UPlayerUpgradeComp_YMH>(TEXT("Upgrade Component"));
 }
 
 void APlayerBase_YMH::BeginPlay()
@@ -76,8 +85,24 @@ void APlayerBase_YMH::BeginPlay()
 	}
 
 	playerController = Cast<APlayerController_YMH>(GetController());
-
+	
 	SetCrosshair();
+	
+	RenderTarget = NewObject<UTextureRenderTarget2D>();
+	RenderTarget->InitCustomFormat(256, 256, EPixelFormat::PF_FloatRGBA, false);
+	SelfCapture->TextureTarget = RenderTarget;
+	
+	// RenderCapture 에서 캡처하고 싶은 Component
+	SelfCapture->ShowOnlyComponent(GetMesh());
+	SelfCapture->ShowOnlyComponent(Weapon);
+	
+	TObjectPtr<UMaterialInstanceDynamic> FrameMaterial = UMaterialInstanceDynamic::Create(FrameMaterialInterface, this);
+	FrameMaterial->SetTextureParameterValue("RenderTarget", RenderTarget);
+	
+	if (playerController)
+	{
+		playerController->mainUI->CharacterFrame->SetBrushFromMaterial(FrameMaterial);
+	}
 }
 
 void APlayerBase_YMH::Tick(float DeltaSeconds)
@@ -124,7 +149,6 @@ void APlayerBase_YMH::BeShot(float damage)
 	
 	if (playerController)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("here!"));
 		playerController->mainUI->hp = percent;
 	}
 }

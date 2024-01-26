@@ -46,4 +46,5 @@ public:
 	void Jump(const FInputActionValue& value);
 	void OnStartWalk(const FInputActionValue& value);
 	void OnEndWalk(const FInputActionValue& value);
+	
 };

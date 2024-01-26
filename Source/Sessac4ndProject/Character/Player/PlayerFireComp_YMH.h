@@ -34,6 +34,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
 	UInputAction* IA_Reload;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
+	UInputAction* IA_Zoom;
+
 	UPROPERTY(EditDefaultsOnly, Category="WeaponEffect")
 	UParticleSystem* bulletMark;
 
@@ -49,9 +52,11 @@ public:
 	int32 reloadBulletCount;
 	UPROPERTY()
 	int32 bulletCount;
-	
+
+public:
 	// ------------------------ Weapon Info ------------------------
 	int32 weaponeGrade;
+	void weaponeUpgrade();
 	float Damage;
 	float attackDistance;
 	float attackSpeed;
@@ -60,6 +65,7 @@ public:
 	float MinRecoilValue;
 	float crosshairRecoilValue;
 
+public:
 	// ------------------------ weapon action -------------------------
 	void Fire(const FInputActionValue& value);
 	void Reload(const FInputActionValue& value);
@@ -67,6 +73,12 @@ public:
 	void ServerRPCInitAmmo();
 	UFUNCTION(Client, Reliable)
 	void ClientRPCInitAmmo(const int bc);
+	void ZoomIn(const FInputActionValue& value);
+	void ZoomOut(const FInputActionValue& value);
+
+	float defaultFOV = 90.0f;
+	UPROPERTY(EditAnywhere, Category="MySettings")
+	float maxFOV = 50.0f;
 	
 	// ------------------- multi Play --------------------------
 	UFUNCTION(Server, Reliable)
