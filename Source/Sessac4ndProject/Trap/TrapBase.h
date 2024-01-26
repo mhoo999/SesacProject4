@@ -49,7 +49,7 @@ public:
 	int32 TrapInArea = 0;
 	int32 TrapLevel = 1;
 	FTimerHandle Handle;
-
+	
 	UFUNCTION()
 	virtual void OnEnemyBeginOverlapped(UPrimitiveComponent* OverlappedComponent,
 		AActor* OtherActor,

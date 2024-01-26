@@ -83,29 +83,28 @@ void UZombieFSM::MoveState()
 	// 플레이어 - 에너미
 	FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
 
-	if (bFlagDoOnce == false)
+	if (bFlagDoOnce == false && GetOwner()->HasAuthority())
 	{
 		if (isLeft)
 		{
 			//ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-910.0f,-6480.0f,0.0f), FVector(-910.0f,-1030.0f,0.0f)));
 			//ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-2460.0, -2990.0f, -20.0f), FVector(-2460.0,-990.0f,0.0f)));
-			//ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-1010.0, -2990.0f, -20.0f), FVector(-2460.0,-990.0f,0.0f)));
+			ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-1010.0, -2990.0f, -20.0f), FVector(-2460.0,-990.0f,0.0f)));
 		}
 		else
 		{
-			//ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-910.0f,-6480.0f,0.0f), FVector(-910.0f,-1030.0f,0.0f)));
+			ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-910.0f,-6480.0f,0.0f), FVector(-910.0f,-1030.0f,0.0f)));
 		}
 		bFlagDoOnce = true;
 	}
 	
-	if (Temp2 == 0 && Me->GetActorLocation().X < FirstStop.X+100)
+	if (Temp2 == 0 && Me->GetActorLocation().X < FirstStop.X+100 && GetOwner()->HasAuthority())
 	{
 		// 첫번째 경유지에 도착했을때 다음 경유지로 간다
 		//ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-910.0f,-3240.0f,0.0f),FVector(-910.0f,-3240.0f,0.0f)));
 		//ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-7030.0f, -2070.0f, 0.0f),FVector(-7030.0f, -2070.0f, 0.0f)));
 		//Temp2++;
-		//ai->MoveToLocation(TargetLoc);
-
+		ai->MoveToLocation(TargetLoc);
 	}
 		
 
@@ -124,7 +123,10 @@ void UZombieFSM::ChaseState()
 	FVector PlayerLoc = Player->GetActorLocation();
 	FVector PlayerDir = PlayerLoc - Me->GetActorLocation();
 
-	ai->MoveToLocation(PlayerLoc);
+	if (GetOwner()->HasAuthority())
+	{
+		ai->MoveToLocation(PlayerLoc);
+	}
 	
 	if (PlayerDir.Size()<AttackRange)
 	{
@@ -221,7 +223,6 @@ FVector UZombieFSM::GetRandomLocationInNavMesh(bool& bisLeft, FVector DestLoc, F
 		}
 		// 기본적으로 원점 반환
 		return RightDestLoc;
-
 	}
 	
 	

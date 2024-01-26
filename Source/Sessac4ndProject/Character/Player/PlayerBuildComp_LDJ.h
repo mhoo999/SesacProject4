@@ -87,18 +87,6 @@ public:
 	UPROPERTY()
 	TSubclassOf<class ATrapBase> TrapFactory;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
-	TSubclassOf<class UTrapAndWeaponLevelUI_LDJ> LevelUpUIFactory;
-
-	UPROPERTY()
-	class UTrapAndWeaponLevelUI_LDJ* LevelUpUI;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
-	TSubclassOf<class UWaveInformationUI_LDJ> WaveInforUIFactory;
-	
-	UPROPERTY()
-	class UWaveInformationUI_LDJ* WaveInforUI;
-
 	UPROPERTY()
 	class AZombieManagerBase_KJY* ZombieSpawnManager;
 
@@ -159,10 +147,8 @@ public:
 		bool bFromSweep,
 		const FHitResult& SweepResult);
 	
-	
 	UFUNCTION(Server, Unreliable)
 	void ServerRPC_PressPlaceBuild(const FVector& Vec, TSubclassOf<ATrapBase> TrapFactoryBase);
-	
 	
 	FTimerHandle Handle;
 	FTimerHandle ZombieDieHandle;
