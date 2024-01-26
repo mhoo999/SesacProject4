@@ -7,6 +7,7 @@
 #include "TankerZombie_KJY.h"
 #include "Zombie_KJY.h"
 #include "Character/Player/PlayerBuildComp_LDJ.h"
+#include "Net/UnrealNetwork.h"
 #include "UI/WaveInformationUI_LDJ.h"
 
 
@@ -15,7 +16,7 @@ AZombieManagerBase_KJY::AZombieManagerBase_KJY()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-	
+	bReplicates = true;
 }
 
 // Called when the game starts or when spawned
@@ -26,7 +27,7 @@ void AZombieManagerBase_KJY::BeginPlay()
 	float CreateTime = FMath::RandRange(MinTime, MaxTime);
 	GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &AZombieManagerBase_KJY::CreateZombie, CreateTime);
 	GetWorld()->GetTimerManager().PauseTimer(SpawnTimerHandle);
-	PlayerBuildComp = Cast<UPlayerBuildComp_LDJ>(GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass(UPlayerBuildComp_LDJ::StaticClass()));
+	SetOwner(GetWorld()->GetFirstPlayerController());
 }
 
 // Called every frame
@@ -38,7 +39,6 @@ void AZombieManagerBase_KJY::Tick(float DeltaTime)
 
 void AZombieManagerBase_KJY::CreateZombie()
 {
-	UE_LOG(LogTemp, Warning, TEXT("zombie"));
 	auto tempX = GetActorLocation().X;
 	auto tempY = GetActorLocation().Y;
 	RandSpawnX = FMath::RandRange(tempX - 100, tempX + 100);

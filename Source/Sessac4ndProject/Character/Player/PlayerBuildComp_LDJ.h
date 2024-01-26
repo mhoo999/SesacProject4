@@ -46,16 +46,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
 	UInputAction* IA_PlaceTrap;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
-	UInputAction* IA_MouseMode;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
-	UInputAction* IA_LevelUpBtn;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
-	UInputAction* IA_WaveStart;
 	
-	bool bDoOnceMeshSet = false;
+	bool bDoOnceMeshSet = false; // 프리뷰 메시를 한번만 실행하기 위해 필요한 변수
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
 	TSubclassOf<UStaticMeshComponent> PreviewMeshFactory;
@@ -87,44 +80,11 @@ public:
 	UPROPERTY()
 	TSubclassOf<class ATrapBase> TrapFactory;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
-	TSubclassOf<class UTrapAndWeaponLevelUI_LDJ> LevelUpUIFactory;
-
-	UPROPERTY()
-	class UTrapAndWeaponLevelUI_LDJ* LevelUpUI;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
-	TSubclassOf<class UWaveInformationUI_LDJ> WaveInforUIFactory;
-	
-	UPROPERTY()
-	class UWaveInformationUI_LDJ* WaveInforUI;
-
-	UPROPERTY()
-	class AZombieManagerBase_KJY* ZombieSpawnManager;
-
-	UPROPERTY()
-	TArray<AActor*> ZombieManagerArray;
-
-	UPROPERTY()
-	TArray<AActor*> LivingZombieArray;
-
 	UPROPERTY()
 	FTransform BuildPreviewTransform;
 
 	UPROPERTY()
 	FVector TempVec;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TrapLevel")
-	int32 SpikeTrapLevel = 1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TrapLevel")
-	int32 FreezeTrapLevel = 1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TrapLevel")
-	int32 PoisonTrapLevel = 1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TrapLevel")
-	int32 FlameTrapLevel = 1;
 	
 public:
 	void DoBuildSpikeTrap(const FInputActionValue& value);
@@ -132,13 +92,7 @@ public:
 	void DoBuildPoisonTrap(const FInputActionValue& value);
 	void DoBuildFlameTrap(const FInputActionValue& value);
 	void DoEquipGun(const FInputActionValue& value);
-
-	void UpgradeSpikeTrap(const FInputActionValue& value);
-	void UpgradeFreezeTrap(const FInputActionValue& value);
-	void UpgradePoisonTrap(const FInputActionValue& value);
-	void UpgradeFlameTrap(const FInputActionValue& value);
-	void SetMouseMode(const FInputActionValue& value);
-	void LevelUp(const FInputActionValue& value);
+	
 	void WaveStart(const FInputActionValue& value);
 
 	void PreviewLoop();
@@ -159,17 +113,13 @@ public:
 		bool bFromSweep,
 		const FHitResult& SweepResult);
 	
-	
 	UFUNCTION(Server, Unreliable)
 	void ServerRPC_PressPlaceBuild(const FVector& Vec, TSubclassOf<ATrapBase> TrapFactoryBase);
 	
-	
 	FTimerHandle Handle;
-	FTimerHandle ZombieDieHandle;
 
 	int32 CollisionMeshCnt = 0;
 	bool bBuildEnable = true;
 	bool bMouseMode = false;
-	bool bWaveClear = true;
-
+	
 };

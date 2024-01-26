@@ -40,5 +40,6 @@ void UPlayerBaseComp_YMH::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 void UPlayerBaseComp_YMH::SetupPlayerInput(UInputComponent* PlayerInputComponent)
 {
+	
 }
 

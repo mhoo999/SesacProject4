@@ -37,7 +37,7 @@ public:
 	TArray<class AZombieBase_KJY*> EnemyArray;
 
 	UPROPERTY()
-	class UPlayerBuildComp_LDJ* PlayerBuildComp;
+	class UPlayerUpgradeComp_YMH* PlayerUpgradeComp;
 
 	UPROPERTY()
 	class APlayerBase_YMH* Player;
@@ -49,7 +49,7 @@ public:
 	int32 TrapInArea = 0;
 	int32 TrapLevel = 1;
 	FTimerHandle Handle;
-
+	
 	UFUNCTION()
 	virtual void OnEnemyBeginOverlapped(UPrimitiveComponent* OverlappedComponent,
 		AActor* OtherActor,

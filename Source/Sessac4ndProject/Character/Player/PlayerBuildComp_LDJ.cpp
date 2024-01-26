@@ -76,20 +76,11 @@ UPlayerBuildComp_LDJ::UPlayerBuildComp_LDJ()
 	static ConstructorHelpers::FObjectFinder<UInputAction> IA_PlaceTrapRef(TEXT("/Game/YMH/Inputs/Actions/IA_Fire_YMH.IA_Fire_YMH"));
 	if (IA_PlaceTrapRef.Succeeded()) IA_PlaceTrap = IA_PlaceTrapRef.Object;
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> IA_MouseModeRef(TEXT("/Game/LDJ/Input/IA_MouseMode.IA_MouseMode"));
-	if (IA_MouseModeRef.Succeeded()) IA_MouseMode = IA_MouseModeRef.Object;
-
-	static ConstructorHelpers::FObjectFinder<UInputAction> IA_LevelUpBtnRef(TEXT("/Game/LDJ/Input/IA_LevelUpBtn.IA_LevelUpBtn"));
-	if (IA_LevelUpBtnRef.Succeeded()) IA_LevelUpBtn = IA_LevelUpBtnRef.Object;
-
-	static ConstructorHelpers::FObjectFinder<UInputAction> IA_WaveStartRef(TEXT("/Game/LDJ/Input/IA_WaveStart.IA_WaveStart"));
-	if (IA_WaveStartRef.Succeeded()) IA_WaveStart = IA_WaveStartRef.Object;
+	// static ConstructorHelpers::FObjectFinder<UInputAction> IA_WaveStartRef(TEXT("/Game/LDJ/Input/IA_WaveStart.IA_WaveStart"));
+	// if (IA_WaveStartRef.Succeeded()) IA_WaveStart = IA_WaveStartRef.Object;
 	
-	static ConstructorHelpers::FClassFinder<UTrapAndWeaponLevelUI_LDJ> LevelUpUIRef(TEXT("/Game/LDJ/UI/WBP_TrapLevel.WBP_TrapLevel_C"));
-	if (LevelUpUIRef.Succeeded()) LevelUpUIFactory = LevelUpUIRef.Class;
-
-	static ConstructorHelpers::FClassFinder<UWaveInformationUI_LDJ> WaveInforUIRef(TEXT("/Game/LDJ/UI/WBP_WaveInfor.WBP_WaveInfor_C"));
-	if (WaveInforUIRef.Succeeded()) WaveInforUIFactory = WaveInforUIRef.Class;
+	// static ConstructorHelpers::FClassFinder<UWaveInformationUI_LDJ> WaveInforUIRef(TEXT("/Game/LDJ/UI/WBP_WaveInfor.WBP_WaveInfor_C"));
+	// if (WaveInforUIRef.Succeeded()) WaveInforUIFactory = WaveInforUIRef.Class;
 }
 
 void UPlayerBuildComp_LDJ::BeginPlay()
@@ -99,7 +90,6 @@ void UPlayerBuildComp_LDJ::BeginPlay()
 	// LevelUpUI->AddToViewport();
 	// WaveInforUI = Cast<UWaveInformationUI_LDJ>(CreateWidget(GetWorld(), WaveInforUIFactory));
 	// WaveInforUI->AddToViewport();
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AZombieManagerBase_KJY::StaticClass(), ZombieManagerArray);
 }
 
 void UPlayerBuildComp_LDJ::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -133,14 +123,10 @@ void UPlayerBuildComp_LDJ::SetupPlayerInput(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(IA_PlaceTrap, ETriggerEvent::Started, this,
 		                                   &UPlayerBuildComp_LDJ::PressPlaceBuild);
 		// Trap Upgrade Input
-		EnhancedInputComponent->BindAction(IA_ChooseTrap1, ETriggerEvent::Triggered, this,
-								   &UPlayerBuildComp_LDJ::UpgradeSpikeTrap);
-		EnhancedInputComponent->BindAction(IA_MouseMode, ETriggerEvent::Started, this,
-								   &UPlayerBuildComp_LDJ::SetMouseMode);
-		EnhancedInputComponent->BindAction(IA_LevelUpBtn, ETriggerEvent::Started, this,
-						   &UPlayerBuildComp_LDJ::LevelUp);
-		EnhancedInputComponent->BindAction(IA_WaveStart, ETriggerEvent::Started, this,
-				   &UPlayerBuildComp_LDJ::WaveStart);
+		// EnhancedInputComponent->BindAction(IA_LevelUpBtn, ETriggerEvent::Started, this,
+		// 				   &UPlayerBuildComp_LDJ::LevelUp);
+		// EnhancedInputComponent->BindAction(IA_WaveStart, ETriggerEvent::Started, this,
+		// 		   &UPlayerBuildComp_LDJ::WaveStart);
 	}
 }
 
@@ -224,109 +210,6 @@ void UPlayerBuildComp_LDJ::DoEquipGun(const FInputActionValue& value)
 		player->SetCrosshair();
 	}
 }
-
-void UPlayerBuildComp_LDJ::UpgradeSpikeTrap(const FInputActionValue& value)
-{
-}
-
-void UPlayerBuildComp_LDJ::UpgradeFreezeTrap(const FInputActionValue& value)
-{
-}
-
-void UPlayerBuildComp_LDJ::UpgradePoisonTrap(const FInputActionValue& value)
-{
-}
-
-void UPlayerBuildComp_LDJ::UpgradeFlameTrap(const FInputActionValue& value)
-{
-}
-
-void UPlayerBuildComp_LDJ::SetMouseMode(const FInputActionValue& value)
-{
-	if (!bMouseMode)
-	{
-		GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(true);
-		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(GetWorld()->GetFirstPlayerController());
-		player->bIsReloading = true;
-		player->GetCharacterMovement()->bUseControllerDesiredRotation = false;
-		player->CameraBoom->bUsePawnControlRotation = false;
-		bMouseMode = true;
-	}
-	else
-	{
-		GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(false);
-		UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetWorld()->GetFirstPlayerController());
-		player->bIsReloading = false;
-		player->GetCharacterMovement()->bUseControllerDesiredRotation = true;
-		player->CameraBoom->bUsePawnControlRotation = true;
-		bMouseMode = false;
-	}
-	
-}
-
-void UPlayerBuildComp_LDJ::LevelUp(const FInputActionValue& value)
-{
-	if (LevelUpUI)
-	{
-		LevelUpUI->LevelUpUI();
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red, TEXT("LevelUP!"));
-	}
-}
-
-void UPlayerBuildComp_LDJ::WaveStart(const FInputActionValue& value) //임시로 쓰는 웨이브 시작 트래커
-{
-	if (bWaveClear && GetWorld()->GetFirstPlayerController()->HasAuthority())
-	{
-		for (const auto e : ZombieManagerArray)
-		{
-			auto Temp = Cast<AZombieManagerBase_KJY>(e);
-			Temp->CurrentWave++;
-			GetWorld()->GetTimerManager().UnPauseTimer(Temp->SpawnTimerHandle);
-		}
-	
-		FTimerHandle TextHandle;
-		GetWorld()->GetTimerManager().SetTimer(TextHandle, FTimerDelegate::CreateLambda([&]
-		{
-			WaveInforUI->SetWaveText(FText::GetEmpty());
-		}), 2 , false);
-		bWaveClear = false;
-		
-		//임시로 쓰는 좀비 사망 트래커
-		
-		GetWorld()->GetTimerManager().SetTimer(ZombieDieHandle, FTimerDelegate::CreateLambda([&]
-		{
-			GEngine->AddOnScreenDebugMessage(-1,1,FColor::Green, FString::Printf(TEXT("Timer Clear!")));
-			UGameplayStatics::GetAllActorsOfClass(GetWorld(), AZombieBase_KJY::StaticClass(), LivingZombieArray);
-			GEngine->AddOnScreenDebugMessage(-1,1,FColor::Green, FString::Printf(TEXT("Enemy : %d"), LivingZombieArray.Num()));
-			if (LivingZombieArray.Num() == 0 && ZombieSpawnManager->CurrentWave < 3)
-			{
-				WaveInforUI->SetWaveText(FText::FromString(FString::Printf(TEXT("GET READY FOR THE NEXT LEVEL\r\n PRESS 'G' KEY"))));
-				GetWorld()->GetTimerManager().ClearTimer(ZombieDieHandle);
-				bWaveClear = true;
-			}
-			else if(LivingZombieArray.Num() == 0 && ZombieSpawnManager->CurrentWave > 2)
-			{
-				GetWorld()->GetTimerManager().ClearTimer(ZombieDieHandle);
-				WaveInforUI->SetWaveText(FText::FromString(FString::Printf(TEXT("YOU WIN"))));
-				// 승리모션 넣어야 할 곳
-				auto AnimTemp = Cast<UPlayerAnimInstance_YMH>(GetWorld()->GetFirstPlayerController()->GetCharacter()->GetMesh()->GetAnimInstance());
-				AnimTemp->PlayVictoryMontage();
-				player->GetCharacterMovement()->bUseControllerDesiredRotation = false;
-				
-				FTimerHandle WinHandle;
-				GetWorld()->GetTimerManager().SetTimer(WinHandle, FTimerDelegate::CreateLambda([&]
-				{
-					UKismetSystemLibrary::QuitGame(GetWorld(), GetWorld()->GetFirstPlayerController(), EQuitPreference::Quit, false);
-				}), 10, false);
-			}
-		}), 1 , true, 5);
-		
-		ZombieSpawnManager = Cast<AZombieManagerBase_KJY>(ZombieManagerArray[0]);
-		WaveInforUI->SetWaveText(FText::FromString(FString::Printf(TEXT("Wave%d Start"), ZombieSpawnManager->CurrentWave)));
-	}
-}
-
-
 
 void UPlayerBuildComp_LDJ::PreviewLoop()
 {
