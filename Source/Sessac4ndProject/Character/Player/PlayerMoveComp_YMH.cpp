@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "PlayerBase_YMH.h"
 #include "InputActionValue.h"
+#include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 UPlayerMoveComp_YMH::UPlayerMoveComp_YMH()
