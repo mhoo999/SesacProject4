@@ -89,8 +89,11 @@ public:
 public:
 	void weaponRecoil();
 
-	UPROPERTY(BlueprintReadWrite, Category="Slot", meta=(BindWidget))
+	UPROPERTY(BlueprintReadWrite, Category="WidgetBP", meta=(BindWidget))
 	class UTrapAndWeaponLevelUI_LDJ* WBP_TrapLevel;
+	
+	UPROPERTY(BlueprintReadWrite, Category="WidgetBP", meta=(BindWidget))
+	class UWaveInformationUI_LDJ* WBP_WaveInfor;
 
 	// ------------------------ multi play -----------------------------
 	// UFUNCTION()

@@ -81,15 +81,6 @@ public:
 	TSubclassOf<class ATrapBase> TrapFactory;
 
 	UPROPERTY()
-	class AZombieManagerBase_KJY* ZombieSpawnManager; // 웨이브 시스템
-
-	UPROPERTY()
-	TArray<AActor*> ZombieManagerArray; // 웨이브 시스템
-
-	UPROPERTY()
-	TArray<AActor*> LivingZombieArray;
-
-	UPROPERTY()
 	FTransform BuildPreviewTransform;
 
 	UPROPERTY()
@@ -126,11 +117,9 @@ public:
 	void ServerRPC_PressPlaceBuild(const FVector& Vec, TSubclassOf<ATrapBase> TrapFactoryBase);
 	
 	FTimerHandle Handle;
-	FTimerHandle ZombieDieHandle;
 
 	int32 CollisionMeshCnt = 0;
 	bool bBuildEnable = true;
 	bool bMouseMode = false;
-	bool bWaveClear = true;
-
+	
 };
