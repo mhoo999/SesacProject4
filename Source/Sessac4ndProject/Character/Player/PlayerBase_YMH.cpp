@@ -11,6 +11,7 @@
 #include "PlayerFireComp_YMH.h"
 #include "PlayerMoveComp_YMH.h"
 #include "PlayerUpgradeComp_YMH.h"
+#include "WaveStartComp_LDJ.h"
 #include "Animation/PlayerAnimInstance_YMH.h"
 #include "Components/Border.h"
 #include "Components/CapsuleComponent.h"
@@ -70,6 +71,7 @@ APlayerBase_YMH::APlayerBase_YMH()
 	FireComp = CreateDefaultSubobject<UPlayerFireComp_YMH>(TEXT("Fire Component"));
 	BuildComp = CreateDefaultSubobject<UPlayerBuildComp_LDJ>(TEXT("Build Component"));
 	UpgradeComp = CreateDefaultSubobject<UPlayerUpgradeComp_YMH>(TEXT("Upgrade Component"));
+	WaveStartComp = CreateDefaultSubobject<UWaveStartComp_LDJ>(TEXT("Wave Start Component"));
 }
 
 void APlayerBase_YMH::BeginPlay()

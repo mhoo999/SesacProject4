@@ -7,6 +7,7 @@
 #include "InputActionValue.h"
 #include "PlayerBase_YMH.generated.h"
 
+class UWaveStartComp_LDJ;
 class UPlayerUpgradeComp_YMH;
 class UPointLightComponent;
 class UMainUI_YMH;
@@ -76,6 +77,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	UPlayerUpgradeComp_YMH* UpgradeComp;
+
+	UPROPERTY(EditDefaultsOnly)
+	UWaveStartComp_LDJ* WaveStartComp;
 	
 public:
 	// ------------------- Init ----------------------
