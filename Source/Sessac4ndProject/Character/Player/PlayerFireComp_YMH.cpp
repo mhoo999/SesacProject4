@@ -20,6 +20,12 @@
 UPlayerFireComp_YMH::UPlayerFireComp_YMH()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+	
+	static ConstructorHelpers::FObjectFinder<UInputAction> IA_FireRef(TEXT("/Script/EnhancedInput.InputAction'/Game/YMH/Inputs/Actions/IA_Fire_YMH.IA_Fire_YMH''"));
+	if (IA_FireRef.Succeeded()) IA_Fire = IA_FireRef.Object;
+	
+	static ConstructorHelpers::FObjectFinder<UInputAction> IA_ReloadRef(TEXT("/Script/EnhancedInput.InputAction'/Game/YMH/Inputs/Actions/IA_Reload_YMH.IA_Reload_YMH'"));
+	if (IA_ReloadRef.Succeeded()) IA_Reload = IA_ReloadRef.Object;
 }
 
 void UPlayerFireComp_YMH::BeginPlay()

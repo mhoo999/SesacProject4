@@ -7,6 +7,7 @@
 #include "InputActionValue.h"
 #include "PlayerBase_YMH.generated.h"
 
+class UPlayerUpgradeComp_YMH;
 class UPointLightComponent;
 class UMainUI_YMH;
 class APlayerController_YMH;
@@ -70,6 +71,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	UPlayerBuildComp_LDJ* BuildComp;
 
+	UPROPERTY(EditDefaultsOnly)
+	UPlayerUpgradeComp_YMH* UpgradeComp;
+	
 public:
 	// ------------------- Init ----------------------
 	UPROPERTY()

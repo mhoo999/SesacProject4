@@ -9,6 +9,7 @@
 #include "PlayerBuildComp_LDJ.h"
 #include "PlayerFireComp_YMH.h"
 #include "PlayerMoveComp_YMH.h"
+#include "PlayerUpgradeComp_YMH.h"
 #include "Animation/PlayerAnimInstance_YMH.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/PointLightComponent.h"
@@ -60,7 +61,8 @@ APlayerBase_YMH::APlayerBase_YMH()
 
 	MoveComp = CreateDefaultSubobject<UPlayerMoveComp_YMH>(TEXT("Movement Component"));
 	FireComp = CreateDefaultSubobject<UPlayerFireComp_YMH>(TEXT("Fire Component"));
-	BuildComp = CreateDefaultSubobject<UPlayerBuildComp_LDJ>(TEXT("Build Componenet"));
+	BuildComp = CreateDefaultSubobject<UPlayerBuildComp_LDJ>(TEXT("Build Component"));
+	UpgradeComp = CreateDefaultSubobject<UPlayerUpgradeComp_YMH>(TEXT("Upgrade Component"));
 }
 
 void APlayerBase_YMH::BeginPlay()
