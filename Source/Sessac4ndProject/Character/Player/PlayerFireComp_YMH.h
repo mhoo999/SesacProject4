@@ -43,6 +43,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="WeaponEffect")
 	UParticleSystem* defaultBulletMark;
 
+	UPROPERTY(EditDefaultsOnly, Category="WeaponEffect")
+	UParticleSystem* muzzleFire;
+
 	FTimerHandle combatHandle;
 	
 public:
@@ -75,6 +78,7 @@ public:
 	void ClientRPCInitAmmo(const int bc);
 	void ZoomIn(const FInputActionValue& value);
 	void ZoomOut(const FInputActionValue& value);
+	bool bZoomIn = false;
 
 	float defaultFOV = 90.0f;
 	UPROPERTY(EditAnywhere, Category="MySettings")

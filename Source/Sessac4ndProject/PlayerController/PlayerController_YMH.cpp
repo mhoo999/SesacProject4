@@ -26,7 +26,6 @@ void APlayerController_YMH::InitUIWidget()
 			mainUI = Cast<UMainUI_YMH>(CreateWidget(GetWorld(), mainUIWidget));
 			mainUI->AddToViewport();
 			mainUI->SelectSlot(0);
-			mainUI->ShowPointer();
 		}
 
 		auto* player = Cast<APlayerBase_YMH>(GetPawn());

@@ -10,7 +10,7 @@
 
 AShotgunPlayer_YMH::AShotgunPlayer_YMH()
 {
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> shotgun(TEXT("/Script/Engine.SkeletalMesh'/Game/SimpleApocalypse/Meshes/Weapons/RiggedWeapons/SK_Wep_Shotgun_01.SK_Wep_Shotgun_01'"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> shotgun(TEXT("/Script/Engine.SkeletalMesh'/Game/YMH/Meshes/SK_Wep_Shotgun_01_YMH.SK_Wep_Shotgun_01_YMH'"));
 	if (shotgun.Succeeded()) Weapon->SetSkeletalMeshAsset(shotgun.Object);
 	
 	maxHelth = 10.0f;
@@ -43,6 +43,7 @@ void AShotgunPlayer_YMH::SetCrosshair()
 
 	if (playerController)
 	{
+		playerController->mainUI->ShowPointer();
 		playerController->mainUI->ShowCrosshair();
 	}
 }
