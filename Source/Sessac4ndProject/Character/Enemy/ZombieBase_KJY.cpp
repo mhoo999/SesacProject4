@@ -19,6 +19,8 @@ AZombieBase_KJY::AZombieBase_KJY()
 
 	fsm = CreateDefaultSubobject<UZombieFSM>(TEXT("FSM"));
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	bReplicates = true;
 }
 
 void AZombieBase_KJY::BeginPlay()
