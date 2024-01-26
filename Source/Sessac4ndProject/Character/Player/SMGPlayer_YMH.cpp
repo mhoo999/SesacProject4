@@ -8,6 +8,9 @@
 
 ASMGPlayer_YMH::ASMGPlayer_YMH()
 {
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SMG(TEXT("/Script/Engine.SkeletalMesh'/Game/SimpleApocalypse/Meshes/Weapons/RiggedWeapons/SK_Wep_AssaultRifle_02.SK_Wep_AssaultRifle_02'"));
+	if (SMG.Succeeded()) Weapon->SetSkeletalMeshAsset(SMG.Object);
+	
 	maxHelth = 10.0f;
 	currentHealth = maxHelth;
 	FireComp->attackSpeed = 2.0f;

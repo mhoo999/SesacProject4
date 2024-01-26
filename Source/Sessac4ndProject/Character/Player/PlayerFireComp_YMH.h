@@ -52,6 +52,7 @@ public:
 	
 	// ------------------------ Weapon Info ------------------------
 	int32 weaponeGrade;
+	void weaponeUpgrade();
 	float Damage;
 	float attackDistance;
 	float attackSpeed;
