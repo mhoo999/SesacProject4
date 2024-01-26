@@ -102,11 +102,15 @@ void UPlayerFireComp_YMH::Reload(const FInputActionValue& value)
 void UPlayerFireComp_YMH::ZoomIn(const FInputActionValue& value)
 {
 	player->FollowCamera->FieldOfView = maxFOV;
+	player->bIsCombat = true;
+	bZoomIn = true;
 }
 
 void UPlayerFireComp_YMH::ZoomOut(const FInputActionValue& value)
 {
 	player->FollowCamera->FieldOfView = defaultFOV;
+	player->bIsCombat = false;
+	bZoomIn = false;
 }
 
 void UPlayerFireComp_YMH::ServerRPCInitAmmo_Implementation()
@@ -123,12 +127,11 @@ void UPlayerFireComp_YMH::ServerRPCInitAmmo_Implementation()
 
 void UPlayerFireComp_YMH::ClientRPCInitAmmo_Implementation(const int bc)
 {
-	player->bIsReloading = false;
-	
 	if (PlayerController)
 	{
 		PlayerController->mainUI->CurrentBullet->SetText(FText::AsNumber(bc));
 	}
+	player->bIsReloading = false;
 }
 
 void UPlayerFireComp_YMH::ServerRPCReload_Implementation()
@@ -188,8 +191,13 @@ void UPlayerFireComp_YMH::MultiRPCFire_Implementation(bool bHit, const FHitResul
 	player->bIsCombat = true;
 	GetWorld()->GetTimerManager().SetTimer(combatHandle, FTimerDelegate::CreateLambda([&]
 	{
-		player->bIsCombat = false;
+		if (bZoomIn == false)
+		{
+			player->bIsCombat = false;
+		}
 	}), 5, true);
+
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), muzzleFire, player->Weapon->GetSocketLocation(FName("Muzzle")), FRotator());
 }
 
 void UPlayerFireComp_YMH::ClientRPCFire_Implementation(const int bc)

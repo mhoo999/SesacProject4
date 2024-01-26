@@ -8,7 +8,7 @@
 
 ASMGPlayer_YMH::ASMGPlayer_YMH()
 {
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SMG(TEXT("/Script/Engine.SkeletalMesh'/Game/SimpleApocalypse/Meshes/Weapons/RiggedWeapons/SK_Wep_AssaultRifle_02.SK_Wep_AssaultRifle_02'"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SMG(TEXT("/Script/Engine.SkeletalMesh'/Game/YMH/Meshes/SK_Wep_AssaultRifle_02_YMH.SK_Wep_AssaultRifle_02_YMH'"));
 	if (SMG.Succeeded()) Weapon->SetSkeletalMeshAsset(SMG.Object);
 	
 	maxHelth = 10.0f;
@@ -55,9 +55,9 @@ void ASMGPlayer_YMH::SetCrosshair()
 {
 	Super::SetCrosshair();
 	
-	/*auto pc = Cast<APlayerController_YMH>(Controller);
-	if (pc)
+	if (playerController)
 	{
-		pc->mainUI->ShowPointer();
-	}*/
+		playerController->mainUI->ShowPointer();
+		playerController->mainUI->ShowCrosshair();
+	}
 }
