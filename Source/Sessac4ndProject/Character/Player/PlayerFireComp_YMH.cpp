@@ -22,10 +22,22 @@ UPlayerFireComp_YMH::UPlayerFireComp_YMH()
 	PrimaryComponentTick.bCanEverTick = true;
 	
 	static ConstructorHelpers::FObjectFinder<UInputAction> IA_FireRef(TEXT("/Script/EnhancedInput.InputAction'/Game/YMH/Inputs/Actions/IA_Fire_YMH.IA_Fire_YMH'"));
-	if (IA_FireRef.Succeeded()) IA_Fire = IA_FireRef.Object;
+	if (IA_FireRef.Succeeded())
+	{
+		IA_Fire = IA_FireRef.Object;
+	}
 	
 	static ConstructorHelpers::FObjectFinder<UInputAction> IA_ReloadRef(TEXT("/Script/EnhancedInput.InputAction'/Game/YMH/Inputs/Actions/IA_Reload_YMH.IA_Reload_YMH'"));
-	if (IA_ReloadRef.Succeeded()) IA_Reload = IA_ReloadRef.Object;
+	if (IA_ReloadRef.Succeeded())
+	{
+		IA_Reload = IA_ReloadRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> IA_ZoomRef(TEXT("/Script/EnhancedInput.InputAction'/Game/YMH/Inputs/Actions/IA_Zoom_YMH.IA_Zoom_YMH'"));
+	if (IA_ZoomRef.Succeeded())
+	{
+		IA_Zoom = IA_ZoomRef.Object;
+	}
 }
 
 void UPlayerFireComp_YMH::BeginPlay()
@@ -52,6 +64,10 @@ void UPlayerFireComp_YMH::SetupPlayerInput(UInputComponent* PlayerInputComponent
 
 		// Reload
 		EnhancedInputComponent->BindAction(IA_Reload, ETriggerEvent::Started, this, &UPlayerFireComp_YMH::Reload);
+
+		// Zoom
+		EnhancedInputComponent->BindAction(IA_Zoom, ETriggerEvent::Started, this, &UPlayerFireComp_YMH::ZoomIn);
+		EnhancedInputComponent->BindAction(IA_Zoom, ETriggerEvent::Completed, this, &UPlayerFireComp_YMH::ZoomOut);
 	}
 }
 
@@ -81,6 +97,16 @@ void UPlayerFireComp_YMH::Reload(const FInputActionValue& value)
 	
 	player->bIsReloading = true;
 	ServerRPCReload();
+}
+
+void UPlayerFireComp_YMH::ZoomIn(const FInputActionValue& value)
+{
+	player->FollowCamera->FieldOfView = maxFOV;
+}
+
+void UPlayerFireComp_YMH::ZoomOut(const FInputActionValue& value)
+{
+	player->FollowCamera->FieldOfView = defaultFOV;
 }
 
 void UPlayerFireComp_YMH::ServerRPCInitAmmo_Implementation()

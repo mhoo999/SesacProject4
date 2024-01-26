@@ -89,7 +89,7 @@ void APlayerBase_YMH::BeginPlay()
 	SetCrosshair();
 	
 	RenderTarget = NewObject<UTextureRenderTarget2D>();
-	RenderTarget->InitCustomFormat(2048, 2048, EPixelFormat::PF_FloatRGBA, false);
+	RenderTarget->InitCustomFormat(256, 256, EPixelFormat::PF_FloatRGBA, false);
 	SelfCapture->TextureTarget = RenderTarget;
 	
 	// RenderCapture 에서 캡처하고 싶은 Component
