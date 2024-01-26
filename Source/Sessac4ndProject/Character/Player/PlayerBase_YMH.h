@@ -56,6 +56,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Components")
 	USceneCaptureComponent2D* SelfCapture;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Components")
+	USkeletalMeshComponent* Weapon;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|COmponents")
 	UPointLightComponent* PointLightComp;
 
@@ -115,5 +118,10 @@ public:
 	// ------------------- player inventory --------------------
 	UPROPERTY()
 	int32 wallet;
+
+	// ------------------- Dynamic Create RenderCapture -----------------------
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TObjectPtr<class UMaterialInterface> FrameMaterialInterface = NULL;
+	TObjectPtr<class UTextureRenderTarget2D> RenderTarget;
 };
 

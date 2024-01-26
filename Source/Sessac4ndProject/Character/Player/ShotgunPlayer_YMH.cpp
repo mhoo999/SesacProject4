@@ -3,11 +3,15 @@
 
 #include "Character/Player/ShotgunPlayer_YMH.h"
 #include "PlayerFireComp_YMH.h"
+#include "Components/SceneCaptureComponent2D.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
 
 AShotgunPlayer_YMH::AShotgunPlayer_YMH()
 {
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> shotgun(TEXT("/Script/Engine.SkeletalMesh'/Game/SimpleApocalypse/Meshes/Weapons/RiggedWeapons/SK_Wep_Shotgun_01.SK_Wep_Shotgun_01'"));
+	if (shotgun.Succeeded()) Weapon->SetSkeletalMeshAsset(shotgun.Object);
+	
 	maxHelth = 10.0f;
 	currentHealth = maxHelth;
 	FireComp->attackSpeed = 5.0f;
@@ -20,7 +24,6 @@ AShotgunPlayer_YMH::AShotgunPlayer_YMH()
 	FireComp->MaxRecoilValue = -1.0;
 	FireComp->MinRecoilValue = -1.5;
 	FireComp->crosshairRecoilValue = 3.0f;
-
 }
 
 void AShotgunPlayer_YMH::BeginPlay()
