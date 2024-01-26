@@ -8,6 +8,7 @@
 #include "Character/Enemy/Zombie_KJY.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Character/Player/PlayerBuildComp_LDJ.h"
+#include "Character/Player/PlayerUpgradeComp_YMH.h"
 
 
 AFlameThrowerTrap_LDJ::AFlameThrowerTrap_LDJ()
@@ -41,7 +42,7 @@ AFlameThrowerTrap_LDJ::AFlameThrowerTrap_LDJ()
 void AFlameThrowerTrap_LDJ::BeginPlay()
 {
 	Super::BeginPlay();
-	TrapLevel = PlayerBuildComp->FlameTrapLevel;
+	TrapLevel = PlayerUpgradeComp->FlameTrapLevel;
 }
 
 void AFlameThrowerTrap_LDJ::Tick(float DeltaTime)

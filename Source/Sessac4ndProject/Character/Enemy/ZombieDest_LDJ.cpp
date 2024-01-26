@@ -3,7 +3,7 @@
 
 #include "ZombieDest_LDJ.h"
 
-#include "ZMDGameStateBase_LDJ.h"
+#include "Game/ZMDGameStateBase_LDJ.h"
 #include "Components/BoxComponent.h"
 
 // Sets default values

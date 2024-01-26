@@ -4,7 +4,7 @@
 #include "UI/TrapAndWeaponLevelUI_LDJ.h"
 
 #include "Character/Player/PlayerBase_YMH.h"
-#include "Character/Player/PlayerBuildComp_LDJ.h"
+#include "Character/Player/PlayerUpgradeComp_YMH.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 
@@ -17,7 +17,7 @@ void UTrapAndWeaponLevelUI_LDJ::NativeConstruct()
 	Btn_PoisonTrapUpgrade->OnClicked.AddDynamic(this, &UTrapAndWeaponLevelUI_LDJ::PoisonTrapLevelUp);
 	Btn_FlameTrapUpgrade->OnClicked.AddDynamic(this, &UTrapAndWeaponLevelUI_LDJ::FlameTrapLevelUp);
 	MyPlayer = Cast<APlayerBase_YMH>(GetWorld()->GetFirstPlayerController()->GetCharacter());
-	BuildComp = MyPlayer->FindComponentByClass<UPlayerBuildComp_LDJ>();
+	UpgradeComp = MyPlayer->FindComponentByClass<UPlayerUpgradeComp_YMH>();
 }
 
 void UTrapAndWeaponLevelUI_LDJ::WeaponLevelUp()
@@ -29,28 +29,28 @@ void UTrapAndWeaponLevelUI_LDJ::WeaponLevelUp()
 void UTrapAndWeaponLevelUI_LDJ::SpikeTrapLevelUp()
 {
 	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Red,TEXT("TEST2"));
-	BuildComp->SpikeTrapLevel++;
+	UpgradeComp->SpikeTrapLevel++;
 	RefreshLevelupUI();
 }
 
 void UTrapAndWeaponLevelUI_LDJ::FreezeTrapLevelUp()
 {
 	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Red,TEXT("TEST3"));
-	BuildComp->FreezeTrapLevel++;
+	UpgradeComp->FreezeTrapLevel++;
 	RefreshLevelupUI();
 }
 
 void UTrapAndWeaponLevelUI_LDJ::PoisonTrapLevelUp()
 {
 	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Red,TEXT("TEST4"));
-	BuildComp->PoisonTrapLevel++;
+	UpgradeComp->PoisonTrapLevel++;
 	RefreshLevelupUI();
 }
 
 void UTrapAndWeaponLevelUI_LDJ::FlameTrapLevelUp()
 {
 	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Red,TEXT("TEST5"));
-	BuildComp->FlameTrapLevel++;
+	UpgradeComp->FlameTrapLevel++;
 	RefreshLevelupUI();
 }
 
@@ -71,8 +71,8 @@ void UTrapAndWeaponLevelUI_LDJ::RefreshLevelupUI()
 	Btn_FreezeTrapUpgrade->SetVisibility(ESlateVisibility::Hidden);
 	Btn_PoisonTrapUpgrade->SetVisibility(ESlateVisibility::Hidden);
 	Btn_FlameTrapUpgrade->SetVisibility(ESlateVisibility::Hidden);
-	Txt_SpikeTrapLevel->SetText(FText::AsNumber(BuildComp->SpikeTrapLevel));
-	Txt_FreezeTrapLevel->SetText(FText::AsNumber(BuildComp->FreezeTrapLevel));
-	Txt_PoisonTrapLevel->SetText(FText::AsNumber(BuildComp->PoisonTrapLevel));
-	Txt_FlameTrapLevel->SetText(FText::AsNumber(BuildComp->FlameTrapLevel));
+	Txt_SpikeTrapLevel->SetText(FText::AsNumber(UpgradeComp->SpikeTrapLevel));
+	Txt_FreezeTrapLevel->SetText(FText::AsNumber(UpgradeComp->FreezeTrapLevel));
+	Txt_PoisonTrapLevel->SetText(FText::AsNumber(UpgradeComp->PoisonTrapLevel));
+	Txt_FlameTrapLevel->SetText(FText::AsNumber(UpgradeComp->FlameTrapLevel));
 }

@@ -20,7 +20,7 @@ class SESSAC4NDPROJECT_API UTrapAndWeaponLevelUI_LDJ : public UUserWidget
 	class APlayerBase_YMH* MyPlayer;
 
 	UPROPERTY(EditAnywhere)
-	class UPlayerBuildComp_LDJ* BuildComp;
+	class UPlayerUpgradeComp_YMH* UpgradeComp;
 
 public:
 	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(BindWidget))
@@ -62,7 +62,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(BindWidget))
 	class UTextBlock* Txt_FlameTrapLevel;
-
 	
 	void LevelUpUI();
 	void RefreshLevelupUI();

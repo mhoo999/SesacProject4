@@ -8,6 +8,7 @@
 #include "Character/Player/PlayerBase_YMH.h"
 #include "Components/BoxComponent.h"
 #include "Character/Player/PlayerBuildComp_LDJ.h"
+#include "Character/Player/PlayerUpgradeComp_YMH.h"
 #include "PlayerController/PlayerController_YMH.h"
 
 // Sets default values
@@ -44,7 +45,7 @@ void ATrapBase::BeginPlay()
 	ReactionCollision->OnComponentEndOverlap.AddDynamic(this, &ATrapBase::OnEnemyEndOverlapped);
 	Player = Cast<APlayerBase_YMH>(GetWorld()->GetFirstPlayerController()->GetCharacter());
 	auto pc = Cast<APlayerController_YMH>(GetWorld()->GetFirstPlayerController());
-	PlayerBuildComp = Player->FindComponentByClass<UPlayerBuildComp_LDJ>();
+	PlayerUpgradeComp = Player->FindComponentByClass<UPlayerUpgradeComp_YMH>();
 	if (pc)
 	{
 		SetOwner(pc);
