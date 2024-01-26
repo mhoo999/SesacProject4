@@ -107,8 +107,12 @@ public:
 
 	UPROPERTY()
 	TArray<AActor*> LivingZombieArray;
-	
+
+	UPROPERTY()
 	FTransform BuildPreviewTransform;
+
+	UPROPERTY()
+	FVector TempVec;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TrapLevel")
 	int32 SpikeTrapLevel = 1;
@@ -155,11 +159,17 @@ public:
 		bool bFromSweep,
 		const FHitResult& SweepResult);
 	
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPC_PressPlaceBuild(const FVector& Vec, TSubclassOf<ATrapBase> TrapFactoryBase);
+	
+	
 	FTimerHandle Handle;
 	FTimerHandle ZombieDieHandle;
 
 	int32 CollisionMeshCnt = 0;
 	bool bBuildEnable = true;
+	bool bMouseMode = false;
+	bool bWaveClear = true;
 
-	bool bWaveClear = true; 
 };
