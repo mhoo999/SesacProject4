@@ -3,6 +3,7 @@
 
 #include "Character/Player/ShotgunPlayer_YMH.h"
 #include "PlayerFireComp_YMH.h"
+#include "Components/Border.h"
 #include "Components/SceneCaptureComponent2D.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
@@ -40,10 +41,8 @@ void AShotgunPlayer_YMH::SetCrosshair()
 {
 	Super::SetCrosshair();
 
-	/*auto pc = Cast<APlayerController_YMH>(Controller);
-	if (pc)
+	if (playerController)
 	{
-		pc->mainUI->ShowPointer();
-		pc->mainUI->ShowCrosshair();
-	}*/
+		playerController->mainUI->ShowCrosshair();
+	}
 }

@@ -14,16 +14,28 @@ UPlayerMoveComp_YMH::UPlayerMoveComp_YMH()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> IA_MoveRef(TEXT("/Script/EnhancedInput.InputAction'/Game/YMH/Inputs/Actions/IA_Move_YMH.IA_Move_YMH'"));
-	if (IA_MoveRef.Succeeded()) IA_Move = IA_MoveRef.Object;
+	if (IA_MoveRef.Succeeded())
+	{
+		IA_Move = IA_MoveRef.Object;
+	}
 	
 	static ConstructorHelpers::FObjectFinder<UInputAction> IA_JumpRef(TEXT("/Script/EnhancedInput.InputAction'/Game/YMH/Inputs/Actions/IA_Jump_YMH.IA_Jump_YMH'"));
-	if (IA_JumpRef.Succeeded()) IA_Jump = IA_JumpRef.Object;
+	if (IA_JumpRef.Succeeded())
+	{
+		IA_Jump = IA_JumpRef.Object;
+	}
 	
 	static ConstructorHelpers::FObjectFinder<UInputAction> IA_LookRef(TEXT("/Script/EnhancedInput.InputAction'/Game/YMH/Inputs/Actions/IA_Look_YMH.IA_Look_YMH'"));
-	if (IA_LookRef.Succeeded()) IA_Look = IA_LookRef.Object;
+	if (IA_LookRef.Succeeded())
+	{
+		IA_Look = IA_LookRef.Object;
+	}
 	
 	static ConstructorHelpers::FObjectFinder<UInputAction> IA_WalkRef(TEXT("/Script/EnhancedInput.InputAction'/Game/YMH/Inputs/Actions/IA_Walk_YMH.IA_Walk_YMH'"));
-	if (IA_WalkRef.Succeeded()) IA_Walk = IA_WalkRef.Object;
+	if (IA_WalkRef.Succeeded())
+	{
+		IA_Walk = IA_WalkRef.Object;
+	}
 }
 
 void UPlayerMoveComp_YMH::BeginPlay()

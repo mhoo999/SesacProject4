@@ -27,7 +27,6 @@ void APlayerController_YMH::InitUIWidget()
 			mainUI->AddToViewport();
 			mainUI->SelectSlot(0);
 			mainUI->ShowPointer();
-			mainUI->ShowCrosshair();
 		}
 
 		auto* player = Cast<APlayerBase_YMH>(GetPawn());
