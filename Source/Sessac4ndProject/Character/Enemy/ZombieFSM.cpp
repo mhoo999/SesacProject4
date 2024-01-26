@@ -11,6 +11,7 @@
 #include "Character/Player/PlayerBase_YMH.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
 UZombieFSM::UZombieFSM()
@@ -30,12 +31,17 @@ void UZombieFSM::BeginPlay()
 
 	auto TargetActor = UGameplayStatics::GetActorOfClass(GetWorld(), ADestinationActor_KJY::StaticClass());
 	Target = Cast<ADestinationActor_KJY>(TargetActor);
-	auto Playeractor = UGameplayStatics::GetActorOfClass(GetWorld(), APlayerBase_YMH::StaticClass());
-	Player = Cast<APlayerBase_YMH>(Playeractor);
+	// auto Playeractor = UGameplayStatics::GetActorOfClass(GetWorld(), APlayerBase_YMH::StaticClass());
+	FTimerHandle ZombieFSM_Handle;
+	GetWorld()->GetTimerManager().SetTimer(ZombieFSM_Handle, FTimerDelegate::CreateLambda([&]
+	{
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerBase_YMH::StaticClass(), Players);
+	}), 1, true);
+	// Player = Cast<APlayerBase_YMH>(Playeractor);
+
+	// ----- Zombie -----
 	Me = Cast<AZombieBase_KJY>(GetOwner());
-
 	Anim = Cast<UZombieAnim>(Me->GetMesh()->GetAnimInstance());
-
 	ai = Cast<AAIController>(Me->GetController());
 
 	if (GetOwner()->GetActorLocation().Y < -1500)
@@ -78,17 +84,23 @@ void UZombieFSM::MoveState()
 	Me->GetCharacterMovement()->MaxWalkSpeed = 300;
 
 	FVector TargetLoc = Target->GetActorLocation();
-	// 목적지 - 에너미
-	FVector TargetDir = TargetLoc - Me->GetActorLocation();
+	double PlayerDist = 999999;
 	// 플레이어 - 에너미
-	FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
-
+	for (int i = 0; i < Players.Num(); i++)
+	{
+		auto Dist = FVector::Distance(Players[i]->GetActorLocation(), Me->GetActorLocation());
+		if (PlayerDist > Dist)
+		{
+			PlayerDist = Dist;
+			TargetPlayerNum = i;
+		}
+	}
+	
+	// FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
 	if (bFlagDoOnce == false && GetOwner()->HasAuthority())
 	{
 		if (isLeft)
 		{
-			//ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-910.0f,-6480.0f,0.0f), FVector(-910.0f,-1030.0f,0.0f)));
-			//ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-2460.0, -2990.0f, -20.0f), FVector(-2460.0,-990.0f,0.0f)));
 			ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-1010.0, -2990.0f, -20.0f), FVector(-2460.0,-990.0f,0.0f)));
 		}
 		else
@@ -100,18 +112,10 @@ void UZombieFSM::MoveState()
 	
 	if (Temp2 == 0 && Me->GetActorLocation().X < FirstStop.X+100 && GetOwner()->HasAuthority())
 	{
-		// 첫번째 경유지에 도착했을때 다음 경유지로 간다
-		//ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-910.0f,-3240.0f,0.0f),FVector(-910.0f,-3240.0f,0.0f)));
-		//ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-7030.0f, -2070.0f, 0.0f),FVector(-7030.0f, -2070.0f, 0.0f)));
-		//Temp2++;
 		ai->MoveToLocation(TargetLoc);
 	}
-		
 
-	// 목적지 향해 가다가
-	//Me->AddMovementInput(TargetDir.GetSafeNormal());
-
-	if (PlayerDir.Size()<ChaseRange)
+	if (PlayerDist<ChaseRange)
 	{
 		mState = EZombieState::Chase;
 		Anim->AnimState = mState;
@@ -120,7 +124,7 @@ void UZombieFSM::MoveState()
 
 void UZombieFSM::ChaseState()
 {
-	FVector PlayerLoc = Player->GetActorLocation();
+	FVector PlayerLoc = Players[TargetPlayerNum]->GetActorLocation();
 	FVector PlayerDir = PlayerLoc - Me->GetActorLocation();
 
 	if (GetOwner()->HasAuthority())
@@ -135,28 +139,18 @@ void UZombieFSM::ChaseState()
 		CurrentTime = AttackTime;
 		Me->GetCharacterMovement()->MaxWalkSpeed = 0;
 	}
-	
 }
 
 void UZombieFSM::AttackState()
 {
-	//ai->SetFocus(Player, EAIFocusPriority::Gameplay);
-
 	CurrentTime += GetWorld()->DeltaTimeSeconds;
 	if (CurrentTime > AttackTime)
 	{
 		CurrentTime = 0;
 		Anim->bAttackPlay = true;
-
-		
-		/*if (플레이어와 닿으면  )
-		{
-			//FHitOverlap
-			// 플레이어 체력 닳음
-		}*/
 	}
 	
-	FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
+	FVector PlayerDir = Players[TargetPlayerNum]->GetActorLocation() - Me->GetActorLocation();
 	if (PlayerDir.Size()>AttackRange)
 	{
 		mState = EZombieState::Move;

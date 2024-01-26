@@ -81,4 +81,14 @@ public:
 	int32 Temp2;
 
 	FVector FirstStop;
+
+	// ---- LDJ Code -----
+	UPROPERTY()
+	TArray<AActor*> Players;
+
+	UPROPERTY()
+	TArray<FVector> PlayerLocs;
+
+	int32 TargetPlayerNum;
+
 };

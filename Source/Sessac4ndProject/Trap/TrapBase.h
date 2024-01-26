@@ -37,7 +37,7 @@ public:
 	TArray<class AZombieBase_KJY*> EnemyArray;
 
 	UPROPERTY()
-	class UPlayerBuildComp_LDJ* PlayerBuildComp;
+	class UPlayerUpgradeComp_YMH* PlayerUpgradeComp;
 
 	UPROPERTY()
 	class APlayerBase_YMH* Player;

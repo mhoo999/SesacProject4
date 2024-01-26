@@ -89,6 +89,9 @@ public:
 public:
 	void weaponRecoil();
 
+	UPROPERTY(BlueprintReadWrite, Category="Slot", meta=(BindWidget))
+	class UTrapAndWeaponLevelUI_LDJ* WBP_TrapLevel;
+
 	// ------------------------ multi play -----------------------------
 	// UFUNCTION()
 	// void ServerRPC

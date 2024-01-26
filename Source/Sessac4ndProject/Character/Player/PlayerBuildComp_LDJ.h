@@ -46,16 +46,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
 	UInputAction* IA_PlaceTrap;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
-	UInputAction* IA_MouseMode;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
-	UInputAction* IA_LevelUpBtn;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
-	UInputAction* IA_WaveStart;
 	
-	bool bDoOnceMeshSet = false;
+	bool bDoOnceMeshSet = false; // 프리뷰 메시를 한번만 실행하기 위해 필요한 변수
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
 	TSubclassOf<UStaticMeshComponent> PreviewMeshFactory;
@@ -88,10 +81,10 @@ public:
 	TSubclassOf<class ATrapBase> TrapFactory;
 
 	UPROPERTY()
-	class AZombieManagerBase_KJY* ZombieSpawnManager;
+	class AZombieManagerBase_KJY* ZombieSpawnManager; // 웨이브 시스템
 
 	UPROPERTY()
-	TArray<AActor*> ZombieManagerArray;
+	TArray<AActor*> ZombieManagerArray; // 웨이브 시스템
 
 	UPROPERTY()
 	TArray<AActor*> LivingZombieArray;
@@ -101,18 +94,6 @@ public:
 
 	UPROPERTY()
 	FVector TempVec;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TrapLevel")
-	int32 SpikeTrapLevel = 1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TrapLevel")
-	int32 FreezeTrapLevel = 1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TrapLevel")
-	int32 PoisonTrapLevel = 1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TrapLevel")
-	int32 FlameTrapLevel = 1;
 	
 public:
 	void DoBuildSpikeTrap(const FInputActionValue& value);
@@ -120,13 +101,7 @@ public:
 	void DoBuildPoisonTrap(const FInputActionValue& value);
 	void DoBuildFlameTrap(const FInputActionValue& value);
 	void DoEquipGun(const FInputActionValue& value);
-
-	void UpgradeSpikeTrap(const FInputActionValue& value);
-	void UpgradeFreezeTrap(const FInputActionValue& value);
-	void UpgradePoisonTrap(const FInputActionValue& value);
-	void UpgradeFlameTrap(const FInputActionValue& value);
-	void SetMouseMode(const FInputActionValue& value);
-	void LevelUp(const FInputActionValue& value);
+	
 	void WaveStart(const FInputActionValue& value);
 
 	void PreviewLoop();
