@@ -12,6 +12,8 @@
 #include "Character/Enemy/ZombieAnim.h"
 #include "Character/Enemy/ZombieBase_KJY.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/DecalComponent.h"
+#include "Components/PointLightComponent.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 #include "PlayerController/PlayerController_YMH.h"
@@ -97,6 +99,8 @@ void UPlayerFireComp_YMH::Reload(const FInputActionValue& value)
 	
 	player->bIsReloading = true;
 	ServerRPCReload();
+
+	UGameplayStatics::PlaySound2D(GetWorld(), player->reloadSound);
 }
 
 void UPlayerFireComp_YMH::ZoomIn(const FInputActionValue& value)
@@ -148,15 +152,18 @@ void UPlayerFireComp_YMH::MultiRPCReload_Implementation()
 void UPlayerFireComp_YMH::ServerRPCFire_Implementation()
 {
 	FHitResult hitInfo;
+	FHitResult hitInfoZombie;
 	FVector startPos = player->FollowCamera->GetComponentLocation();
 	FVector endPos = startPos + player->FollowCamera->GetForwardVector() * attackDistance;
 	
 	FCollisionQueryParams params;
 	params.AddIgnoredActor(player);
 	bool bHit = GetWorld()->LineTraceSingleByChannel(hitInfo, startPos, endPos, ECC_Visibility, params);
-	bool bHitPawn = GetWorld()->LineTraceSingleByChannel(hitInfo, startPos, endPos, ECC_Pawn, params);
+	bool bHitZombie = GetWorld()->LineTraceSingleByChannel(hitInfoZombie, startPos, endPos, ECC_GameTraceChannel3, params);
 
-	if (bHit)
+	UE_LOG(LogTemp, Warning, TEXT("%s"), bHitZombie ? TEXT("true") : TEXT("false"));
+	
+	if (bHitZombie)
 	{
 		//enemy 체력--
 		auto Enemy = hitInfo.GetActor()->GetDefaultSubobjectByName(TEXT("FSM"));
@@ -170,19 +177,24 @@ void UPlayerFireComp_YMH::ServerRPCFire_Implementation()
 
 	bulletCount--;
 
-	MultiRPCFire(bHit, hitInfo, bulletCount);
+	MultiRPCFire(bHit, bHitZombie, hitInfo, bulletCount);
 	ClientRPCFire(bulletCount);
 }
 
-void UPlayerFireComp_YMH::MultiRPCFire_Implementation(bool bHit, const FHitResult& hitInfo, const int bc)
+void UPlayerFireComp_YMH::MultiRPCFire_Implementation(bool bHit, bool bHitZombie, const FHitResult& hitInfo, const int bc)
 {
 	player->fireDispatcher = true;
 	GetWorld()->GetTimerManager().ClearTimer(combatHandle);
 
 	if (bHit)
 	{
-		// UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), bulletMark, hitInfo.Location, FRotator());
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), defaultBulletMark, hitInfo.Location, FRotator());
+		// UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), defaultBulletMark, hitInfo.Location, FRotator());
+		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), bulletDecal, FVector(1.0f), hitInfo.Location);
+	}
+
+	if (bHitZombie)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), bulletMark, hitInfo.Location, FRotator());
 	}
 	
 	auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
@@ -197,7 +209,11 @@ void UPlayerFireComp_YMH::MultiRPCFire_Implementation(bool bHit, const FHitResul
 		}
 	}), 5, true);
 
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), muzzleFire, player->Weapon->GetSocketLocation(FName("Muzzle")), FRotator());
+	if (muzzleFire)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), muzzleFire, player->Weapon->GetSocketLocation(FName("Muzzle")), FRotator());
+	}
+	UGameplayStatics::PlaySound2D(GetWorld(), player->fireSound);
 }
 
 void UPlayerFireComp_YMH::ClientRPCFire_Implementation(const int bc)

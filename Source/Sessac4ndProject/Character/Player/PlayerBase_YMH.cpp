@@ -19,6 +19,7 @@
 #include "Components/SceneCaptureComponent2D.h"
 #include "Components/TextBlock.h"
 #include "Engine/TextureRenderTarget2D.h"
+#include "Kismet/GameplayStatics.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
 
@@ -56,15 +57,9 @@ APlayerBase_YMH::APlayerBase_YMH()
 	SelfCapture->SetupAttachment(SelfCameraBoom);
 	SelfCapture->PrimitiveRenderMode = ESceneCapturePrimitiveRenderMode::PRM_UseShowOnlyList;
 	
-	PointLightComp = CreateDefaultSubobject<UPointLightComponent>(TEXT("PointLight Component"));
-	PointLightComp->SetupAttachment(RootComponent);
-	PointLightComp->SetRelativeLocation(FVector(55, 15, 20));
-	PointLightComp->SetIntensity(1000.0f);
-	PointLightComp->SetAttenuationRadius(80.0f);
-
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon Mesh"));
 	Weapon->SetupAttachment(GetMesh(), TEXT("WeaponSocket"));
-
+	
 	GetMesh()->SetRelativeRotation(FRotator(0, -65, 0));
 
 	MoveComp = CreateDefaultSubobject<UPlayerMoveComp_YMH>(TEXT("Movement Component"));
@@ -103,6 +98,7 @@ void APlayerBase_YMH::BeginPlay()
 	
 	if (playerController)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("here"));
 		playerController->mainUI->CharacterFrame->SetBrushFromMaterial(FrameMaterial);
 	}
 }
@@ -153,6 +149,8 @@ void APlayerBase_YMH::BeShot(float damage)
 	{
 		playerController->mainUI->hp = percent;
 	}
+
+	UGameplayStatics::PlaySound2D(GetWorld(), hitSound);
 }
 
 void APlayerBase_YMH::DieProcess()
