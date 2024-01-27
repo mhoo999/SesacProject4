@@ -92,7 +92,7 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerRPCFire();
 	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPCFire(bool bHit, bool bHitPawn, const FHitResult& hitInfo, const int bc);
+	void MultiRPCFire(bool bHit, bool bHitZombie, const FHitResult& hitInfo, const FHitResult& hitInfoZombie, const int bc);
 	UFUNCTION(Client, Reliable)
 	void ClientRPCFire(const int bc);
 
