@@ -5,10 +5,7 @@
 
 #include "ZMDGameStateBase_LDJ.h"
 
-void AZMDGameModeBase_LDJ::CheckForWinner()
+AZMDGameModeBase_LDJ::AZMDGameModeBase_LDJ()
 {
-	if (AZMDGameStateBase_LDJ* ZMDGameState = GetGameState<AZMDGameStateBase_LDJ>())
-	{
-
-	}
+	bUseSeamlessTravel = true;
 }
