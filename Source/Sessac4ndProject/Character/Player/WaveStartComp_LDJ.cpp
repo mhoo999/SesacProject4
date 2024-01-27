@@ -59,9 +59,8 @@ void UWaveStartComp_LDJ::ServerRPC_WaveStart_Implementation()
 	{
 		Temp = Cast<AZombieManagerBase_KJY>(e);
 		Temp->CurrentWave++;
-		GetWorld()->GetTimerManager().UnPauseTimer(Temp->SpawnTimerHandle);
+		// GetWorld()->GetTimerManager().UnPauseTimer(Temp->SpawnTimerHandle);
 	}
-	
 	MultiRPC_WaveStart(Temp->CurrentWave);
 }
 

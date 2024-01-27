@@ -91,4 +91,6 @@ public:
 
 	int32 TargetPlayerNum;
 
+	FTimerHandle ZombieFSM_Handle;
+
 };
