@@ -64,5 +64,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class USessionSlotWidget_LDJ> SessionSlotWidget;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(BindWidget))
+	class UTextBlock* Txt_Finding;
 	// ----- 변수 -----
 };
