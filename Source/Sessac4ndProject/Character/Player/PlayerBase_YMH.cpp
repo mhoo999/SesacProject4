@@ -56,6 +56,7 @@ APlayerBase_YMH::APlayerBase_YMH()
 	SelfCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("Self Capture"));
 	SelfCapture->SetupAttachment(SelfCameraBoom);
 	SelfCapture->PrimitiveRenderMode = ESceneCapturePrimitiveRenderMode::PRM_UseShowOnlyList;
+	// SceneCapture > HiddenShoFlags > Lighting = false 하면 캐릭터 밝게 나옴 
 	
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon Mesh"));
 	Weapon->SetupAttachment(GetMesh(), TEXT("WeaponSocket"));
@@ -98,7 +99,6 @@ void APlayerBase_YMH::BeginPlay()
 	
 	if (playerController)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("here"));
 		playerController->mainUI->CharacterFrame->SetBrushFromMaterial(FrameMaterial);
 	}
 }
@@ -119,7 +119,8 @@ void APlayerBase_YMH::VictoryProcess()
 {
 	auto anim = Cast<UPlayerAnimInstance_YMH>(GetMesh()->GetAnimInstance());
 	anim->PlayVictoryMontage();
-	
+
+	DefaultMappingContext = nullptr;
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->DisableMovement();
 }
@@ -139,6 +140,7 @@ void APlayerBase_YMH::BeShot(float damage)
 		UE_LOG(LogTemp, Warning, TEXT("Dead!"));
 		bIsDead = true;
 
+		DefaultMappingContext = nullptr;
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetCharacterMovement()->DisableMovement();
 	}
