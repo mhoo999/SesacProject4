@@ -3,8 +3,25 @@
 
 #include "UI/SessionSlotWidget_LDJ.h"
 
+#include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Game/ZMDGameInstance_LDJ.h"
+
+void USessionSlotWidget_LDJ::NativeConstruct()
+{
+	Super::NativeConstruct();
+	Btn_Join->OnClicked.AddDynamic(this, &USessionSlotWidget_LDJ::JoinSession);
+}
+
+void USessionSlotWidget_LDJ::JoinSession()
+{
+	auto GI = Cast<UZMDGameInstance_LDJ>(GetWorld()->GetGameInstance());
+
+	if (GI)
+	{
+		GI->JoinSelectedSession(SessionNumber);
+	}
+}
 
 void USessionSlotWidget_LDJ::Set(const FSessionInfo& SessionInfo)
 {

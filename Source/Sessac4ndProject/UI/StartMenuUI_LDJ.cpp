@@ -6,6 +6,7 @@
 #include "SessionSlotWidget_LDJ.h"
 #include "Components/Button.h"
 #include "Components/ScrollBox.h"
+#include "Components/TextBlock.h"
 #include "Game/ZMDGameInstance_LDJ.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -61,5 +62,15 @@ void UStartMenuUI_LDJ::AddSlotWidget(const FSessionInfo& SessionInfo)
 
 void UStartMenuUI_LDJ::OnJoinButtonEnabled(bool bIsSearching)
 {
+	// ----- 세션을 찾는 동안에는 버튼 비활성화 -----
 	Btn_JoinSession->SetIsEnabled(!bIsSearching);
+	if (bIsSearching)
+	{
+		Txt_Finding->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		Txt_Finding->SetVisibility(ESlateVisibility::Hidden);
+	}
+	// ----- 세션을 찾는 동안에는 버튼 비활성화 -----
 }

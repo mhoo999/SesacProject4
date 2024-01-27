@@ -47,9 +47,12 @@ public:
 	void CreateMySession(FString RoomName, int32 PlayerCount);//세션 생성함수
 	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);// 세션생성완료 이벤트 함수
 	void FindOtherSession();// 세션 찾기
+	void JoinSelectedSession(int32 RoomIndex); // 세션 입장함수
 	
 	UFUNCTION()
-	void OnFindSessionsComplete(bool bWasSuccessful);//
+	void OnFindSessionsComplete(bool bWasSuccessful);
+	
+	void OnJoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 	// ----- 함수 -----
 
 	// ----- 참조 변수 -----
