@@ -60,9 +60,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Components")
 	USkeletalMeshComponent* Weapon;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|COmponents")
-	UPointLightComponent* PointLightComp;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
 	UInputMappingContext* DefaultMappingContext;
 	
@@ -127,5 +124,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<class UMaterialInterface> FrameMaterialInterface = NULL;
 	TObjectPtr<class UTextureRenderTarget2D> RenderTarget;
+
+	// ------------------- Sounds --------------------------
+	UPROPERTY(EditAnywhere)
+	USoundBase* hitSound;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* fireSound;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* reloadSound;
 };
 

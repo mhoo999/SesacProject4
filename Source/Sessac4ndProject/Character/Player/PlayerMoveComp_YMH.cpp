@@ -8,6 +8,7 @@
 #include "InputActionValue.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 UPlayerMoveComp_YMH::UPlayerMoveComp_YMH()
 {
