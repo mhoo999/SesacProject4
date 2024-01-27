@@ -48,7 +48,7 @@ private:
 	UParticleSystem* muzzleFire;
 
 	UPROPERTY(EditDefaultsOnly, Category="WeaponEffect")
-	UMaterialInterface* bulletDecal;
+	UMaterialInstance* bulletDecal;
 
 	FTimerHandle combatHandle;
 	

@@ -188,6 +188,7 @@ void UPlayerFireComp_YMH::MultiRPCFire_Implementation(bool bHit, bool bHitZombie
 	if (bHit && defaultBulletMark)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), defaultBulletMark, hitInfo.Location, FRotator());
+		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), bulletDecal, FVector(1.0f), hitInfo.Location, FRotator(0, 0, 0), 1.f);
 	}
 
 	if (bHitZombie && bulletMark)
