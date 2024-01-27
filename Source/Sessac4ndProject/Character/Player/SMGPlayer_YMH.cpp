@@ -58,6 +58,5 @@ void ASMGPlayer_YMH::SetCrosshair()
 	if (playerController)
 	{
 		playerController->mainUI->ShowPointer();
-		playerController->mainUI->ShowCrosshair();
 	}
 }

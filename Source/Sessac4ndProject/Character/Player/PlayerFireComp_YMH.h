@@ -37,6 +37,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
 	UInputAction* IA_Zoom;
 
+	// 맞은 대상이 폰일 때 생기는 이펙트
 	UPROPERTY(EditDefaultsOnly, Category="WeaponEffect")
 	UParticleSystem* bulletMark;
 
@@ -45,6 +46,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="WeaponEffect")
 	UParticleSystem* muzzleFire;
+
+	UPROPERTY(EditDefaultsOnly, Category="WeaponEffect")
+	UMaterialInterface* bulletDecal;
 
 	FTimerHandle combatHandle;
 	
@@ -88,7 +92,7 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerRPCFire();
 	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPCFire(bool bHit, const FHitResult& hitInfo, const int bc);
+	void MultiRPCFire(bool bHit, bool bHitZombie, const FHitResult& hitInfo, const FHitResult& hitInfoZombie, const int bc);
 	UFUNCTION(Client, Reliable)
 	void ClientRPCFire(const int bc);
 

@@ -7,6 +7,7 @@
 #include "InputActionValue.h"
 #include "PlayerBase_YMH.generated.h"
 
+class UWaveStartComp_LDJ;
 class UPlayerUpgradeComp_YMH;
 class UPointLightComponent;
 class UMainUI_YMH;
@@ -59,9 +60,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Components")
 	USkeletalMeshComponent* Weapon;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|COmponents")
-	UPointLightComponent* PointLightComp;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
 	UInputMappingContext* DefaultMappingContext;
 	
@@ -76,6 +74,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	UPlayerUpgradeComp_YMH* UpgradeComp;
+
+	UPROPERTY(EditDefaultsOnly)
+	UWaveStartComp_LDJ* WaveStartComp;
 	
 public:
 	// ------------------- Init ----------------------
@@ -123,5 +124,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<class UMaterialInterface> FrameMaterialInterface = NULL;
 	TObjectPtr<class UTextureRenderTarget2D> RenderTarget;
+
+	// ------------------- Sounds --------------------------
+	UPROPERTY(EditAnywhere)
+	USoundBase* hitSound;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* fireSound;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* reloadSound;
 };
 
