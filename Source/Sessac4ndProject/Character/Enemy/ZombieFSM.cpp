@@ -32,11 +32,10 @@ void UZombieFSM::BeginPlay()
 	auto TargetActor = UGameplayStatics::GetActorOfClass(GetWorld(), ADestinationActor_KJY::StaticClass());
 	Target = Cast<ADestinationActor_KJY>(TargetActor);
 	// auto Playeractor = UGameplayStatics::GetActorOfClass(GetWorld(), APlayerBase_YMH::StaticClass());
-	FTimerHandle ZombieFSM_Handle;
 	GetWorld()->GetTimerManager().SetTimer(ZombieFSM_Handle, FTimerDelegate::CreateLambda([&]
 	{
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerBase_YMH::StaticClass(), Players);
-	}), 1, true);
+	}), 3, false);
 	// Player = Cast<APlayerBase_YMH>(Playeractor);
 
 	// ----- Zombie -----

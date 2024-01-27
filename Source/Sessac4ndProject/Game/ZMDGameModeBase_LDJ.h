@@ -13,8 +13,7 @@ UCLASS()
 class SESSAC4NDPROJECT_API AZMDGameModeBase_LDJ : public AGameModeBase
 {
 	GENERATED_BODY()
-
+	AZMDGameModeBase_LDJ();
 public:
-	UFUNCTION()
-	void CheckForWinner();
+	
 };
