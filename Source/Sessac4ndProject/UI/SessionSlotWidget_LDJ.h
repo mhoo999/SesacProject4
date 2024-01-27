@@ -15,6 +15,18 @@ class SESSAC4NDPROJECT_API USessionSlotWidget_LDJ : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	// ----- override 함수 -----
+	virtual void NativeConstruct() override;
+	// ----- override 함수 -----
+
+	// ----- 함수 -----
+	UFUNCTION()
+	void JoinSession();
+	// ----- 함수 -----
+
+	// ----- 변수 -----
+	// ----- 변수 -----
+	
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
 	class UTextBlock* Txt_SessionNumber;
 	

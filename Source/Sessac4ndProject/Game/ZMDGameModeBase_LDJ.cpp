@@ -7,5 +7,5 @@
 
 AZMDGameModeBase_LDJ::AZMDGameModeBase_LDJ()
 {
-	bUseSeamlessTravel = true;
+	bUseSeamlessTravel = false;
 }

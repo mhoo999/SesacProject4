@@ -20,7 +20,8 @@ void UZMDGameInstance_LDJ::Init()
 	{
 		SessionInterface = Subsys->GetSessionInterface();
 		SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UZMDGameInstance_LDJ::OnCreateSessionComplete); //세션이 만들어질 때 호출
-		SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UZMDGameInstance_LDJ::OnFindSessionsComplete);
+		SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UZMDGameInstance_LDJ::OnFindSessionsComplete); //세션을 찾을 때 호출
+		SessionInterface->OnJoinSessionCompleteDelegates.AddUObject(this, &UZMDGameInstance_LDJ::OnJoinSessionCompleted); //방에 들어갔을 때, 호출
 	}
 	// ----- 온라인세션 인터페이스 만들기 -----
 }
@@ -66,7 +67,7 @@ void UZMDGameInstance_LDJ::OnCreateSessionComplete(FName SessionName, bool bWasS
 
 	if (bWasSuccessful)
 	{
-		GetWorld()->ServerTravel(TEXT("/Game/KJY/Maps/ZombieMap1?listen"));
+		GetWorld()->ServerTravel(TEXT("/Game/KJY/Maps/ZombieMap1?listen"));// 서버가 방 안에 들어가도록 레벨을 열고 ?listen을 치자.
 	}
 }
 
@@ -83,6 +84,15 @@ void UZMDGameInstance_LDJ::FindOtherSession()
 	SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
 	OnSearchState.Broadcast(true);
 	// ----- 검색 실행 -----
+}
+
+void UZMDGameInstance_LDJ::JoinSelectedSession(int32 RoomIndex)
+{
+	// ----- 여러 개의 방 목록 중 하나를 선택 -----
+	auto sr = SessionSearch->SearchResults[RoomIndex]; // 여러개의 방 목록 중 하나를 선택
+	SessionInterface->JoinSession(0, FName(MySessionName), sr); // 세션에 들어가는 함수.
+	// ----- 여러 개의 방 목록 중 하나를 선택 -----
+	
 }
 
 void UZMDGameInstance_LDJ::OnFindSessionsComplete(bool bWasSuccessful)
@@ -129,4 +139,25 @@ void UZMDGameInstance_LDJ::OnFindSessionsComplete(bool bWasSuccessful)
 	OnSearchState.Broadcast(false);
 	// ----- 세션 검색 정보 -----
 	
+}
+
+void UZMDGameInstance_LDJ::OnJoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+{
+	// ----- 클라이언트 트래블 -----
+	if (Result == EOnJoinSessionCompleteResult::Success)
+	{
+		FString URL;// 서버가 만든 세션의 URL이 필요함
+		SessionInterface->GetResolvedConnectString(SessionName, URL); //세션이름으로부터 URL을 받는다.
+
+		if (URL.IsEmpty() == false)
+		{
+			auto pc = GetWorld()->GetFirstPlayerController(); // 들어가자 방으로, 클라가 방으로 들어갈 때는 P.C가 있어야 한다.
+			pc->ClientTravel(URL, TRAVEL_Absolute); // 들어가는 함수.
+		}
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, TEXT("Join Session Failed"));
+	}
+	// ----- 클라이언트 트래블 -----
 }
