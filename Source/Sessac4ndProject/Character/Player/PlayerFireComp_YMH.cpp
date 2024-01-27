@@ -151,18 +151,17 @@ void UPlayerFireComp_YMH::MultiRPCReload_Implementation()
 
 void UPlayerFireComp_YMH::ServerRPCFire_Implementation()
 {
-	FHitResult hitInfo;
-	FHitResult hitInfoZombie;
 	FVector startPos = player->FollowCamera->GetComponentLocation();
 	FVector endPos = startPos + player->FollowCamera->GetForwardVector() * attackDistance;
 	
 	FCollisionQueryParams params;
 	params.AddIgnoredActor(player);
+	
+	FHitResult hitInfo;
 	bool bHit = GetWorld()->LineTraceSingleByChannel(hitInfo, startPos, endPos, ECC_Visibility, params);
+	FHitResult hitInfoZombie;
 	bool bHitZombie = GetWorld()->LineTraceSingleByChannel(hitInfoZombie, startPos, endPos, ECC_GameTraceChannel3, params);
 
-	UE_LOG(LogTemp, Warning, TEXT("%s"), bHitZombie ? TEXT("true") : TEXT("false"));
-	
 	if (bHitZombie)
 	{
 		//enemy 체력--
@@ -177,24 +176,23 @@ void UPlayerFireComp_YMH::ServerRPCFire_Implementation()
 
 	bulletCount--;
 
-	MultiRPCFire(bHit, bHitZombie, hitInfo, bulletCount);
+	MultiRPCFire(bHit, bHitZombie, hitInfo, hitInfoZombie, bulletCount);
 	ClientRPCFire(bulletCount);
 }
 
-void UPlayerFireComp_YMH::MultiRPCFire_Implementation(bool bHit, bool bHitZombie, const FHitResult& hitInfo, const int bc)
+void UPlayerFireComp_YMH::MultiRPCFire_Implementation(bool bHit, bool bHitZombie, const FHitResult& hitInfo, const FHitResult& hitInfoZombie, const int bc)
 {
 	player->fireDispatcher = true;
 	GetWorld()->GetTimerManager().ClearTimer(combatHandle);
 
-	if (bHit)
+	if (bHit && defaultBulletMark)
 	{
-		// UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), defaultBulletMark, hitInfo.Location, FRotator());
-		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), bulletDecal, FVector(1.0f), hitInfo.Location);
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), defaultBulletMark, hitInfo.Location, FRotator());
 	}
 
-	if (bHitZombie)
+	if (bHitZombie && bulletMark)
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), bulletMark, hitInfo.Location, FRotator());
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), bulletMark, hitInfoZombie.Location, FRotator());
 	}
 	
 	auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
