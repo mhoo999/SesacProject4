@@ -16,6 +16,7 @@
 #include "Components/PointLightComponent.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
 
@@ -88,21 +89,6 @@ void UPlayerFireComp_YMH::Fire(const FInputActionValue& value)
 	ServerRPCFire();
 }
 
-void UPlayerFireComp_YMH::Reload(const FInputActionValue& value)
-{
-	// UE_LOG(LogTemp, Warning, TEXT("Reload"));
-
-	if (player->bIsReloading || player->bIsBuildMode || player->fireDispatcher || player->bIsDead)
-	{
-		return;
-	}
-	
-	player->bIsReloading = true;
-	ServerRPCReload();
-
-	UGameplayStatics::PlaySound2D(GetWorld(), player->reloadSound);
-}
-
 void UPlayerFireComp_YMH::ZoomIn(const FInputActionValue& value)
 {
 	player->FollowCamera->FieldOfView = maxFOV;
@@ -115,6 +101,36 @@ void UPlayerFireComp_YMH::ZoomOut(const FInputActionValue& value)
 	player->FollowCamera->FieldOfView = defaultFOV;
 	player->bIsCombat = false;
 	bZoomIn = false;
+}
+
+void UPlayerFireComp_YMH::Reload(const FInputActionValue& value)
+{
+	// UE_LOG(LogTemp, Warning, TEXT("Reload"));
+
+	if (player->bIsReloading || player->bIsBuildMode || player->fireDispatcher || player->bIsDead)
+	{
+		return;
+	}
+	
+	ServerRPCReload();
+}
+
+void UPlayerFireComp_YMH::ServerRPCReload_Implementation()
+{
+	ClientRPCReload_Implementation();
+	MultiRPCReload_Implementation();
+}
+
+void UPlayerFireComp_YMH::ClientRPCReload_Implementation()
+{
+	player->bIsReloading = true;
+}
+
+void UPlayerFireComp_YMH::MultiRPCReload_Implementation()
+{
+	UGameplayStatics::PlaySound2D(GetWorld(), player->reloadSound);
+	auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
+	anim->PlayReloadAnimation();
 }
 
 void UPlayerFireComp_YMH::ServerRPCInitAmmo_Implementation()
@@ -138,17 +154,6 @@ void UPlayerFireComp_YMH::ClientRPCInitAmmo_Implementation(const int bc)
 	player->bIsReloading = false;
 }
 
-void UPlayerFireComp_YMH::ServerRPCReload_Implementation()
-{
-	MultiRPCReload();
-}
-
-void UPlayerFireComp_YMH::MultiRPCReload_Implementation()
-{
-	auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
-	anim->PlayReloadAnimation();
-}
-
 void UPlayerFireComp_YMH::ServerRPCFire_Implementation()
 {
 	FVector startPos = player->FollowCamera->GetComponentLocation();
@@ -161,7 +166,8 @@ void UPlayerFireComp_YMH::ServerRPCFire_Implementation()
 	bool bHit = GetWorld()->LineTraceSingleByChannel(hitInfo, startPos, endPos, ECC_Visibility, params);
 	FHitResult hitInfoZombie;
 	bool bHitZombie = GetWorld()->LineTraceSingleByChannel(hitInfoZombie, startPos, endPos, ECC_GameTraceChannel3, params);
-
+	
+	
 	if (bHitZombie)
 	{
 		//enemy 체력--
@@ -187,8 +193,9 @@ void UPlayerFireComp_YMH::MultiRPCFire_Implementation(bool bHit, bool bHitZombie
 
 	if (bHit && defaultBulletMark)
 	{
+		FRotator newRot = UKismetMathLibrary::MakeRotFromX(hitInfo.ImpactNormal);
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), defaultBulletMark, hitInfo.Location, FRotator());
-		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), bulletDecal, FVector(1.0f), hitInfo.Location, FRotator(0, 0, 0), 1.f);
+		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), bulletDecal, decalSize, hitInfo.Location, newRot, 10.0f);
 	}
 
 	if (bHitZombie && bulletMark)

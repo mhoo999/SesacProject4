@@ -20,7 +20,15 @@ struct FInputActionValue;
 class UInputAction;
 class AGameModeBase;
 /**
- * 
+*********************** Player BP CheckList ***********************
+* MySettings > Default Mapping Context = ‘IM_Default_YMH’
+* PlayerBase > Sound = hit, fire, reload
+* PlayerBase > FrameMaterialInterface ‘MI_CharacterCamera_YMH’
+* SelfCapture > HiddenShowFlags > Lighting = false
+* FollowCamera > PostProcessVolume > ColorGrading > Global > Saturation = true
+* Mesh > SkeletalMeshAsset =
+* Mesh > Animation > AnimClass = ABP
+* FireComp > WeaponEffect = bloodSplatter, , , MI_BulletMark
  */
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FInputDelegate, UInputComponent*);

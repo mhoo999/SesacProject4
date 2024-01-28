@@ -59,6 +59,7 @@ public:
 	int32 reloadBulletCount;
 	UPROPERTY()
 	int32 bulletCount;
+	FVector decalSize;
 
 public:
 	// ------------------------ Weapon Info ------------------------
@@ -76,10 +77,7 @@ public:
 	// ------------------------ weapon action -------------------------
 	void Fire(const FInputActionValue& value);
 	void Reload(const FInputActionValue& value);
-	UFUNCTION(Server, Reliable)
-	void ServerRPCInitAmmo();
-	UFUNCTION(Client, Reliable)
-	void ClientRPCInitAmmo(const int bc);
+	
 	void ZoomIn(const FInputActionValue& value);
 	void ZoomOut(const FInputActionValue& value);
 	bool bZoomIn = false;
@@ -98,6 +96,12 @@ public:
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPCReload();
+	UFUNCTION(Client, Reliable)
+	void ClientRPCReload();
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiRPCReload();
+	UFUNCTION(Server, Reliable)
+	void ServerRPCInitAmmo();
+	UFUNCTION(Client, Reliable)
+	void ClientRPCInitAmmo(const int bc);
 };
