@@ -21,8 +21,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void OnRep_Owner() override;
-
 public:
 	virtual void Tick(float DeltaSeconds) override;
 
