@@ -191,11 +191,11 @@ void UPlayerFireComp_YMH::MultiRPCFire_Implementation(bool bHit, bool bHitZombie
 	player->fireDispatcher = true;
 	GetWorld()->GetTimerManager().ClearTimer(combatHandle);
 
-	if (bHit && defaultBulletMark)
+	if (bHit && bulletDecal)
 	{
 		FRotator newRot = UKismetMathLibrary::MakeRotFromX(hitInfo.ImpactNormal);
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), defaultBulletMark, hitInfo.Location, FRotator());
 		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), bulletDecal, decalSize, hitInfo.Location, newRot, 10.0f);
+		// UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), defaultBulletMark, hitInfo.Location, FRotator());
 	}
 
 	if (bHitZombie && bulletMark)
