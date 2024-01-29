@@ -7,6 +7,7 @@
 #include "FrameTypes.h"
 #include "Animation/AnimInstance.h"
 #include "PlayerBase_YMH.h"
+#include "Actor/Bullet_YMH.h"
 #include "Animation/PlayerAnimInstance_YMH.h"
 #include "Camera/CameraComponent.h"
 #include "Character/Enemy/ZombieAnim.h"
@@ -54,6 +55,7 @@ void UPlayerFireComp_YMH::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 	// bIsReloading = player->bIsReloading;
 	// fireDispatcher = player->fireDispatcher;
+	bulletDropPoint = (player->Weapon->GetSocketLocation(FName("Muzzle"))) + (player->FollowCamera->GetForwardVector() * attackDistance);
 }
 
 void UPlayerFireComp_YMH::SetupPlayerInput(UInputComponent* PlayerInputComponent)
@@ -182,11 +184,13 @@ void UPlayerFireComp_YMH::ServerRPCFire_Implementation()
 
 	bulletCount--;
 
-	MultiRPCFire(bHit, bHitZombie, hitInfo, hitInfoZombie, bulletCount);
+	FTransform firePosition = player->Weapon->GetSocketTransform(TEXT("Muzzle"));
+
+	MultiRPCFire(bHit, bHitZombie, hitInfo, hitInfoZombie, bulletCount, firePosition);
 	ClientRPCFire(bulletCount);
 }
 
-void UPlayerFireComp_YMH::MultiRPCFire_Implementation(bool bHit, bool bHitZombie, const FHitResult& hitInfo, const FHitResult& hitInfoZombie, const int bc)
+void UPlayerFireComp_YMH::MultiRPCFire_Implementation(bool bHit, bool bHitZombie, const FHitResult& hitInfo, const FHitResult& hitInfoZombie, const int bc, FTransform firePosition)
 {
 	player->fireDispatcher = true;
 	GetWorld()->GetTimerManager().ClearTimer(combatHandle);
@@ -196,6 +200,9 @@ void UPlayerFireComp_YMH::MultiRPCFire_Implementation(bool bHit, bool bHitZombie
 		FRotator newRot = UKismetMathLibrary::MakeRotFromX(hitInfo.ImpactNormal);
 		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), bulletDecal, decalSize, hitInfo.Location, newRot, 10.0f);
 		// UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), defaultBulletMark, hitInfo.Location, FRotator());
+
+		// hitInfo.location을 Bullet도착 지점으로
+		bulletDropPoint = hitInfo.Location;
 	}
 
 	if (bHitZombie && bulletMark)
@@ -220,6 +227,11 @@ void UPlayerFireComp_YMH::MultiRPCFire_Implementation(bool bHit, bool bHitZombie
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), muzzleFire, player->Weapon->GetSocketLocation(FName("Muzzle")), FRotator());
 	}
 	UGameplayStatics::PlaySound2D(GetWorld(), player->fireSound);
+
+	if (BulletFactory)
+	{
+		GetWorld()->SpawnActor<ABullet_YMH>(BulletFactory, firePosition);
+	}
 }
 
 void UPlayerFireComp_YMH::ClientRPCFire_Implementation(const int bc)

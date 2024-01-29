@@ -7,6 +7,7 @@
 #include "PlayerBaseComp_YMH.h"
 #include "PlayerFireComp_YMH.generated.h"
 
+class ABullet_YMH;
 class UInputAction;
 /**
  * 
@@ -61,6 +62,10 @@ public:
 	int32 bulletCount;
 	FVector decalSize;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ABullet_YMH> BulletFactory;
+	FVector bulletDropPoint;
+
 public:
 	// ------------------------ Weapon Info ------------------------
 	int32 weaponeGrade;
@@ -90,7 +95,7 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerRPCFire();
 	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPCFire(bool bHit, bool bHitZombie, const FHitResult& hitInfo, const FHitResult& hitInfoZombie, const int bc);
+	void MultiRPCFire(bool bHit, bool bHitZombie, const FHitResult& hitInfo, const FHitResult& hitInfoZombie, const int bc, FTransform firePosition);
 	UFUNCTION(Client, Reliable)
 	void ClientRPCFire(const int bc);
 
