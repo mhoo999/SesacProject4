@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Bullet_YMH.generated.h"
 
-class UCapsuleComponent;
+class UBoxComponent;
 class APlayerController_YMH;
 
 UCLASS()
@@ -23,12 +23,15 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION()
+	void OnBoxCompBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Components")
-	UCapsuleComponent* capsuleComp;
+	UBoxComponent* capsuleComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Components")
-	UMeshComponent* meshComp;
+	UStaticMeshComponent* meshComp;
 	
 public:
 	APlayerController_YMH* pc;
