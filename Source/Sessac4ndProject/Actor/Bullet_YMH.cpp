@@ -5,11 +5,21 @@
 
 #include "Character/Player/PlayerBase_YMH.h"
 #include "Character/Player/PlayerFireComp_YMH.h"
+#include "Components/BoxComponent.h"
 #include "PlayerController/PlayerController_YMH.h"
 
 ABullet_YMH::ABullet_YMH()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	capsuleComp = CreateDefaultSubobject<UBoxComponent>(TEXT("Capsule Component"));
+	SetRootComponent(capsuleComp);
+	capsuleComp->SetRelativeScale3D(FVector(0.05f));
+	capsuleComp->SetBoxExtent(FVector(10.0f));
+
+	meshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh Component"));
+	meshComp->SetupAttachment(RootComponent);
+	meshComp->SetRelativeScale3D(FVector(0.05f, 0.01f, 0.01f));
 }
 
 void ABullet_YMH::BeginPlay()
@@ -39,5 +49,12 @@ void ABullet_YMH::Tick(float DeltaTime)
 	FVector v = direction * bulletSpeed;
 	// FVector v = GetActorForwardVector() * bulletSpeed;
 	SetActorLocation(p0 + v * DeltaTime);
+}
+
+void ABullet_YMH::OnBoxCompBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	auto begin = Cast<AActor>(OtherActor);
+	this->Destroy();
 }
 
