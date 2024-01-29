@@ -27,8 +27,10 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=FSM)
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category=FSM)
 	EZombieState mState = EZombieState::Move;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	void MoveState();
 	void ChaseState();
@@ -39,46 +41,60 @@ public:
 	UPROPERTY(VisibleAnywhere, Category=FSM)
 	class ADestinationActor_KJY* Target;
 
-	UPROPERTY(VisibleAnywhere, Category=FSM)
+	UPROPERTY(Replicated, VisibleAnywhere, Category=FSM)
 	class APlayerBase_YMH* Player;
 
-	UPROPERTY(VisibleAnywhere, Category=FSM)
+	UPROPERTY(Replicated, VisibleAnywhere, Category=FSM)
 	class AZombieBase_KJY* Me;
 
-	UPROPERTY(EditAnywhere, Category=FSM)
+	UPROPERTY(Replicated, EditAnywhere, Category=FSM)
 	float ChaseRange = 300.0f;
 	
-	UPROPERTY(EditAnywhere, Category=FSM)
+	UPROPERTY(Replicated, EditAnywhere, Category=FSM)
 	float AttackRange = 150.0f;
 
-	UPROPERTY(EditAnywhere, Category=FSM)
+	UPROPERTY(Replicated, EditAnywhere, Category=FSM)
 	float CurrentTime = 0;
 
 	// 공격 대기 시간
-	UPROPERTY(EditAnywhere, Category=FSM)
+	UPROPERTY(Replicated, EditAnywhere, Category=FSM)
 	float AttackTime = 2.0f;
 
     	
 	// 피격 대기 시간
-	UPROPERTY(EditAnywhere, Category=FSM)
+	UPROPERTY(Replicated, EditAnywhere, Category=FSM)
 	float DamageTime = 2.0f;
 
-	UPROPERTY(EditAnywhere, Category=FSM)
+	UPROPERTY(Replicated, EditAnywhere, Category=FSM)
 	float DeathTime = 1.0f;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	class UZombieAnim* Anim;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	class AAIController* ai;
 	
 	FVector GetRandomLocationInNavMesh(bool& bisLeft, FVector DestLoc, FVector RightDestLoc);
 
+	UPROPERTY(Replicated)
 	bool bFlagDoOnce;
 
+	UPROPERTY(Replicated)
 	bool isLeft;
 
 	int32 Temp2;
 
+	UPROPERTY(Replicated)
 	FVector FirstStop;
+
+	UPROPERTY(Replicated)
+	FVector PlayerDir;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_ChaseState();
+
+	UFUNCTION(Client, Reliable)
+	void ClientRPC_ChaseState();
+
+	 
 };
