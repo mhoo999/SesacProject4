@@ -22,10 +22,5 @@ protected:
 
 public:
 	virtual void Tick(float DeltaTime) override;
-
-public:
-	UPROPERTY(EditAnywhere)
-	class AZombieBase_KJY* Me;
-
 	
 };

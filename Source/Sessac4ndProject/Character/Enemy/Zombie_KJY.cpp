@@ -14,4 +14,9 @@ void AZombie_KJY::BeginPlay()
 	Super::BeginPlay();
 }
 
+void AZombie_KJY::SpawnItem()
+{
+	Super::SpawnItem();
+	GEngine->AddOnScreenDebugMessage(-1,3,FColor::Purple, TEXT("22222222222222222222222"));
 
+}
