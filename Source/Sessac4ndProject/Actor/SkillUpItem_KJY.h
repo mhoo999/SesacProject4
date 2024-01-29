@@ -13,5 +13,6 @@ UCLASS()
 class SESSAC4NDPROJECT_API ASkillUpItem_KJY : public AItemActor_KJY
 {
 	GENERATED_BODY()
-	
+
+	virtual void ReactItem() override;
 };

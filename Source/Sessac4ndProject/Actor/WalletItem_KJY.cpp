@@ -4,9 +4,8 @@
 #include "Actor/WalletItem_KJY.h"
 #include "Character/Player/PlayerBase_YMH.h"
 
-void AItemActor_KJY::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AWalletItem_KJY::ReactItem()
 {
-	Player->wallet+50;
-	Destroy();
+	UE_LOG(LogTemp, Warning, TEXT("Wallet"));
+	
 }
