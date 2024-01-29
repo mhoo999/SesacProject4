@@ -23,6 +23,8 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UZombieFSM* fsm;

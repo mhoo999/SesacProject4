@@ -39,9 +39,11 @@ void AItemActor_KJY::OnBeginItemOverlap(UPrimitiveComponent* OverlappedComponent
 {
 	Player = Cast<APlayerBase_YMH>(GetWorld()->GetFirstPlayerController()->GetCharacter());
 
-	ReactItem();
-	
-	Destroy();
+	if (Player == OtherActor)
+	{
+		ReactItem();
+		Destroy();
+	}
 }
 
 void AItemActor_KJY::ReactItem()
