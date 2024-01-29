@@ -30,8 +30,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=FSM)
 	EZombieState mState = EZombieState::Move;
 
-	void MoveState();
-	void ChaseState();
+	virtual void MoveState();
+	virtual void ChaseState();
 	void AttackState();
 	//void DamageState();
 	//void DieState();
@@ -49,7 +49,7 @@ public:
 	float ChaseRange = 300.0f;
 	
 	UPROPERTY(EditAnywhere, Category=FSM)
-	float AttackRange = 150.0f;
+	float AttackRange = 100.0f;
 
 	UPROPERTY(EditAnywhere, Category=FSM)
 	float CurrentTime = 0;

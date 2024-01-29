@@ -80,7 +80,7 @@ void UZombieFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 
 void UZombieFSM::MoveState()
 {
-	Me->GetCharacterMovement()->MaxWalkSpeed = 300;
+	//Me->GetCharacterMovement()->MaxWalkSpeed = 300;
 
 	FVector TargetLoc = Target->GetActorLocation();
 	double PlayerDist = 999999;
@@ -136,7 +136,7 @@ void UZombieFSM::ChaseState()
 		mState = EZombieState::Attack;
 		Anim->AnimState = mState;
 		CurrentTime = AttackTime;
-		Me->GetCharacterMovement()->MaxWalkSpeed = 0;
+		//Me->GetCharacterMovement()->MaxWalkSpeed = 0;
 	}
 }
 
@@ -154,7 +154,7 @@ void UZombieFSM::AttackState()
 	{
 		mState = EZombieState::Move;
 		Anim->AnimState = mState;
-		Me->GetCharacterMovement()->MaxWalkSpeed = 300;
+		//Me->GetCharacterMovement()->MaxWalkSpeed = 300;
 	}
 }
 
