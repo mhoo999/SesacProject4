@@ -51,4 +51,21 @@ public:
 	class UZombieAnim* Anim;
 
 	void PrintHP();
+
+	UPROPERTY(EditAnywhere)
+	FVector SpawnLoc;
+
+	UPROPERTY()
+	class AZombieBase_KJY* Me;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AWalletItem_KJY> WalletFactory;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AHealthItem_KJY> HealthFactory;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class ASkillUpItem_KJY> SkillUpFactory;
+	
+	virtual void SpawnItem();
 };

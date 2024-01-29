@@ -23,5 +23,19 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(VisibleAnywhere)
+	class UBoxComponent* collisionComp;
 	
+	UPROPERTY(VisibleAnywhere)
+	class UStaticMeshComponent* MeshComp;
+
+	UPROPERTY(VisibleAnywhere, Category=FSM)
+	class APlayerBase_YMH* Player; 
+	
+	UFUNCTION()
+	virtual void OnBeginItemOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+							  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+							  const FHitResult& SweepResult);
+
+	virtual void ReactItem();
 };
