@@ -47,6 +47,13 @@ void AZombieBase_KJY::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void AZombieBase_KJY::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	SpawnItem();
+}
+
 void AZombieBase_KJY::Damage()
 {
 
@@ -64,7 +71,7 @@ void AZombieBase_KJY::Damage()
 	
 	if(	CurrentHp == 0) // <= 에서 ==으로 변경
 	{
-		SpawnLoc = this->GetActorLocation() + FVector(0, 0, 100);
+		SpawnLoc = GetActorLocation() + FVector(0, 0, -50);
 		UE_LOG(LogTemp, Warning, TEXT("Spawn Loc : %s"), *SpawnLoc.ToString());
 		Die();
 	}
@@ -77,14 +84,13 @@ void AZombieBase_KJY::Die()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
-	SpawnItem();
 	
 	auto temp = Cast<AZombieBase_KJY>(GetMesh()->GetOwner());
 	temp->GetCharacterMovement()->MaxWalkSpeed = 0;
-	// GetWorld()->GetTimerManager().SetTimer(ZombieBaseTimer, FTimerDelegate::CreateLambda([&]
-	// {
-	// 	Destroy();
-	// }), 0.1, false);
+	GetWorld()->GetTimerManager().SetTimer(ZombieBaseTimer, FTimerDelegate::CreateLambda([&]
+	{
+		Destroy();
+	}), 0.1, false);
 
 }
 
@@ -115,28 +121,18 @@ void AZombieBase_KJY::PrintHP()
 void AZombieBase_KJY::SpawnItem()
 {
 	float RandItem = FMath::RandRange(0,1);
-	// if(RandItem < 0.6)
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("SpawnWallet"));
-	//
-	// 	GetWorld()->SpawnActor<AWalletItem_KJY>(WalletFactory, FVector(0), FRotator(0));
-	// 	UE_LOG(LogTemp, Warning, TEXT("Spawn Loc : %s"), *SpawnLoc.ToString());
-	// }
-	// else if(RandItem<0.8)
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("SpawnHelath"));
-	// 	
-	// 	GetWorld()->SpawnActor<AHealthItem_KJY>(HealthFactory, FVector(0), FRotator(0));
-	// }
-	// else
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("SpawnSkillUp"));
-	//
-	// 	GetWorld()->SpawnActor<ASkillUpItem_KJY>(SkillUpFactory, FVector(0), FRotator(0));
-	// }
-
-	GetWorld()->SpawnActor<AWalletItem_KJY>(WalletFactory, SpawnLoc, FRotator(0));
-	// GEngine->AddOnScreenDebugMessage(-1,3,FColor::Purple, FString::Printf(TEXT("%f, %f"), e->GetActorLocation().X, e->GetActorLocation().Y));
+	if(RandItem < 0.6)
+	{
+		GetWorld()->SpawnActor<AWalletItem_KJY>(WalletFactory, SpawnLoc, FRotator(0));
+	}
+	else if(RandItem<0.8)
+	{
+		GetWorld()->SpawnActor<AHealthItem_KJY>(HealthFactory, SpawnLoc, FRotator(0));
+	}
+	else
+	{
+		GetWorld()->SpawnActor<ASkillUpItem_KJY>(SkillUpFactory, SpawnLoc, FRotator(0));
+	}
 
 }
 
