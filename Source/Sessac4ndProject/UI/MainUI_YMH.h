@@ -95,6 +95,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category="WidgetBP", meta=(BindWidget))
 	class UWaveInformationUI_LDJ* WBP_WaveInfor;
 
+	UPROPERTY(BlueprintReadWrite, Category="WidgetBP", meta=(BindWidget))
+	class UZombieHPUI_LDJ* WBP_ZombieHPUI_LDJ;
+
 	// ------------------------ multi play -----------------------------
 	// UFUNCTION()
 	// void ServerRPC
