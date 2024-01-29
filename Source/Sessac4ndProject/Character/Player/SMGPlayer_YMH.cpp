@@ -13,11 +13,6 @@ ASMGPlayer_YMH::ASMGPlayer_YMH()
 	{
 		Weapon->SetSkeletalMeshAsset(SMG.Object);
 	}
-}
-
-void ASMGPlayer_YMH::BeginPlay()
-{
-	Super::BeginPlay();
 
 	FireComp->attackSpeed = 2.0f;
 	FireComp->Damage = 10.0f;
@@ -30,6 +25,13 @@ void ASMGPlayer_YMH::BeginPlay()
 	FireComp->MinRecoilValue = -1.0f;
 	FireComp->crosshairRecoilValue = 2.0;
 	FireComp->decalSize = FVector(10.0f);
+}
+
+void ASMGPlayer_YMH::BeginPlay()
+{
+	Super::BeginPlay();
+
+	
 }
 
 void ASMGPlayer_YMH::Tick(float DeltaSeconds)

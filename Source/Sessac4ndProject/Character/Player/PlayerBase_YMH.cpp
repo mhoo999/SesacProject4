@@ -68,6 +68,7 @@ APlayerBase_YMH::APlayerBase_YMH()
 	BuildComp = CreateDefaultSubobject<UPlayerBuildComp_LDJ>(TEXT("Build Component"));
 	UpgradeComp = CreateDefaultSubobject<UPlayerUpgradeComp_YMH>(TEXT("Upgrade Component"));
 	WaveStartComp = CreateDefaultSubobject<UWaveStartComp_LDJ>(TEXT("Wave Start Component"));
+
 }
 
 void APlayerBase_YMH::BeginPlay()

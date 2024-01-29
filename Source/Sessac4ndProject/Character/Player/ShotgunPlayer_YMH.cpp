@@ -13,12 +13,7 @@ AShotgunPlayer_YMH::AShotgunPlayer_YMH()
 	{
 		Weapon->SetSkeletalMeshAsset(shotgun.Object);
 	}
-}
-
-void AShotgunPlayer_YMH::BeginPlay()
-{
-	Super::BeginPlay();
-
+	
 	maxHelth = 10.0f;
 	currentHealth = maxHelth;
 	FireComp->attackSpeed = 5.0f;
@@ -32,6 +27,12 @@ void AShotgunPlayer_YMH::BeginPlay()
 	FireComp->MinRecoilValue = -1.5;
 	FireComp->crosshairRecoilValue = 3.0f;
 	FireComp->decalSize = FVector(50.0f);
+}
+
+void AShotgunPlayer_YMH::BeginPlay()
+{
+	Super::BeginPlay();
+	
 }
 
 void AShotgunPlayer_YMH::Tick(float DeltaSeconds)
