@@ -9,6 +9,7 @@
 #include "NetworkMessage.h"
 #include "PlayerBuildComp_LDJ.h"
 #include "PlayerFireComp_YMH.h"
+#include "PlayerInteractComp_LDJ.h"
 #include "PlayerMoveComp_YMH.h"
 #include "PlayerUpgradeComp_YMH.h"
 #include "WaveStartComp_LDJ.h"
@@ -68,7 +69,7 @@ APlayerBase_YMH::APlayerBase_YMH()
 	BuildComp = CreateDefaultSubobject<UPlayerBuildComp_LDJ>(TEXT("Build Component"));
 	UpgradeComp = CreateDefaultSubobject<UPlayerUpgradeComp_YMH>(TEXT("Upgrade Component"));
 	WaveStartComp = CreateDefaultSubobject<UWaveStartComp_LDJ>(TEXT("Wave Start Component"));
-
+	InteractComp = CreateDefaultSubobject<UPlayerInteractComp_LDJ>(TEXT("Interact Component"));
 }
 
 void APlayerBase_YMH::BeginPlay()
