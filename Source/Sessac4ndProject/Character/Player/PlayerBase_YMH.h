@@ -128,6 +128,9 @@ public:
 	UPROPERTY()
 	int32 wallet;
 
+	UPROPERTY()
+	int32 skillPoint;
+
 	// ------------------- Dynamic Create RenderCapture -----------------------
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<class UMaterialInterface> FrameMaterialInterface = NULL;
