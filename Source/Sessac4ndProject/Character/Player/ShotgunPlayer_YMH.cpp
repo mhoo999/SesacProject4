@@ -8,6 +8,17 @@
 
 AShotgunPlayer_YMH::AShotgunPlayer_YMH()
 {
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> shotgun(TEXT("/Script/Engine.SkeletalMesh'/Game/YMH/Meshes/SK_Wep_Shotgun_01_YMH.SK_Wep_Shotgun_01_YMH'"));
+	if (shotgun.Succeeded())
+	{
+		Weapon->SetSkeletalMeshAsset(shotgun.Object);
+	}
+}
+
+void AShotgunPlayer_YMH::BeginPlay()
+{
+	Super::BeginPlay();
+
 	maxHelth = 10.0f;
 	currentHealth = maxHelth;
 	FireComp->attackSpeed = 5.0f;
@@ -20,12 +31,7 @@ AShotgunPlayer_YMH::AShotgunPlayer_YMH()
 	FireComp->MaxRecoilValue = -1.0;
 	FireComp->MinRecoilValue = -1.5;
 	FireComp->crosshairRecoilValue = 3.0f;
-
-}
-
-void AShotgunPlayer_YMH::BeginPlay()
-{
-	Super::BeginPlay();
+	FireComp->decalSize = FVector(50.0f);
 }
 
 void AShotgunPlayer_YMH::Tick(float DeltaSeconds)
@@ -37,10 +43,9 @@ void AShotgunPlayer_YMH::SetCrosshair()
 {
 	Super::SetCrosshair();
 
-	auto pc = Cast<APlayerController_YMH>(Controller);
-	if (pc)
+	if (playerController)
 	{
-		pc->mainUI->ShowPointer();
-		pc->mainUI->ShowCrosshair();
+		playerController->mainUI->ShowPointer();
+		playerController->mainUI->ShowCrosshair();
 	}
 }

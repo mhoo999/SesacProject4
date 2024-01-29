@@ -31,12 +31,16 @@ void UZombieFSM::BeginPlay()
 
 	auto TargetActor = UGameplayStatics::GetActorOfClass(GetWorld(), ADestinationActor_KJY::StaticClass());
 	Target = Cast<ADestinationActor_KJY>(TargetActor);
-	auto Playeractor = UGameplayStatics::GetActorOfClass(GetWorld(), APlayerBase_YMH::StaticClass());
-	Player = Cast<APlayerBase_YMH>(Playeractor);
+	// auto Playeractor = UGameplayStatics::GetActorOfClass(GetWorld(), APlayerBase_YMH::StaticClass());
+	GetWorld()->GetTimerManager().SetTimer(ZombieFSM_Handle, FTimerDelegate::CreateLambda([&]
+	{
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerBase_YMH::StaticClass(), Players);
+	}), 3, false);
+	// Player = Cast<APlayerBase_YMH>(Playeractor);
+
+	// ----- Zombie -----
 	Me = Cast<AZombieBase_KJY>(GetOwner());
-
 	Anim = Cast<UZombieAnim>(Me->GetMesh()->GetAnimInstance());
-
 	ai = Cast<AAIController>(Me->GetController());
 
 	if (GetOwner()->GetActorLocation().Y < -1500)
@@ -74,68 +78,43 @@ void UZombieFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 	}
 }
 
-void UZombieFSM::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(UZombieFSM, Player) // 클라에 전송
-	DOREPLIFETIME(UZombieFSM, Me) 
-	DOREPLIFETIME(UZombieFSM, ChaseRange) 
-	DOREPLIFETIME(UZombieFSM, AttackRange)
-	DOREPLIFETIME(UZombieFSM, CurrentTime)
-	DOREPLIFETIME(UZombieFSM, AttackTime)
-	DOREPLIFETIME(UZombieFSM, DamageTime)
-	DOREPLIFETIME(UZombieFSM, DeathTime)
-	DOREPLIFETIME(UZombieFSM, Anim)
-	DOREPLIFETIME(UZombieFSM, ai)
-	DOREPLIFETIME(UZombieFSM, bFlagDoOnce)
-	DOREPLIFETIME(UZombieFSM, isLeft)
-	DOREPLIFETIME(UZombieFSM, FirstStop)
-	DOREPLIFETIME(UZombieFSM, PlayerDir)
-	
-}
-
 void UZombieFSM::MoveState()
 {
 	Me->GetCharacterMovement()->MaxWalkSpeed = 300;
-	
-	//FVector TargetLoc = Target->GetActorLocation();
-	// 목적지 - 에너미
-	//FVector TargetDir = TargetLoc - Me->GetActorLocation();
-	// 플레이어 - 에너미
-	if (GetOwner()->HasAuthority())
-	{
-		GEngine->AddOnScreenDebugMessage(-1,10,FColor::Red, TEXT("SERVER"));
-		PlayerDir = GetWorld()->GetFirstPlayerController()->GetCharacter()->GetActorLocation() - Me->GetActorLocation();
-		GEngine->AddOnScreenDebugMessage(-1,10,FColor::Red, FString::Printf(TEXT("%f, %f, %f"), PlayerDir.X, PlayerDir.Y, PlayerDir.Z));
-	}
 
-  if (bFlagDoOnce == false && GetOwner()->HasAuthority())
+	FVector TargetLoc = Target->GetActorLocation();
+	double PlayerDist = 999999;
+	// 플레이어 - 에너미
+	for (int i = 0; i < Players.Num(); i++)
+	{
+		auto Dist = FVector::Distance(Players[i]->GetActorLocation(), Me->GetActorLocation());
+		if (PlayerDist > Dist)
+		{
+			PlayerDist = Dist;
+			TargetPlayerNum = i;
+		}
+	}
+	
+	// FVector PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
+	if (bFlagDoOnce == false && GetOwner()->HasAuthority())
 	{
 		if (isLeft)
 		{
-			ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-2170.0f, -3010.0f, -0.0f), FVector(-2170.0f,-1020.0f,0.0f)));
+			ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-1010.0, -2990.0f, -20.0f), FVector(-2460.0,-990.0f,0.0f)));
 		}
 		else
 		{
-			ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-2170.0f, -3010.0f, -0.0f), FVector(-2170.0f,-1020.0f,0.0f)));
+			ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-910.0f,-6480.0f,0.0f), FVector(-910.0f,-1030.0f,0.0f)));
 		}
 		bFlagDoOnce = true;
 	}
 	
 	if (Temp2 == 0 && Me->GetActorLocation().X < FirstStop.X+100 && GetOwner()->HasAuthority())
 	{
-		// 첫번째 경유지에 도착했을때 다음 경유지로 간다
-		ai->MoveToLocation(	 GetRandomLocationInNavMesh(isLeft, FVector(-7030.0f, -2070.0f, 0.0f),FVector(-7030.0f, -2070.0f, 0.0f)));
-		//Temp2++;
-		//ai->MoveToLocation(TargetLoc);
+		ai->MoveToLocation(TargetLoc);
 	}
-		
 
-	// 목적지 향해 가다가
-	//Me->AddMovementInput(TargetDir.GetSafeNormal());
-
-	if (PlayerDir.Size()<ChaseRange)
+	if (PlayerDist<ChaseRange)
 	{
 		mState = EZombieState::Chase;
 		Anim->AnimState = mState;
@@ -144,7 +123,13 @@ void UZombieFSM::MoveState()
 
 void UZombieFSM::ChaseState()
 {
-	ServerRPC_ChaseState();
+	FVector PlayerLoc = Players[TargetPlayerNum]->GetActorLocation();
+	FVector PlayerDir = PlayerLoc - Me->GetActorLocation();
+
+	if (GetOwner()->HasAuthority())
+	{
+		ai->MoveToLocation(PlayerLoc);
+	}
 	
 	if (PlayerDir.Size()<AttackRange)
 	{
@@ -153,28 +138,18 @@ void UZombieFSM::ChaseState()
 		CurrentTime = AttackTime;
 		Me->GetCharacterMovement()->MaxWalkSpeed = 0;
 	}
-	
 }
 
 void UZombieFSM::AttackState()
 {
-	//ai->SetFocus(Player, EAIFocusPriority::Gameplay);
-
 	CurrentTime += GetWorld()->DeltaTimeSeconds;
 	if (CurrentTime > AttackTime)
 	{
 		CurrentTime = 0;
 		Anim->bAttackPlay = true;
-
-		
-		/*if (플레이어와 닿으면  )
-		{
-			//FHitOverlap
-			// 플레이어 체력 닳음
-		}*/
 	}
 	
-	PlayerDir = Player->GetActorLocation() - Me->GetActorLocation();
+	FVector PlayerDir = Players[TargetPlayerNum]->GetActorLocation() - Me->GetActorLocation();
 	if (PlayerDir.Size()>AttackRange)
 	{
 		mState = EZombieState::Move;
@@ -241,33 +216,9 @@ FVector UZombieFSM::GetRandomLocationInNavMesh(bool& bisLeft, FVector DestLoc, F
 		}
 		// 기본적으로 원점 반환
 		return RightDestLoc;
-
 	}
 	
 	
 }
-
-void UZombieFSM::ClientRPC_ChaseState_Implementation()
-{
-	FVector PlayerLoc = Player->GetActorLocation();
-	PlayerDir = PlayerLoc - Me->GetActorLocation();
-	
-	// if (GetOwner()->HasAuthority())
-	// {
-	// 	ai->MoveToLocation(PlayerLoc);
-	// }
-
-		// 	ai->MoveToLocation(PlayerLoc);
-
-}
-
-void UZombieFSM::ServerRPC_ChaseState_Implementation()
-{
-	FVector PlayerLoc = Player->GetActorLocation();
-	PlayerDir = PlayerLoc - Me->GetActorLocation();
-
-	ClientRPC_ChaseState();
-}
-
 
 //return FVector(-910.0f,-1030.0f,0.0f);

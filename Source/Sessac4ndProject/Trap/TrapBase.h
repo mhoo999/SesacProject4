@@ -19,10 +19,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UStaticMeshComponent* TileMesh;
 
@@ -36,7 +37,7 @@ public:
 	TArray<class AZombieBase_KJY*> EnemyArray;
 
 	UPROPERTY()
-	class UPlayerBuildComp_LDJ* PlayerBuildComp;
+	class UPlayerUpgradeComp_YMH* PlayerUpgradeComp;
 
 	UPROPERTY()
 	class APlayerBase_YMH* Player;
@@ -48,7 +49,7 @@ public:
 	int32 TrapInArea = 0;
 	int32 TrapLevel = 1;
 	FTimerHandle Handle;
-
+	
 	UFUNCTION()
 	virtual void OnEnemyBeginOverlapped(UPrimitiveComponent* OverlappedComponent,
 		AActor* OtherActor,

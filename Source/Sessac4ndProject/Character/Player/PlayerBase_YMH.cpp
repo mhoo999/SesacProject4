@@ -6,14 +6,20 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "NetworkMessage.h"
 #include "PlayerBuildComp_LDJ.h"
 #include "PlayerFireComp_YMH.h"
 #include "PlayerMoveComp_YMH.h"
+#include "PlayerUpgradeComp_YMH.h"
+#include "WaveStartComp_LDJ.h"
 #include "Animation/PlayerAnimInstance_YMH.h"
+#include "Components/Border.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/PointLightComponent.h"
 #include "Components/SceneCaptureComponent2D.h"
 #include "Components/TextBlock.h"
+#include "Engine/TextureRenderTarget2D.h"
+#include "Kismet/GameplayStatics.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
 
@@ -46,21 +52,22 @@ APlayerBase_YMH::APlayerBase_YMH()
 	SelfCameraBoom->TargetArmLength = 100.0f;
 	SelfCameraBoom->SetRelativeRotation(FRotator(0, -145, 0));
 	SelfCameraBoom->SetRelativeLocation(FVector(0, 0, 30));
-
+	
 	SelfCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("Self Capture"));
 	SelfCapture->SetupAttachment(SelfCameraBoom);
-
-	PointLightComp = CreateDefaultSubobject<UPointLightComponent>(TEXT("PointLight Component"));
-	PointLightComp->SetupAttachment(RootComponent);
-	PointLightComp->SetRelativeLocation(FVector(55, 15, 20));
-	PointLightComp->SetIntensity(1000.0f);
-	PointLightComp->SetAttenuationRadius(80.0f);
-
+	SelfCapture->PrimitiveRenderMode = ESceneCapturePrimitiveRenderMode::PRM_UseShowOnlyList;
+	// SceneCapture > HiddenShoFlags > Lighting = false 하면 캐릭터 밝게 나옴 
+	
+	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon Mesh"));
+	Weapon->SetupAttachment(GetMesh(), TEXT("WeaponSocket"));
+	
 	GetMesh()->SetRelativeRotation(FRotator(0, -65, 0));
 
 	MoveComp = CreateDefaultSubobject<UPlayerMoveComp_YMH>(TEXT("Movement Component"));
 	FireComp = CreateDefaultSubobject<UPlayerFireComp_YMH>(TEXT("Fire Component"));
-	BuildComp = CreateDefaultSubobject<UPlayerBuildComp_LDJ>(TEXT("Build Componenet"));
+	BuildComp = CreateDefaultSubobject<UPlayerBuildComp_LDJ>(TEXT("Build Component"));
+	UpgradeComp = CreateDefaultSubobject<UPlayerUpgradeComp_YMH>(TEXT("Upgrade Component"));
+	WaveStartComp = CreateDefaultSubobject<UWaveStartComp_LDJ>(TEXT("Wave Start Component"));
 }
 
 void APlayerBase_YMH::BeginPlay()
@@ -75,15 +82,25 @@ void APlayerBase_YMH::BeginPlay()
 		}
 	}
 
-	playerController = Cast<APlayerController_YMH>(Controller);
+	playerController = Cast<APlayerController_YMH>(GetController());
+	
+	SetCrosshair();
+	
+	RenderTarget = NewObject<UTextureRenderTarget2D>();
+	RenderTarget->InitCustomFormat(256, 256, EPixelFormat::PF_FloatRGBA, false);
+	SelfCapture->TextureTarget = RenderTarget;
+	
+	// RenderCapture 에서 캡처하고 싶은 Component
+	SelfCapture->ShowOnlyComponent(GetMesh());
+	SelfCapture->ShowOnlyComponent(Weapon);
+	
+	TObjectPtr<UMaterialInstanceDynamic> FrameMaterial = UMaterialInstanceDynamic::Create(FrameMaterialInterface, this);
+	FrameMaterial->SetTextureParameterValue("RenderTarget", RenderTarget);
+	
 	if (playerController)
 	{
-		// UIWidget이 Init될 때, MainUI의 MaxBullet값과 CurrentBullet값에 Player의 MaxBullet값을 넣고 싶다.
-		playerController->mainUI->MaxBullet->SetText(FText::AsNumber(FireComp->MaxBulletCount));
-		playerController->mainUI->CurrentBullet->SetText(FText::AsNumber(FireComp->MaxBulletCount));
+		playerController->mainUI->CharacterFrame->SetBrushFromMaterial(FrameMaterial);
 	}
-
-	SetCrosshair();
 }
 
 void APlayerBase_YMH::Tick(float DeltaSeconds)
@@ -102,13 +119,15 @@ void APlayerBase_YMH::VictoryProcess()
 {
 	auto anim = Cast<UPlayerAnimInstance_YMH>(GetMesh()->GetAnimInstance());
 	anim->PlayVictoryMontage();
-	
+
+	DefaultMappingContext = nullptr;
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->DisableMovement();
 }
 
 void APlayerBase_YMH::SetCrosshair()
 {
+	// virtual function
 }
 
 void APlayerBase_YMH::BeShot(float damage)
@@ -121,6 +140,7 @@ void APlayerBase_YMH::BeShot(float damage)
 		UE_LOG(LogTemp, Warning, TEXT("Dead!"));
 		bIsDead = true;
 
+		DefaultMappingContext = nullptr;
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetCharacterMovement()->DisableMovement();
 	}
@@ -131,11 +151,8 @@ void APlayerBase_YMH::BeShot(float damage)
 	{
 		playerController->mainUI->hp = percent;
 	}
-}
 
-void APlayerBase_YMH::RestorationHealth(float value)
-{
-	currentHealth += value;
+	UGameplayStatics::PlaySound2D(GetWorld(), hitSound);
 }
 
 void APlayerBase_YMH::DieProcess()
@@ -153,3 +170,31 @@ void APlayerBase_YMH::DieProcess()
 		playerController->mainUI->img_cresshair->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
+
+void APlayerBase_YMH::RestorationHealth(float value)
+{
+	currentHealth += value;
+}
+
+/*void APlayerBase_YMH::ServerRPCBeShot_Implementation(float damage)
+{
+	currentHealth -= damage;
+	ClientRPCBeShot_Implementation(currentHealth);
+}
+
+void APlayerBase_YMH::ClientRPCBeShot_Implementation(float ch)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Damege!"));
+	
+	if (currentHealth <= 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Dead!"));
+		DieProcess();
+	}
+	
+	float percent = ch / maxHelth;
+	if (mainUI)
+	{
+		mainUI->hp = percent;
+	}
+}*/

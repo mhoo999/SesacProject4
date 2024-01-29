@@ -8,8 +8,17 @@
 
 ASMGPlayer_YMH::ASMGPlayer_YMH()
 {
-	maxHelth = 10.0f;
-	currentHealth = maxHelth; 
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SMG(TEXT("/Script/Engine.SkeletalMesh'/Game/YMH/Meshes/SK_Wep_AssaultRifle_02_YMH.SK_Wep_AssaultRifle_02_YMH'"));
+	if (SMG.Succeeded())
+	{
+		Weapon->SetSkeletalMeshAsset(SMG.Object);
+	}
+}
+
+void ASMGPlayer_YMH::BeginPlay()
+{
+	Super::BeginPlay();
+
 	FireComp->attackSpeed = 2.0f;
 	FireComp->Damage = 10.0f;
 	FireComp->attackDistance = 4000;
@@ -19,12 +28,8 @@ ASMGPlayer_YMH::ASMGPlayer_YMH()
 	FireComp->reloadBulletCount = 30.0f;
 	FireComp->MaxRecoilValue = -0.7f;
 	FireComp->MinRecoilValue = -1.0f;
-	FireComp->crosshairRecoilValue = 2.0;	
-}
-
-void ASMGPlayer_YMH::BeginPlay()
-{
-	Super::BeginPlay();
+	FireComp->crosshairRecoilValue = 2.0;
+	FireComp->decalSize = FVector(10.0f);
 }
 
 void ASMGPlayer_YMH::Tick(float DeltaSeconds)
@@ -36,9 +41,8 @@ void ASMGPlayer_YMH::SetCrosshair()
 {
 	Super::SetCrosshair();
 	
-	auto pc = Cast<APlayerController_YMH>(Controller);
-	if (pc)
+	if (playerController)
 	{
-		pc->mainUI->ShowPointer();
+		playerController->mainUI->ShowPointer();
 	}
 }

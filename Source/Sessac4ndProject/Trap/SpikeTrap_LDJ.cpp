@@ -8,6 +8,8 @@
 #include "Character/Enemy/ZombieFSM.h"
 #include "Character/Enemy/Zombie_KJY.h"
 #include "Character/Player/PlayerBuildComp_LDJ.h"
+#include "Character/Player/PlayerUpgradeComp_YMH.h"
+#include "Kismet/GameplayStatics.h"
 
 
 ASpikeTrap_LDJ::ASpikeTrap_LDJ()
@@ -28,10 +30,10 @@ ASpikeTrap_LDJ::ASpikeTrap_LDJ()
 void ASpikeTrap_LDJ::BeginPlay()
 {
 	Super::BeginPlay();
-	TrapLevel = PlayerBuildComp->SpikeTrapLevel;
+	TrapLevel = PlayerUpgradeComp->SpikeTrapLevel;
 }
 
-void ASpikeTrap_LDJ::Tick(float DeltaTime)
+void ASpikeTrap_LDJ::Tick(const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }

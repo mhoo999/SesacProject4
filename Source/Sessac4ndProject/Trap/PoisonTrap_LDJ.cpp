@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Character/Player/PlayerBuildComp_LDJ.h"
+#include "Character/Player/PlayerUpgradeComp_YMH.h"
 
 
 APoisonTrap_LDJ::APoisonTrap_LDJ()
@@ -37,7 +38,7 @@ APoisonTrap_LDJ::APoisonTrap_LDJ()
 void APoisonTrap_LDJ::BeginPlay()
 {
 	Super::BeginPlay();
-	TrapLevel = PlayerBuildComp->PoisonTrapLevel;
+	TrapLevel = PlayerUpgradeComp->PoisonTrapLevel;
 }
 
 void APoisonTrap_LDJ::Tick(float DeltaTime)

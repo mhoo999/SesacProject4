@@ -12,14 +12,35 @@
 #include "Character/Enemy/ZombieAnim.h"
 #include "Character/Enemy/ZombieBase_KJY.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/DecalComponent.h"
+#include "Components/PointLightComponent.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
 
 UPlayerFireComp_YMH::UPlayerFireComp_YMH()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+	
+	static ConstructorHelpers::FObjectFinder<UInputAction> IA_FireRef(TEXT("/Script/EnhancedInput.InputAction'/Game/YMH/Inputs/Actions/IA_Fire_YMH.IA_Fire_YMH'"));
+	if (IA_FireRef.Succeeded())
+	{
+		IA_Fire = IA_FireRef.Object;
+	}
+	
+	static ConstructorHelpers::FObjectFinder<UInputAction> IA_ReloadRef(TEXT("/Script/EnhancedInput.InputAction'/Game/YMH/Inputs/Actions/IA_Reload_YMH.IA_Reload_YMH'"));
+	if (IA_ReloadRef.Succeeded())
+	{
+		IA_Reload = IA_ReloadRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> IA_ZoomRef(TEXT("/Script/EnhancedInput.InputAction'/Game/YMH/Inputs/Actions/IA_Zoom_YMH.IA_Zoom_YMH'"));
+	if (IA_ZoomRef.Succeeded())
+	{
+		IA_Zoom = IA_ZoomRef.Object;
+	}
 }
 
 void UPlayerFireComp_YMH::BeginPlay()
@@ -46,7 +67,16 @@ void UPlayerFireComp_YMH::SetupPlayerInput(UInputComponent* PlayerInputComponent
 
 		// Reload
 		EnhancedInputComponent->BindAction(IA_Reload, ETriggerEvent::Started, this, &UPlayerFireComp_YMH::Reload);
+
+		// Zoom
+		EnhancedInputComponent->BindAction(IA_Zoom, ETriggerEvent::Started, this, &UPlayerFireComp_YMH::ZoomIn);
+		EnhancedInputComponent->BindAction(IA_Zoom, ETriggerEvent::Completed, this, &UPlayerFireComp_YMH::ZoomOut);
 	}
+}
+
+void UPlayerFireComp_YMH::weaponeUpgrade()
+{
+	Damage++;
 }
 
 void UPlayerFireComp_YMH::Fire(const FInputActionValue& value)
@@ -56,52 +86,21 @@ void UPlayerFireComp_YMH::Fire(const FInputActionValue& value)
 		return;
 	}
 
-	player->fireDispatcher = true;
-	GetWorld()->GetTimerManager().ClearTimer(combatHandle);
+	ServerRPCFire();
+}
 
-	FHitResult hitInfo;
-	FVector startPos = player->FollowCamera->GetComponentLocation();
-	FVector endPos = startPos + player->FollowCamera->GetForwardVector() * attackDistance;
-	FCollisionQueryParams params;
-	params.AddIgnoredActor(player);
-	bool bHit = GetWorld()->LineTraceSingleByChannel(hitInfo, startPos, endPos, ECC_Visibility, params);
-
-	if (bHit)
-	{
-		//enemy 체력--
-		auto Enemy = hitInfo.GetActor()->GetDefaultSubobjectByName(TEXT("FSM"));
-		auto Temp = Cast<UZombieFSM>(Enemy);
-		if (Temp)
-		{
-			auto MyEnemy = Cast<AZombieBase_KJY>(Temp->GetOwner());
-			MyEnemy->Damage();
-		}
-	
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), bulletMark, hitInfo.Location, FRotator());
-	}
-
-	bulletCount--;
-	UE_LOG(LogTemp, Warning, TEXT("Bullet Count : %u"), bulletCount);
-
-	auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
-	anim->PlayFireAnimation();
-
-	if (PlayerController)
-	{
-		PlayerController->mainUI->weaponRecoil();
-		// MainUI의 CurrentBullet의 값을 빼고 싶다.
-		PlayerController->mainUI->CurrentBullet->SetText(FText::AsNumber(bulletCount));
-	}
-	
+void UPlayerFireComp_YMH::ZoomIn(const FInputActionValue& value)
+{
+	player->FollowCamera->FieldOfView = maxFOV;
 	player->bIsCombat = true;
+	bZoomIn = true;
+}
 
-	GetWorld()->GetTimerManager().SetTimer(combatHandle, FTimerDelegate::CreateLambda([&]
-	{
-		player->bIsCombat = false;
-	}), 5, true);
-	
-	float pitchInput = FMath::RandRange(MinRecoilValue, MaxRecoilValue);
-	player->AddControllerPitchInput(pitchInput);
+void UPlayerFireComp_YMH::ZoomOut(const FInputActionValue& value)
+{
+	player->FollowCamera->FieldOfView = defaultFOV;
+	player->bIsCombat = false;
+	bZoomIn = false;
 }
 
 void UPlayerFireComp_YMH::Reload(const FInputActionValue& value)
@@ -113,8 +112,124 @@ void UPlayerFireComp_YMH::Reload(const FInputActionValue& value)
 		return;
 	}
 	
+	ServerRPCReload();
+}
+
+void UPlayerFireComp_YMH::ServerRPCReload_Implementation()
+{
+	ClientRPCReload_Implementation();
+	MultiRPCReload_Implementation();
+}
+
+void UPlayerFireComp_YMH::ClientRPCReload_Implementation()
+{
+	player->bIsReloading = true;
+}
+
+void UPlayerFireComp_YMH::MultiRPCReload_Implementation()
+{
+	UGameplayStatics::PlaySound2D(GetWorld(), player->reloadSound);
 	auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
 	anim->PlayReloadAnimation();
+}
 
-	player->bIsReloading = true;
+void UPlayerFireComp_YMH::ServerRPCInitAmmo_Implementation()
+{
+	bulletCount += reloadBulletCount;
+
+	if (bulletCount > MaxBulletCount)
+	{
+		bulletCount = MaxBulletCount;
+	}
+	
+	ClientRPCInitAmmo(bulletCount);
+}
+
+void UPlayerFireComp_YMH::ClientRPCInitAmmo_Implementation(const int bc)
+{
+	if (PlayerController)
+	{
+		PlayerController->mainUI->CurrentBullet->SetText(FText::AsNumber(bc));
+	}
+	player->bIsReloading = false;
+}
+
+void UPlayerFireComp_YMH::ServerRPCFire_Implementation()
+{
+	FVector startPos = player->FollowCamera->GetComponentLocation();
+	FVector endPos = startPos + player->FollowCamera->GetForwardVector() * attackDistance;
+	
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(player);
+	
+	FHitResult hitInfo;
+	bool bHit = GetWorld()->LineTraceSingleByChannel(hitInfo, startPos, endPos, ECC_Visibility, params);
+	FHitResult hitInfoZombie;
+	bool bHitZombie = GetWorld()->LineTraceSingleByChannel(hitInfoZombie, startPos, endPos, ECC_GameTraceChannel3, params);
+	
+	
+	if (bHitZombie)
+	{
+		//enemy 체력--
+		auto Enemy = hitInfo.GetActor()->GetDefaultSubobjectByName(TEXT("FSM"));
+		auto Temp = Cast<UZombieFSM>(Enemy);
+		if (Temp)
+		{
+			auto MyEnemy = Cast<AZombieBase_KJY>(Temp->GetOwner());
+			MyEnemy->Damage();
+		}
+	}
+
+	bulletCount--;
+
+	MultiRPCFire(bHit, bHitZombie, hitInfo, hitInfoZombie, bulletCount);
+	ClientRPCFire(bulletCount);
+}
+
+void UPlayerFireComp_YMH::MultiRPCFire_Implementation(bool bHit, bool bHitZombie, const FHitResult& hitInfo, const FHitResult& hitInfoZombie, const int bc)
+{
+	player->fireDispatcher = true;
+	GetWorld()->GetTimerManager().ClearTimer(combatHandle);
+
+	if (bHit && bulletDecal)
+	{
+		FRotator newRot = UKismetMathLibrary::MakeRotFromX(hitInfo.ImpactNormal);
+		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), bulletDecal, decalSize, hitInfo.Location, newRot, 10.0f);
+		// UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), defaultBulletMark, hitInfo.Location, FRotator());
+	}
+
+	if (bHitZombie && bulletMark)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), bulletMark, hitInfoZombie.Location, FRotator());
+	}
+	
+	auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
+	anim->PlayFireAnimation();
+	
+	player->bIsCombat = true;
+	GetWorld()->GetTimerManager().SetTimer(combatHandle, FTimerDelegate::CreateLambda([&]
+	{
+		if (bZoomIn == false)
+		{
+			player->bIsCombat = false;
+		}
+	}), 5, true);
+
+	if (muzzleFire)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), muzzleFire, player->Weapon->GetSocketLocation(FName("Muzzle")), FRotator());
+	}
+	UGameplayStatics::PlaySound2D(GetWorld(), player->fireSound);
+}
+
+void UPlayerFireComp_YMH::ClientRPCFire_Implementation(const int bc)
+{
+	if (PlayerController)
+	{
+		PlayerController->mainUI->weaponRecoil();
+		PlayerController->mainUI->CurrentBullet->SetText(FText::AsNumber(bc));
+	}
+
+	float pitchInput = FMath::RandRange(MinRecoilValue, MaxRecoilValue);
+	player->AddControllerPitchInput(pitchInput);
 }

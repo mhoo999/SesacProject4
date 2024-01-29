@@ -7,6 +7,7 @@
 #include "Character/Enemy/Zombie_KJY.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Character/Player/PlayerBuildComp_LDJ.h"
+#include "Character/Player/PlayerUpgradeComp_YMH.h"
 #include "Particles/ParticleSystemComponent.h"
 
 AFreezeTrap_LDJ::AFreezeTrap_LDJ()
@@ -40,7 +41,7 @@ AFreezeTrap_LDJ::AFreezeTrap_LDJ()
 void AFreezeTrap_LDJ::BeginPlay()
 {
 	Super::BeginPlay();
-	TrapLevel = PlayerBuildComp->FreezeTrapLevel;
+	TrapLevel = PlayerUpgradeComp->FreezeTrapLevel;
 }
 
 void AFreezeTrap_LDJ::Tick(float DeltaTime)

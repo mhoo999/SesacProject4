@@ -19,7 +19,7 @@ UCLASS()
 class SESSAC4NDPROJECT_API UMainUI_YMH : public UUserWidget
 {
 	GENERATED_BODY()
-
+	
 public:
 	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(BindWidget))
 	UImage* img_pointer;
@@ -88,4 +88,14 @@ public:
 
 public:
 	void weaponRecoil();
+
+	UPROPERTY(BlueprintReadWrite, Category="WidgetBP", meta=(BindWidget))
+	class UTrapAndWeaponLevelUI_LDJ* WBP_TrapLevel;
+	
+	UPROPERTY(BlueprintReadWrite, Category="WidgetBP", meta=(BindWidget))
+	class UWaveInformationUI_LDJ* WBP_WaveInfor;
+
+	// ------------------------ multi play -----------------------------
+	// UFUNCTION()
+	// void ServerRPC
 };

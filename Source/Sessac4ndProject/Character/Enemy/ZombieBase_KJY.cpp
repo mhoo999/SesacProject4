@@ -19,8 +19,6 @@ AZombieBase_KJY::AZombieBase_KJY()
 
 	fsm = CreateDefaultSubobject<UZombieFSM>(TEXT("FSM"));
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-
-	bReplicates = true;
 }
 
 void AZombieBase_KJY::BeginPlay()
@@ -59,7 +57,6 @@ void AZombieBase_KJY::Damage()
 	PrintHP();
 	Anim->PlayDamageAnim();
 	
-	UE_LOG(LogTemp, Warning, TEXT("Hp--"));
 	if(	CurrentHp == 0) // <= 에서 ==으로 변경
 	{
 		Die();
@@ -84,7 +81,6 @@ void AZombieBase_KJY::OnAttackBeginOverlap(UPrimitiveComponent* OverlappedCompon
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	auto player = Cast<APlayerBase_YMH>(OtherActor);
-	UE_LOG(LogTemp, Warning, TEXT("Attack!"));
 
 	if (player&&Anim->bAttackCollision == true)
 	{

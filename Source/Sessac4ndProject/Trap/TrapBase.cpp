@@ -8,6 +8,8 @@
 #include "Character/Player/PlayerBase_YMH.h"
 #include "Components/BoxComponent.h"
 #include "Character/Player/PlayerBuildComp_LDJ.h"
+#include "Character/Player/PlayerUpgradeComp_YMH.h"
+#include "PlayerController/PlayerController_YMH.h"
 
 // Sets default values
 ATrapBase::ATrapBase()
@@ -31,6 +33,8 @@ ATrapBase::ATrapBase()
 	ReactionCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Enemy Sensing Component"));
 	ReactionCollision->SetupAttachment(RootComponent);
 	ReactionCollision->SetBoxExtent(FVector(129));
+
+	bReplicates = true;
 }
 
 // Called when the game starts or when spawned
@@ -40,7 +44,12 @@ void ATrapBase::BeginPlay()
 	ReactionCollision->OnComponentBeginOverlap.AddDynamic(this, &ATrapBase::OnEnemyBeginOverlapped);
 	ReactionCollision->OnComponentEndOverlap.AddDynamic(this, &ATrapBase::OnEnemyEndOverlapped);
 	Player = Cast<APlayerBase_YMH>(GetWorld()->GetFirstPlayerController()->GetCharacter());
-	PlayerBuildComp = Player->FindComponentByClass<UPlayerBuildComp_LDJ>();
+	auto pc = Cast<APlayerController_YMH>(GetWorld()->GetFirstPlayerController());
+	PlayerUpgradeComp = Player->FindComponentByClass<UPlayerUpgradeComp_YMH>();
+	if (pc)
+	{
+		SetOwner(pc);
+	}
 }
 
 // Called every frame
@@ -50,7 +59,7 @@ void ATrapBase::Tick(float DeltaTime)
 }
 
 void ATrapBase::OnEnemyBeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// TO DO : 플레이어한테 반응하는거 에너미로 바꾸기
 	auto Temp = Cast<AZombieBase_KJY>(OtherActor);

@@ -7,6 +7,8 @@
 #include "InputActionValue.h"
 #include "PlayerBase_YMH.generated.h"
 
+class UWaveStartComp_LDJ;
+class UPlayerUpgradeComp_YMH;
 class UPointLightComponent;
 class UMainUI_YMH;
 class APlayerController_YMH;
@@ -18,7 +20,15 @@ struct FInputActionValue;
 class UInputAction;
 class AGameModeBase;
 /**
- * 
+*********************** Player BP CheckList ***********************
+* MySettings > Default Mapping Context = ‘IM_Default_YMH’
+* PlayerBase > Sound = hit, fire, reload
+* PlayerBase > FrameMaterialInterface ‘MI_CharacterCamera_YMH’
+* SelfCapture > HiddenShowFlags > Lighting = false
+* FollowCamera > PostProcessVolume > ColorGrading > Global > Saturation = true
+* Mesh > SkeletalMeshAsset =
+* Mesh > Animation > AnimClass = ABP
+* FireComp > WeaponEffect = bloodSplatter, , , MI_BulletMark
  */
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FInputDelegate, UInputComponent*);
@@ -55,8 +65,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Components")
 	USceneCaptureComponent2D* SelfCapture;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|COmponents")
-	UPointLightComponent* PointLightComp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Components")
+	USkeletalMeshComponent* Weapon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
 	UInputMappingContext* DefaultMappingContext;
@@ -70,13 +80,21 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	UPlayerBuildComp_LDJ* BuildComp;
 
+	UPROPERTY(EditDefaultsOnly)
+	UPlayerUpgradeComp_YMH* UpgradeComp;
+
+	UPROPERTY(EditDefaultsOnly)
+	UWaveStartComp_LDJ* WaveStartComp;
+	
 public:
 	// ------------------- Init ----------------------
 	UPROPERTY()
 	APlayerController_YMH* playerController;
-	
-	void VictoryProcess();
 
+	UPROPERTY()
+	UMainUI_YMH* mainUI;
+
+	void VictoryProcess();
 	virtual void SetCrosshair();
 public:
 	// ------------------- player HP ----------------------
@@ -84,10 +102,15 @@ public:
 	float maxHelth;
 	
 	UPROPERTY(BlueprintReadOnly, Category="Stat")
-	float currentHealth;
-	
+	float currentHealth = maxHelth;
+
 	UFUNCTION(BlueprintCallable)
 	virtual void BeShot(float damage);
+	
+	/*UFUNCTION(BlueprintCallable, Server, Reliable)
+	virtual void ServerRPCBeShot(float damage);
+	UFUNCTION(Client, Reliable)
+	virtual void ClientRPCBeShot(float ch);*/
 	
 	void DieProcess();
 	void RestorationHealth(float value);
@@ -97,11 +120,27 @@ public:
 	bool bIsCombat = false;				// 전투중
 	bool fireDispatcher = false;		// 공격 대기 상태 
 	bool bIsBuildMode = false;			// 설치 모드
+	UPROPERTY()
 	bool bIsReloading = false;			// 장전중
 	bool bIsDefeat = false;				// 패배 여부
 
 	// ------------------- player inventory --------------------
 	UPROPERTY()
 	int32 wallet;
+
+	// ------------------- Dynamic Create RenderCapture -----------------------
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TObjectPtr<class UMaterialInterface> FrameMaterialInterface = NULL;
+	TObjectPtr<class UTextureRenderTarget2D> RenderTarget;
+
+	// ------------------- Sounds --------------------------
+	UPROPERTY(EditAnywhere)
+	USoundBase* hitSound;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* fireSound;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* reloadSound;
 };
 

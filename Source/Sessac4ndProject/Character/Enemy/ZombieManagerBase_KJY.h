@@ -43,13 +43,22 @@ public:
 	
 	FTimerHandle SpawnTimerHandle;
 	void CreateZombie();
+	void NewCreateZombie();
 
 	double RandSpawnX;
 	double RandSpawnY;
 
-	int32 Wave1 = 20; // *2
-	int32 Wave2 = 39; // Tanker 5
-	int32 Wave3 = 80; // Tanker 5, Faster 5
-
+	int32 Wave1 = 2; // *2
+	int32 Wave2 = 3; // *3
+	int32 Wave3 = 4; // *4
 	int32 CurrentWave = 0;
+	FActorSpawnParameters ActorSpawnParameters;
+	// ESpawnActorCollisionHandlingMethod ActorSpawnParams = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	// ----- LDJ Code -----
+	float CurrentTime = 0;
+	float RandomTimeNum = 1;
+	double RandSpawnLoc_X;
+	double RandSpawnLoc_Y;
+
 };
