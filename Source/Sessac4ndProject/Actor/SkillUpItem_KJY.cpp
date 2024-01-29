@@ -7,4 +7,6 @@
 void ASkillUpItem_KJY::ReactItem()
 {
 	UE_LOG(LogTemp, Warning, TEXT("SkillUp"));
+
+	Player->skillPoint+=1;
 }

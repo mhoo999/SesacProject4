@@ -7,4 +7,6 @@
 void AHealthItem_KJY::ReactItem()
 {
 	UE_LOG(LogTemp, Warning, TEXT("HealthItem"));
+	
+	Player->currentHealth+=3;
 }

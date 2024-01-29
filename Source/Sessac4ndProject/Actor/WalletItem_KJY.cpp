@@ -7,5 +7,7 @@
 void AWalletItem_KJY::ReactItem()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Wallet"));
+
+	Player->wallet+=50;
 	
 }
