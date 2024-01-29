@@ -178,7 +178,7 @@ void UPlayerFireComp_YMH::ServerRPCFire_Implementation()
 		if (Temp)
 		{
 			auto MyEnemy = Cast<AZombieBase_KJY>(Temp->GetOwner());
-			MyEnemy->Damage();
+			MyEnemy->Damage(Damage);
 		}
 	}
 
