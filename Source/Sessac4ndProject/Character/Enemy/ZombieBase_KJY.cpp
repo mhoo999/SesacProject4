@@ -4,8 +4,13 @@
 #include "Character/Enemy/ZombieBase_KJY.h"
 #include "Character/Enemy/ZombieFSM.h"
 #include "ZombieAnim.h"
+#include "Actor/HealthItem_KJY.h"
+#include "Actor/ItemActor_KJY.h"
+#include "Actor/SkillUpItem_KJY.h"
+#include "Actor/WalletItem_KJY.h"
 #include "Blueprint/UserWidget.h"
 #include "Character/Player/PlayerBase_YMH.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/TextBlock.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "UI/HPWidget_KJY.h"
@@ -59,6 +64,8 @@ void AZombieBase_KJY::Damage()
 	
 	if(	CurrentHp == 0) // <= 에서 ==으로 변경
 	{
+		SpawnLoc = this->GetActorLocation() + FVector(0, 0, 100);
+		UE_LOG(LogTemp, Warning, TEXT("Spawn Loc : %s"), *SpawnLoc.ToString());
 		Die();
 	}
 }
@@ -67,13 +74,17 @@ void AZombieBase_KJY::Die()
 {
 	Anim->PlayDieAnim();
 
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+	SpawnItem();
 	
 	auto temp = Cast<AZombieBase_KJY>(GetMesh()->GetOwner());
 	temp->GetCharacterMovement()->MaxWalkSpeed = 0;
-	GetWorld()->GetTimerManager().SetTimer(ZombieBaseTimer, FTimerDelegate::CreateLambda([&]
-	{
-		Destroy();
-	}), 0.1, false);
+	// GetWorld()->GetTimerManager().SetTimer(ZombieBaseTimer, FTimerDelegate::CreateLambda([&]
+	// {
+	// 	Destroy();
+	// }), 0.1, false);
 
 }
 
@@ -99,5 +110,33 @@ void AZombieBase_KJY::PrintHP()
 	{
 		ZombieHPUI->HPText->SetText(FText::AsNumber(CurrentHp));
 	}
+}
+
+void AZombieBase_KJY::SpawnItem()
+{
+	float RandItem = FMath::RandRange(0,1);
+	// if(RandItem < 0.6)
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("SpawnWallet"));
+	//
+	// 	GetWorld()->SpawnActor<AWalletItem_KJY>(WalletFactory, FVector(0), FRotator(0));
+	// 	UE_LOG(LogTemp, Warning, TEXT("Spawn Loc : %s"), *SpawnLoc.ToString());
+	// }
+	// else if(RandItem<0.8)
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("SpawnHelath"));
+	// 	
+	// 	GetWorld()->SpawnActor<AHealthItem_KJY>(HealthFactory, FVector(0), FRotator(0));
+	// }
+	// else
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("SpawnSkillUp"));
+	//
+	// 	GetWorld()->SpawnActor<ASkillUpItem_KJY>(SkillUpFactory, FVector(0), FRotator(0));
+	// }
+
+	GetWorld()->SpawnActor<AWalletItem_KJY>(WalletFactory, SpawnLoc, FRotator(0));
+	// GEngine->AddOnScreenDebugMessage(-1,3,FColor::Purple, FString::Printf(TEXT("%f, %f"), e->GetActorLocation().X, e->GetActorLocation().Y));
+
 }
 

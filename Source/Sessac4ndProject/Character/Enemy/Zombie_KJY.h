@@ -16,4 +16,7 @@ class SESSAC4NDPROJECT_API AZombie_KJY : public AZombieBase_KJY
 
 public:
 	virtual void BeginPlay() override;
+
+	virtual void SpawnItem() override;
+
 };
