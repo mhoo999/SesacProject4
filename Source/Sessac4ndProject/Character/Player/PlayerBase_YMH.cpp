@@ -141,6 +141,7 @@ void APlayerBase_YMH::BeShot(float damage)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Dead!"));
 		bIsDead = true;
+		ServerRPCIsdead_Implementation(bIsDead);
 
 		DefaultMappingContext = nullptr;
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -155,6 +156,16 @@ void APlayerBase_YMH::BeShot(float damage)
 	}
 
 	UGameplayStatics::PlaySound2D(GetWorld(), hitSound);
+}
+
+void APlayerBase_YMH::ServerRPCIsdead_Implementation(bool isDead)
+{
+	MultiRPCIsdead_Implementation(isDead);
+}
+
+void APlayerBase_YMH::MultiRPCIsdead_Implementation(bool isDead)
+{
+	bIsDead = true;
 }
 
 void APlayerBase_YMH::DieProcess()

@@ -55,4 +55,10 @@ public:
 	UPROPERTY(meta=(BindWidget))
 	class UButton* Btn_Exit;
 	// ----- 변수 -----
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* hover;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* click;
 };

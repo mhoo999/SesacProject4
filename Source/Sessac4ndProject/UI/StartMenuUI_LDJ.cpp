@@ -29,11 +29,13 @@ void UStartMenuUI_LDJ::NativeConstruct()
 
 void UStartMenuUI_LDJ::ClickCreateSession()
 {
+	UGameplayStatics::PlaySound2D(GetWorld(), click);
 	GI->CreateMySession(TEXT("TestGame"), 2);
 }
 
 void UStartMenuUI_LDJ::ClickJoinSession()
 {
+	UGameplayStatics::PlaySound2D(GetWorld(), click);
 	ScrollBox_RoomList->ClearChildren();	
 	if (GI)
 	{
@@ -43,11 +45,13 @@ void UStartMenuUI_LDJ::ClickJoinSession()
 
 void UStartMenuUI_LDJ::ClickBack()
 {
+	UGameplayStatics::PlaySound2D(GetWorld(), click);
 	RemoveFromParent();
 }
 
 void UStartMenuUI_LDJ::ClickPlay()
 {
+	UGameplayStatics::PlaySound2D(GetWorld(), click);
 	UGameplayStatics::OpenLevel(GetWorld(), FName("ZombieMap1"));
 }
 
