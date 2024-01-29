@@ -7,6 +7,7 @@
 #include "InputActionValue.h"
 #include "PlayerBase_YMH.generated.h"
 
+class UPlayerInteractComp_LDJ;
 class UWaveStartComp_LDJ;
 class UPlayerUpgradeComp_YMH;
 class UPointLightComponent;
@@ -85,6 +86,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	UWaveStartComp_LDJ* WaveStartComp;
+
+	UPROPERTY(EditDefaultsOnly)
+	UPlayerInteractComp_LDJ* InteractComp;
 	
 public:
 	// ------------------- Init ----------------------
@@ -106,11 +110,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void BeShot(float damage);
-	
-	/*UFUNCTION(BlueprintCallable, Server, Reliable)
-	virtual void ServerRPCBeShot(float damage);
-	UFUNCTION(Client, Reliable)
-	virtual void ClientRPCBeShot(float ch);*/
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPCIsdead(bool isDead);
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPCIsdead(bool isDead);
 	
 	void DieProcess();
 	void RestorationHealth(float value);

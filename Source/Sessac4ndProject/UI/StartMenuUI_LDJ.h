@@ -68,4 +68,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(BindWidget))
 	class UTextBlock* Txt_Finding;
 	// ----- 변수 -----
+	
+	UPROPERTY(EditAnywhere)
+	USoundBase* click;
 };
