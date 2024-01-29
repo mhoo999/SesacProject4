@@ -38,9 +38,9 @@ void ASpikeTrap_LDJ::Tick(const float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ASpikeTrap_LDJ::UpgradeCost()
+int32 ASpikeTrap_LDJ::GetCost()
 {
-	
+	return this->Cost;
 }
 
 void ASpikeTrap_LDJ::UpgradeAbility()

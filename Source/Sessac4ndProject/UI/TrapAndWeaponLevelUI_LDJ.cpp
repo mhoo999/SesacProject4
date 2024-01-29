@@ -4,9 +4,15 @@
 #include "UI/TrapAndWeaponLevelUI_LDJ.h"
 
 #include "Character/Player/PlayerBase_YMH.h"
+#include "Character/Player/PlayerBuildComp_LDJ.h"
 #include "Character/Player/PlayerUpgradeComp_YMH.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "Trap/FlameThrowerTrap_LDJ.h"
+#include "Trap/FreezeTrap_LDJ.h"
+#include "Trap/PoisonTrap_LDJ.h"
+#include "Trap/SpikeTrap_LDJ.h"
+#include "Trap/TrapBase.h"
 
 void UTrapAndWeaponLevelUI_LDJ::NativeConstruct()
 {
@@ -18,39 +24,55 @@ void UTrapAndWeaponLevelUI_LDJ::NativeConstruct()
 	Btn_FlameTrapUpgrade->OnClicked.AddDynamic(this, &UTrapAndWeaponLevelUI_LDJ::FlameTrapLevelUp);
 	MyPlayer = Cast<APlayerBase_YMH>(GetWorld()->GetFirstPlayerController()->GetCharacter());
 	UpgradeComp = MyPlayer->FindComponentByClass<UPlayerUpgradeComp_YMH>();
+	BuildComp = MyPlayer->FindComponentByClass<UPlayerBuildComp_LDJ>();
 }
 
 void UTrapAndWeaponLevelUI_LDJ::WeaponLevelUp()
 {
-	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Red,TEXT("TEST1"));
 	RefreshLevelupUI();
 }
 
 void UTrapAndWeaponLevelUI_LDJ::SpikeTrapLevelUp()
 {
-	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Red,TEXT("TEST2"));
 	UpgradeComp->SpikeTrapLevel++;
+	auto CurrentTrap = Cast<ASpikeTrap_LDJ>(BuildComp->SelectedTrap);
+	if (CurrentTrap)
+	{
+		BuildComp->SelectedTrap->Cost += 25;
+	}
 	RefreshLevelupUI();
 }
 
 void UTrapAndWeaponLevelUI_LDJ::FreezeTrapLevelUp()
 {
-	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Red,TEXT("TEST3"));
 	UpgradeComp->FreezeTrapLevel++;
+	auto CurrentTrap = Cast<AFreezeTrap_LDJ>(BuildComp->SelectedTrap);
+	if (CurrentTrap)
+	{
+		BuildComp->SelectedTrap->Cost += 25;
+	}
 	RefreshLevelupUI();
 }
 
 void UTrapAndWeaponLevelUI_LDJ::PoisonTrapLevelUp()
 {
-	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Red,TEXT("TEST4"));
 	UpgradeComp->PoisonTrapLevel++;
+	auto CurrentTrap = Cast<APoisonTrap_LDJ>(BuildComp->SelectedTrap);
+	if (CurrentTrap)
+	{
+		BuildComp->SelectedTrap->Cost += 25;
+	}
 	RefreshLevelupUI();
 }
 
 void UTrapAndWeaponLevelUI_LDJ::FlameTrapLevelUp()
 {
-	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Red,TEXT("TEST5"));
 	UpgradeComp->FlameTrapLevel++;
+	auto CurrentTrap = Cast<AFlameThrowerTrap_LDJ>(BuildComp->SelectedTrap);
+	if (CurrentTrap)
+	{
+		BuildComp->SelectedTrap->Cost += 25;
+	}
 	RefreshLevelupUI();
 }
 

@@ -4,6 +4,7 @@
 #include "Character/Player/PlayerInteractComp_LDJ.h"
 
 #include "PlayerBase_YMH.h"
+#include "PlayerFireComp_YMH.h"
 #include "Camera/CameraComponent.h"
 #include "Character/Enemy/ZombieBase_KJY.h"
 #include "PlayerController/PlayerController_YMH.h"
@@ -38,7 +39,7 @@ void UPlayerInteractComp_LDJ::TickComponent(float DeltaTime, ELevelTick TickType
 void UPlayerInteractComp_LDJ::InteractLineTrace()
 {
 	StartVec = Player->FollowCamera->GetComponentLocation();
-	EndVec = StartVec + Player->FollowCamera->GetForwardVector() * 10000;
+	EndVec = StartVec + Player->FollowCamera->GetForwardVector() * Player->FireComp->attackDistance;
 	params.AddIgnoredActor(GetOwner());
 	auto bHit = GetWorld()->LineTraceSingleByChannel(HitInfo, StartVec, EndVec, ECC_Visibility, params);
 	DrawDebugLine(GetWorld(), StartVec, EndVec, FColor::Purple);

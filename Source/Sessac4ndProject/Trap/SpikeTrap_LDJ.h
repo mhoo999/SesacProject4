@@ -26,7 +26,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void UpgradeCost() override;
+	virtual int32 GetCost() override;
 	virtual void UpgradeAbility() override;
 	virtual void ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef) override;
 

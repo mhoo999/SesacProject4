@@ -46,9 +46,9 @@ void APoisonTrap_LDJ::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void APoisonTrap_LDJ::UpgradeCost()
+int32 APoisonTrap_LDJ::GetCost()
 {
-	
+	return this->Cost;
 }
 
 void APoisonTrap_LDJ::UpgradeAbility()
