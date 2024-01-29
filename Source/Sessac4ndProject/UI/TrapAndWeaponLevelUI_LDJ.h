@@ -25,6 +25,9 @@ class SESSAC4NDPROJECT_API UTrapAndWeaponLevelUI_LDJ : public UUserWidget
 	UPROPERTY(EditAnywhere)
 	class UPlayerBuildComp_LDJ* BuildComp;
 
+	UPROPERTY(EditAnywhere)
+	class UPlayerFireComp_YMH* FireComp;
+
 public:
 	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(BindWidget))
 	class UButton* Btn_WeaponUpgrade;

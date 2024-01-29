@@ -5,6 +5,7 @@
 
 #include "Character/Player/PlayerBase_YMH.h"
 #include "Character/Player/PlayerBuildComp_LDJ.h"
+#include "Character/Player/PlayerFireComp_YMH.h"
 #include "Character/Player/PlayerUpgradeComp_YMH.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
@@ -25,10 +26,13 @@ void UTrapAndWeaponLevelUI_LDJ::NativeConstruct()
 	MyPlayer = Cast<APlayerBase_YMH>(GetWorld()->GetFirstPlayerController()->GetCharacter());
 	UpgradeComp = MyPlayer->FindComponentByClass<UPlayerUpgradeComp_YMH>();
 	BuildComp = MyPlayer->FindComponentByClass<UPlayerBuildComp_LDJ>();
+	FireComp = MyPlayer->FindComponentByClass<UPlayerFireComp_YMH>();
+	
 }
 
 void UTrapAndWeaponLevelUI_LDJ::WeaponLevelUp()
 {
+	FireComp->weaponeGrade++;
 	RefreshLevelupUI();
 }
 
@@ -93,6 +97,7 @@ void UTrapAndWeaponLevelUI_LDJ::RefreshLevelupUI()
 	Btn_FreezeTrapUpgrade->SetVisibility(ESlateVisibility::Hidden);
 	Btn_PoisonTrapUpgrade->SetVisibility(ESlateVisibility::Hidden);
 	Btn_FlameTrapUpgrade->SetVisibility(ESlateVisibility::Hidden);
+	Txt_WeaponLevel->SetText(FText::AsNumber(FireComp->weaponeGrade));
 	Txt_SpikeTrapLevel->SetText(FText::AsNumber(UpgradeComp->SpikeTrapLevel));
 	Txt_FreezeTrapLevel->SetText(FText::AsNumber(UpgradeComp->FreezeTrapLevel));
 	Txt_PoisonTrapLevel->SetText(FText::AsNumber(UpgradeComp->PoisonTrapLevel));
