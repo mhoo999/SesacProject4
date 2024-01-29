@@ -54,7 +54,7 @@ void AZombieBase_KJY::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	SpawnItem();
 }
 
-void AZombieBase_KJY::Damage()
+void AZombieBase_KJY::Damage(float damage)
 {
 
 	GetCharacterMovement()->MaxWalkSpeed = 0;
@@ -69,10 +69,9 @@ void AZombieBase_KJY::Damage()
 	PrintHP();
 	Anim->PlayDamageAnim();
 	
-	if(	CurrentHp == 0) // <= 에서 ==으로 변경
+	if(	CurrentHp <= 0)
 	{
 		SpawnLoc = GetActorLocation() + FVector(0, 0, -50);
-		UE_LOG(LogTemp, Warning, TEXT("Spawn Loc : %s"), *SpawnLoc.ToString());
 		Die();
 	}
 }
