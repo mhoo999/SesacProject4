@@ -35,7 +35,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=FSM)
 	float CurrentHp = MaxHp;
 
-	void Damage();
+	void Damage(float damage);
 	void Die();
 
 	FTimerHandle ZombieBaseTimer;
