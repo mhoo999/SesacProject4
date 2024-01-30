@@ -98,6 +98,12 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category="WidgetBP", meta=(BindWidget))
 	class UZombieHPUI_LDJ* WBP_ZombieHPUI_LDJ;
 
+	UPROPERTY(BlueprintReadWrite, Category="WidgetBP", meta=(BindWidget))
+	class URemainZombieUI_LDJ* WBP_RemainZombie;
+
+	UPROPERTY(BlueprintReadWrite, Category="WidgetBP", meta=(BindWidget))
+	class UMoneyWidget_LDJ* WBP_Money;
+
 	// ------------------------ multi play -----------------------------
 	// UFUNCTION()
 	// void ServerRPC

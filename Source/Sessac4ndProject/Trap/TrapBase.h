@@ -42,7 +42,7 @@ public:
 	UPROPERTY()
 	class APlayerBase_YMH* Player;
 
-	int32 Cost = 350;
+	int32 Cost = 100;
 	int32 TrapAttackDamage = 0;
 	float AttackCoolTime = 5;
 	float CurrentTime = 0;
@@ -64,7 +64,7 @@ public:
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
 	
-	virtual void UpgradeCost();
+	virtual int32 GetCost();
 	virtual void UpgradeAbility();
 	virtual void ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef);
 };

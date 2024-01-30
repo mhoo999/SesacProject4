@@ -17,6 +17,7 @@ UPlayerBaseComp_YMH::UPlayerBaseComp_YMH()
 void UPlayerBaseComp_YMH::BeginPlay()
 {
 	Super::BeginPlay();
+	player->wallet = 500;
 }
 
 void UPlayerBaseComp_YMH::InitializeComponent()
