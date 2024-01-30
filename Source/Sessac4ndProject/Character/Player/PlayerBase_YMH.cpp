@@ -12,6 +12,7 @@
 #include "PlayerInteractComp_LDJ.h"
 #include "PlayerMoveComp_YMH.h"
 #include "PlayerUpgradeComp_YMH.h"
+#include "SMGPlayer_YMH.h"
 #include "WaveStartComp_LDJ.h"
 #include "Animation/PlayerAnimInstance_YMH.h"
 #include "Components/Border.h"
@@ -21,8 +22,10 @@
 #include "Components/TextBlock.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
+#include "UI/MoneyWidget_LDJ.h"
 
 APlayerBase_YMH::APlayerBase_YMH()
 {
