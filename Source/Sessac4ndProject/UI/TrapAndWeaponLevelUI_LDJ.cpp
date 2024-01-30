@@ -95,7 +95,6 @@ void UTrapAndWeaponLevelUI_LDJ::RefreshLevelupUI()
 {
 	if (MyPlayer->skillPoint > 0)
 	{
-		GEngine->AddOnScreenDebugMessage(1,3,FColor::Red, );
 		return;
 	}
 	Btn_WeaponUpgrade->SetVisibility(ESlateVisibility::Hidden);

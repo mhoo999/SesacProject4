@@ -47,13 +47,18 @@ UPlayerFireComp_YMH::UPlayerFireComp_YMH()
 void UPlayerFireComp_YMH::BeginPlay()
 {
 	Super::BeginPlay();
+	auto player1 = Cast<APlayerBase_YMH>(GetOwner()); 
+	localPlayer = Cast<APlayerController_YMH>(player1->GetController());
 }
 
 void UPlayerFireComp_YMH::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	bulletDropPoint = (player->Weapon->GetSocketLocation(FName("Muzzle"))) + (player->FollowCamera->GetForwardVector() * attackDistance);
+	if (localPlayer && localPlayer->IsLocalController())
+	{
+		bulletDropPoint = (player->Weapon->GetSocketLocation(FName("Muzzle"))) + (player->FollowCamera->GetForwardVector() * attackDistance);
+	}
 }
 
 void UPlayerFireComp_YMH::SetupPlayerInput(UInputComponent* PlayerInputComponent)

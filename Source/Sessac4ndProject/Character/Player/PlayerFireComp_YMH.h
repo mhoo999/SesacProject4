@@ -64,6 +64,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ABullet_YMH> BulletFactory;
+
 	FVector bulletDropPoint;
 
 public:
@@ -109,4 +110,7 @@ public:
 	void ServerRPCInitAmmo();
 	UFUNCTION(Client, Reliable)
 	void ClientRPCInitAmmo(const int bc);
+
+	UPROPERTY()
+	APlayerController_YMH* localPlayer;
 };
