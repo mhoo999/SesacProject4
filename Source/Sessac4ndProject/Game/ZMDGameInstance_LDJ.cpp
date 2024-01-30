@@ -127,7 +127,7 @@ void UZMDGameInstance_LDJ::OnFindSessionsComplete(bool bWasSuccessful)
 		sr.Session.SessionSettings.Get(FName("HOST_NAME"), SessionInfo.RoomName); //호스트 이름
 		int32 MaxPlayerCount = sr.Session.SessionSettings.NumPublicConnections; //플레이어 수 : 최대 입장 수
 		int32 CurrentPlayerCount = MaxPlayerCount - sr.Session.NumOpenPublicConnections; //플레이어 수 : 현재 입장 수
-		SessionInfo.PlayerCount = FString::Printf(TEXT("(%d/%d)"), MaxPlayerCount, CurrentPlayerCount); //보기 좋게 포장해주기
+		SessionInfo.PlayerCount = FString::Printf(TEXT("(%d/%d)"), CurrentPlayerCount, MaxPlayerCount); //보기 좋게 포장해주기
 		SessionInfo.PingSpeed = sr.PingInMs;//핑
 		// ----- 세션 검색된 정보 기입 -----
 		
