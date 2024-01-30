@@ -34,7 +34,7 @@ public:
 	void ChaseState();
 	void AttackState();
 	//void DamageState();
-	//void DieState();
+	void DieState();
 
 	UPROPERTY(VisibleAnywhere, Category=FSM)
 	class ADestinationActor_KJY* Target;
@@ -64,7 +64,7 @@ public:
 	float DamageTime = 2.0f;
 
 	UPROPERTY(EditAnywhere, Category=FSM)
-	float DeathTime = 1.0f;
+	float DeathTime = 5.0f;
 
 	UPROPERTY()
 	class UZombieAnim* Anim;

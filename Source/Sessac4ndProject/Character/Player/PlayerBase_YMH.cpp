@@ -188,26 +188,3 @@ void APlayerBase_YMH::RestorationHealth(float value)
 {
 	currentHealth += value;
 }
-
-/*void APlayerBase_YMH::ServerRPCBeShot_Implementation(float damage)
-{
-	currentHealth -= damage;
-	ClientRPCBeShot_Implementation(currentHealth);
-}
-
-void APlayerBase_YMH::ClientRPCBeShot_Implementation(float ch)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Damege!"));
-	
-	if (currentHealth <= 0)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Dead!"));
-		DieProcess();
-	}
-	
-	float percent = ch / maxHelth;
-	if (mainUI)
-	{
-		mainUI->hp = percent;
-	}
-}*/

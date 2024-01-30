@@ -15,6 +15,9 @@ class SESSAC4NDPROJECT_API UZombieAnim : public UAnimInstance
 {
 	GENERATED_BODY()
 
+	virtual void NativeInitializeAnimation() override;
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+	
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=FSM)
 	EZombieState AnimState;
@@ -39,7 +42,15 @@ public:
 	UPROPERTY()
 	class AZombieBase_KJY* Me;
 
-	virtual void NativeInitializeAnimation() override;
 
 	bool bAttackCollision;
+
+	UFUNCTION()
+	void AnimNotify_ReactEnd();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MyAnimSettings")
+	bool bIsDead;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MyAnimSettings")
+	bool bIsDamage;
 };

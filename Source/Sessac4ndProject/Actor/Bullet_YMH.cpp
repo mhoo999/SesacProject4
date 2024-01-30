@@ -30,7 +30,6 @@ void ABullet_YMH::BeginPlay()
 	auto player = Cast<APlayerBase_YMH>(pc->GetPawn());
 	destination = player->FireComp->bulletDropPoint;
 	
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *destination.ToString());
 	direction = destination - GetActorLocation();
 	direction.Normalize();
 	
