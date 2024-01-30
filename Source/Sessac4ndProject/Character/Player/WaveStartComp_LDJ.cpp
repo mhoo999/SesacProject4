@@ -12,7 +12,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
+#include "UI/RemainZombieUI_LDJ.h"
 #include "UI/WaveInformationUI_LDJ.h"
+#include "UI/RemainZombieUI_LDJ.h"
 
 UWaveStartComp_LDJ::UWaveStartComp_LDJ()
 {
@@ -77,6 +79,7 @@ void UWaveStartComp_LDJ::MultiRPC_WaveStart_Implementation(int32 CurrentWave)
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AZombieBase_KJY::StaticClass(), LivingZombieArray);
 		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Green,
 		                                 FString::Printf(TEXT("Enemy : %d"), LivingZombieArray.Num()));
+		MyPlayerController->mainUI->WBP_RemainZombie->SetRemainZombie(LivingZombieArray.Num());
 		if (LivingZombieArray.Num() == 0 && ZombieSpawnManager->CurrentWave < 3)
 		{
 			MyPlayerController->mainUI->WBP_WaveInfor->SetWaveText(

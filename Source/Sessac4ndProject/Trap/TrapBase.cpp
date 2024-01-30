@@ -98,9 +98,9 @@ void ATrapBase::OnEnemyEndOverlapped(UPrimitiveComponent* OverlappedComponent, A
 	}
 }
 
-void ATrapBase::UpgradeCost()
+int32 ATrapBase::GetCost()
 {
-	this->Cost -= 50;
+	return Cost;
 }
 
 void ATrapBase::UpgradeAbility()
