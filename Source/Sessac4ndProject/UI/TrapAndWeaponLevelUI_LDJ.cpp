@@ -33,6 +33,7 @@ void UTrapAndWeaponLevelUI_LDJ::NativeConstruct()
 void UTrapAndWeaponLevelUI_LDJ::WeaponLevelUp()
 {
 	FireComp->weaponeGrade++;
+	MyPlayer->skillPoint--;
 	RefreshLevelupUI();
 }
 
@@ -44,6 +45,7 @@ void UTrapAndWeaponLevelUI_LDJ::SpikeTrapLevelUp()
 	{
 		BuildComp->SelectedTrap->Cost += 25;
 	}
+	MyPlayer->skillPoint--;
 	RefreshLevelupUI();
 }
 
@@ -55,6 +57,7 @@ void UTrapAndWeaponLevelUI_LDJ::FreezeTrapLevelUp()
 	{
 		BuildComp->SelectedTrap->Cost += 25;
 	}
+	MyPlayer->skillPoint--;
 	RefreshLevelupUI();
 }
 
@@ -66,6 +69,7 @@ void UTrapAndWeaponLevelUI_LDJ::PoisonTrapLevelUp()
 	{
 		BuildComp->SelectedTrap->Cost += 25;
 	}
+	MyPlayer->skillPoint--;
 	RefreshLevelupUI();
 }
 
@@ -77,7 +81,9 @@ void UTrapAndWeaponLevelUI_LDJ::FlameTrapLevelUp()
 	{
 		BuildComp->SelectedTrap->Cost += 25;
 	}
+	MyPlayer->skillPoint--;
 	RefreshLevelupUI();
+	
 }
 
 void UTrapAndWeaponLevelUI_LDJ::LevelUpUI()
@@ -88,15 +94,11 @@ void UTrapAndWeaponLevelUI_LDJ::LevelUpUI()
 	Btn_FreezeTrapUpgrade->SetVisibility(ESlateVisibility::Visible);
 	Btn_PoisonTrapUpgrade->SetVisibility(ESlateVisibility::Visible);
 	Btn_FlameTrapUpgrade->SetVisibility(ESlateVisibility::Visible);
-	MyPlayer->skillPoint--;
 }
 
 void UTrapAndWeaponLevelUI_LDJ::RefreshLevelupUI()
 {
-	if (MyPlayer->skillPoint > 0)
-	{
-		return;
-	}
+	GEngine->AddOnScreenDebugMessage(1,3,FColor::Red, FString::Printf(TEXT("%d"), MyPlayer->skillPoint));
 	Btn_WeaponUpgrade->SetVisibility(ESlateVisibility::Hidden);
 	Btn_SpikeTrapUpgrade->SetVisibility(ESlateVisibility::Hidden);
 	Btn_FreezeTrapUpgrade->SetVisibility(ESlateVisibility::Hidden);
@@ -107,4 +109,9 @@ void UTrapAndWeaponLevelUI_LDJ::RefreshLevelupUI()
 	Txt_FreezeTrapLevel->SetText(FText::AsNumber(UpgradeComp->FreezeTrapLevel));
 	Txt_PoisonTrapLevel->SetText(FText::AsNumber(UpgradeComp->PoisonTrapLevel));
 	Txt_FlameTrapLevel->SetText(FText::AsNumber(UpgradeComp->FlameTrapLevel));
+	
+	if (MyPlayer->skillPoint >= 0)
+	{
+		LevelUpUI();
+	}
 }
