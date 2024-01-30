@@ -150,4 +150,3 @@ public:
 	UPROPERTY(EditAnywhere)
 	USoundBase* reloadSound;
 };
-

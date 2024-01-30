@@ -88,10 +88,16 @@ void UTrapAndWeaponLevelUI_LDJ::LevelUpUI()
 	Btn_FreezeTrapUpgrade->SetVisibility(ESlateVisibility::Visible);
 	Btn_PoisonTrapUpgrade->SetVisibility(ESlateVisibility::Visible);
 	Btn_FlameTrapUpgrade->SetVisibility(ESlateVisibility::Visible);
+	MyPlayer->skillPoint--;
 }
 
 void UTrapAndWeaponLevelUI_LDJ::RefreshLevelupUI()
 {
+	if (MyPlayer->skillPoint > 0)
+	{
+		GEngine->AddOnScreenDebugMessage(1,3,FColor::Red, );
+		return;
+	}
 	Btn_WeaponUpgrade->SetVisibility(ESlateVisibility::Hidden);
 	Btn_SpikeTrapUpgrade->SetVisibility(ESlateVisibility::Hidden);
 	Btn_FreezeTrapUpgrade->SetVisibility(ESlateVisibility::Hidden);
