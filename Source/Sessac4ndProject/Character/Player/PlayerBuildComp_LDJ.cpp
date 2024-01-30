@@ -14,6 +14,7 @@
 #include "Trap/PoisonTrap_LDJ.h"
 #include "Trap/SpikeTrap_LDJ.h"
 #include "InputAction.h"
+#include "PlayerUpgradeComp_YMH.h"
 #include "Animation/PlayerAnimInstance_YMH.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Character/Enemy/ZombieBase_KJY.h"
@@ -23,6 +24,7 @@
 #include "Net/UnrealNetwork.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
+#include "UI/MoneyWidget_LDJ.h"
 #include "UI/TrapAndWeaponLevelUI_LDJ.h"
 #include "UI/WaveInformationUI_LDJ.h"
 
@@ -90,6 +92,7 @@ void UPlayerBuildComp_LDJ::BeginPlay()
 	// LevelUpUI->AddToViewport();
 	// WaveInforUI = Cast<UWaveInformationUI_LDJ>(CreateWidget(GetWorld(), WaveInforUIFactory));
 	// WaveInforUI->AddToViewport();
+	UpgradeComp = player->FindComponentByClass<UPlayerUpgradeComp_YMH>();
 }
 
 void UPlayerBuildComp_LDJ::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -133,15 +136,9 @@ void UPlayerBuildComp_LDJ::SetupPlayerInput(UInputComponent* PlayerInputComponen
 void UPlayerBuildComp_LDJ::DoBuildSpikeTrap(const FInputActionValue& value)
 {
 	player->bIsBuildMode = true;
-	if (GetOwner()->HasAuthority())
-	{
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red,TEXT("Server"));
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Blue,TEXT("Client"));
-	}
 	TrapFactory = SpikeTrapFactory;
+	SelectedTrap = NewObject<ASpikeTrap_LDJ>(TrapFactory);
+	SelectedTrap->Cost += UpgradeComp->SpikeTrapLevel * 25;
 	
 	if (PlayerController)
 	{
@@ -155,6 +152,8 @@ void UPlayerBuildComp_LDJ::DoBuildFreezeTrap(const FInputActionValue& value)
 {
 	player->bIsBuildMode = true;
 	TrapFactory = FreezeTrapFactory;
+	SelectedTrap = NewObject<AFreezeTrap_LDJ>(TrapFactory);
+	SelectedTrap->Cost += UpgradeComp->FreezeTrapLevel * 25;
 	
 	if (PlayerController)
 	{
@@ -169,6 +168,8 @@ void UPlayerBuildComp_LDJ::DoBuildPoisonTrap(const FInputActionValue& value)
 {
 	player->bIsBuildMode = true;
 	TrapFactory = PoisonTrapFactory;
+	SelectedTrap = NewObject<APoisonTrap_LDJ>(TrapFactory);
+	SelectedTrap->Cost += UpgradeComp->PoisonTrapLevel * 25;
 	
 	if (PlayerController)
 	{
@@ -183,6 +184,8 @@ void UPlayerBuildComp_LDJ::DoBuildFlameTrap(const FInputActionValue& value)
 {
 	player->bIsBuildMode = true;
 	TrapFactory = FlameTrapFactory;
+	SelectedTrap = NewObject<AFlameThrowerTrap_LDJ>(TrapFactory);
+	SelectedTrap->Cost += UpgradeComp->FlameTrapLevel * 25;
 	
 	if (PlayerController)
 	{
@@ -200,8 +203,8 @@ void UPlayerBuildComp_LDJ::DoEquipGun(const FInputActionValue& value)
 	{
 		PreviewTrap->SetStaticMesh(nullptr);
 		TrapFactory = nullptr;
+		// SelectedTrap = nullptr;
 	}
-	GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red, FString::Printf(TEXT("%p"), *TrapFactory));
 	bDoOnceMeshSet = false;
 
 	if (PlayerController)
@@ -245,7 +248,14 @@ void UPlayerBuildComp_LDJ::ResetPreviewMesh()
 	if (temp && !bDoOnceMeshSet)
 	{
 		PreviewTrap->SetStaticMesh(PreviewTrapMesh);
-		PreviewTrap->SetMaterial(0, EnableMesh);
+		if (player->wallet >= SelectedTrap->GetCost())
+		{
+			PreviewTrap->SetMaterial(0, EnableMesh);
+		}
+		else
+		{
+			PreviewTrap->SetMaterial(0, DisableMesh);
+		}
 		PreviewTrap->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		PreviewTrap->SetCollisionProfileName(FName("Trap"));
 		// PreviewTrap->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -259,8 +269,9 @@ void UPlayerBuildComp_LDJ::ResetPreviewMesh()
 
 void UPlayerBuildComp_LDJ::PressPlaceBuild()
 {
-	if (player->bIsBuildMode && bBuildEnable)
+	if (player->bIsBuildMode && bBuildEnable && player->wallet >= SelectedTrap->GetCost())
 	{
+		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Green, FString::Printf(TEXT("%d"), SelectedTrap->Cost));
 		auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
 		anim->PlayInstallMontage();
 		
@@ -281,6 +292,11 @@ void UPlayerBuildComp_LDJ::OnTrapEndOverlapped(UPrimitiveComponent* OverlappedCo
 			PreviewTrap->SetMaterial(0, EnableMesh);
 			bBuildEnable = true;
 		}
+	}
+
+	if (player->wallet < SelectedTrap->Cost)
+	{
+		PreviewTrap->SetMaterial(0, DisableMesh);
 	}
 }
 
@@ -307,4 +323,15 @@ void UPlayerBuildComp_LDJ::ServerRPC_PressPlaceBuild_Implementation(const FVecto
 	BuildPreviewTransform.SetLocation(Vec);
 	BuildPreviewTransform.SetScale3D(FVector(0.98));
 	GetWorld()->SpawnActor<ATrapBase>(RPCTrapFactory, BuildPreviewTransform);
+	ClientRPC_PressPlaceBuild(Vec);
+}
+
+void UPlayerBuildComp_LDJ::ClientRPC_PressPlaceBuild_Implementation(const FVector& Vec)
+{
+	auto Player = Cast<APlayerBase_YMH>(PlayerController->GetPawn());
+	if (Player)
+	{
+		Player->wallet = Player->wallet - SelectedTrap->GetCost();
+		PlayerController->mainUI->WBP_Money->SetMoneyText(Player->wallet);
+	}
 }

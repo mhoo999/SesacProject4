@@ -12,6 +12,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "PlayerController/PlayerController_YMH.h"
 #include "UI/MainUI_YMH.h"
+#include "UI/MoneyWidget_LDJ.h"
 #include "UI/TrapAndWeaponLevelUI_LDJ.h"
 
 UPlayerUpgradeComp_YMH::UPlayerUpgradeComp_YMH()
@@ -91,6 +92,9 @@ void UPlayerUpgradeComp_YMH::LevelUp(const FInputActionValue& value)
 	{
 		auto PC = GetWorld()->GetFirstPlayerController();
 		auto Temp = Cast<APlayerController_YMH>(PC);
+		auto MyPlayer  = Cast<APlayerBase_YMH>(Temp->GetPawn());
+		MyPlayer->wallet+=100;
 		Temp->mainUI->WBP_TrapLevel->LevelUpUI();
+		Temp->mainUI->WBP_Money->SetMoneyText(MyPlayer->wallet);
 	}
 }

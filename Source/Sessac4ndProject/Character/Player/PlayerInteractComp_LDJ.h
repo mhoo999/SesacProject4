@@ -27,15 +27,15 @@ public:
 	void InteractLineTrace();
 
 	void BringZombieHPAndShowUI(AActor* HitActor);
+
+	UFUNCTION(Client, UnReliable)
+	void ClientRPC_InteractionTrace(AZombieBase_KJY* HitActor);
 	// ----- 함수 -----
 
 	// ----- 변수 -----
 	UPROPERTY()
 	class APlayerBase_YMH* Player;
 	
-	UPROPERTY()
-	FHitResult HitInfo;
-
 	UPROPERTY()
 	class APlayerController* PC;
 
@@ -46,6 +46,11 @@ public:
 
 	FVector StartVec;
 	FVector EndVec;
+
+	UPROPERTY()
+	TArray<AActor*> ToIgnore;
 	// ----- 변수 -----
+	UFUNCTION(Server, UnReliable)
+	void ServerRPC_InteractionTrace(FHitResult HitInfo22);
 	
 };

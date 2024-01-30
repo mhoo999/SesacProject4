@@ -46,7 +46,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Inputs", meta = (AllowPrivateAccess))
 	UInputAction* IA_PlaceTrap;
 
-
+	UPROPERTY(EditAnywhere)
+	class UPlayerUpgradeComp_YMH* UpgradeComp;
 	
 	bool bDoOnceMeshSet = false; // 프리뷰 메시를 한번만 실행하기 위해 필요한 변수
 
@@ -79,6 +80,9 @@ public:
 
 	UPROPERTY()
 	TSubclassOf<class ATrapBase> TrapFactory;
+
+	UPROPERTY()
+	class ATrapBase* SelectedTrap;
 
 	UPROPERTY()
 	FTransform BuildPreviewTransform;
@@ -115,6 +119,9 @@ public:
 	
 	UFUNCTION(Server, Unreliable)
 	void ServerRPC_PressPlaceBuild(const FVector& Vec, TSubclassOf<ATrapBase> TrapFactoryBase);
+	
+	UFUNCTION(Client, Unreliable)
+	void ClientRPC_PressPlaceBuild(const FVector& Vec);
 	
 	FTimerHandle Handle;
 

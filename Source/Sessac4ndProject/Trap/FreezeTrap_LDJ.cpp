@@ -49,8 +49,9 @@ void AFreezeTrap_LDJ::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AFreezeTrap_LDJ::UpgradeCost()
+int32 AFreezeTrap_LDJ::GetCost()
 {
+	return this->Cost;
 }
 
 void AFreezeTrap_LDJ::UpgradeAbility()

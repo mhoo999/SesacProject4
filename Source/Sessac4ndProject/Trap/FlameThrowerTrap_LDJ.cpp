@@ -50,8 +50,9 @@ void AFlameThrowerTrap_LDJ::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AFlameThrowerTrap_LDJ::UpgradeCost()
+int32 AFlameThrowerTrap_LDJ::GetCost()
 {
+	return this->Cost;
 }
 
 void AFlameThrowerTrap_LDJ::UpgradeAbility()
