@@ -41,7 +41,7 @@ public:
 
 	UPROPERTY()
 	class APlayerBase_YMH* Player;
-
+	
 	int32 Cost = 100;
 	int32 TrapAttackDamage = 0;
 	float AttackCoolTime = 5;
@@ -67,4 +67,13 @@ public:
 	virtual int32 GetCost();
 	virtual void UpgradeAbility();
 	virtual void ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USoundBase* ReactFlameTrapSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USoundBase* ReactFreezeTrapSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USoundBase* ReactSpikeTrapSound;
 };

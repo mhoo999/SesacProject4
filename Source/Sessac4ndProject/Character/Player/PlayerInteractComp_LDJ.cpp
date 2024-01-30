@@ -68,7 +68,7 @@ void UPlayerInteractComp_LDJ::ClientRPC_InteractionTrace_Implementation(AZombieB
 	}
 	if (Player->IsLocallyControlled())
 	{
-		MyPC->mainUI->WBP_ZombieHPUI_LDJ->ShowZombieHPUI(Zombie->CurrentHp, Zombie->MaxHp);
+		MyPC->mainUI->WBP_ZombieHPUI_LDJ->ShowZombieHPUI(Zombie->CurrentHp, Zombie->MaxHp, Zombie);
 	}
 }
 

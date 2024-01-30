@@ -27,12 +27,11 @@ void UTrapAndWeaponLevelUI_LDJ::NativeConstruct()
 	UpgradeComp = MyPlayer->FindComponentByClass<UPlayerUpgradeComp_YMH>();
 	BuildComp = MyPlayer->FindComponentByClass<UPlayerBuildComp_LDJ>();
 	FireComp = MyPlayer->FindComponentByClass<UPlayerFireComp_YMH>();
-	
 }
 
 void UTrapAndWeaponLevelUI_LDJ::WeaponLevelUp()
 {
-	FireComp->weaponeGrade++;
+	FireComp->weaponeUpgrade();
 	MyPlayer->skillPoint--;
 	RefreshLevelupUI();
 }
@@ -104,7 +103,7 @@ void UTrapAndWeaponLevelUI_LDJ::RefreshLevelupUI()
 	Btn_FreezeTrapUpgrade->SetVisibility(ESlateVisibility::Hidden);
 	Btn_PoisonTrapUpgrade->SetVisibility(ESlateVisibility::Hidden);
 	Btn_FlameTrapUpgrade->SetVisibility(ESlateVisibility::Hidden);
-	Txt_WeaponLevel->SetText(FText::AsNumber(FireComp->weaponeGrade));
+	Txt_WeaponLevel->SetText(FText::AsNumber(FireComp->Damage));
 	Txt_SpikeTrapLevel->SetText(FText::AsNumber(UpgradeComp->SpikeTrapLevel));
 	Txt_FreezeTrapLevel->SetText(FText::AsNumber(UpgradeComp->FreezeTrapLevel));
 	Txt_PoisonTrapLevel->SetText(FText::AsNumber(UpgradeComp->PoisonTrapLevel));

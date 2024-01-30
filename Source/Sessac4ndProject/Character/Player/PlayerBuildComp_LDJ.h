@@ -128,5 +128,7 @@ public:
 	int32 CollisionMeshCnt = 0;
 	bool bBuildEnable = true;
 	bool bMouseMode = false;
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USoundBase* BuiltSound;
 };

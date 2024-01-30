@@ -9,6 +9,7 @@
 #include "Components/BoxComponent.h"
 #include "Character/Player/PlayerBuildComp_LDJ.h"
 #include "Character/Player/PlayerUpgradeComp_YMH.h"
+#include "Kismet/GameplayStatics.h"
 #include "PlayerController/PlayerController_YMH.h"
 
 // Sets default values
@@ -33,6 +34,17 @@ ATrapBase::ATrapBase()
 	ReactionCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Enemy Sensing Component"));
 	ReactionCollision->SetupAttachment(RootComponent);
 	ReactionCollision->SetBoxExtent(FVector(129));
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> ReactFlameTrapSoundRef(TEXT("/Game/Resources/LDJ/Sounds/Trap/FireTrap_React.FireTrap_React"));
+	ReactFlameTrapSound = ReactFlameTrapSoundRef.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> ReactFreezeTrapSoundRef(TEXT("/Game/Resources/LDJ/Sounds/Trap/FreezeTrap_React.FreezeTrap_React"));
+	ReactFreezeTrapSound = ReactFreezeTrapSoundRef.Object;
+	
+	static ConstructorHelpers::FObjectFinder<USoundBase> ReactSpikeTrapSoundRef(TEXT("/Game/Resources/LDJ/Sounds/Trap/SpikeTrap_React.SpikeTrap_React"));
+	ReactSpikeTrapSound = ReactSpikeTrapSoundRef.Object;
+
+	
 
 	bReplicates = true;
 }
