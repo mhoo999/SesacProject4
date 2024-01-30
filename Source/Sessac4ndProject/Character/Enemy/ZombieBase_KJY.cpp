@@ -122,15 +122,18 @@ void AZombieBase_KJY::ServerRPCSpawnItem_Implementation(FVector sLoc)
 
 	if(0 <= RandItem && RandItem < 2)
 	{
-		MultiRPCSpawnHealth(sLoc);
+		// MultiRPCSpawnHealth(sLoc);
+		GetWorld()->SpawnActor<AHealthItem_KJY>(HealthFactory, sLoc, FRotator(0));
 	}
 	else if(2 <= RandItem && RandItem < 4)
 	{
-		MultiRPCSpawnSkill(sLoc);
+		// MultiRPCSpawnSkill(sLoc);
+		GetWorld()->SpawnActor<ASkillUpItem_KJY>(SkillUpFactory, sLoc, FRotator(0));
 	}
 	else
 	{
-		MultiRPCSpawnMonny(sLoc);
+		// MultiRPCSpawnMonny(sLoc);
+		GetWorld()->SpawnActor<AWalletItem_KJY>(WalletFactory, sLoc, FRotator(0));
 	}
 }
 
