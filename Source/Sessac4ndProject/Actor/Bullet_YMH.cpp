@@ -31,12 +31,12 @@ void ABullet_YMH::BeginPlay()
 	// auto player = Cast<APlayerBase_YMH>(newOwner);
 	// FindOwner();
 
-	pc = Cast<APlayerController_YMH>(GetWorld()->GetFirstPlayerController());
-	auto player = Cast<APlayerBase_YMH>(pc->GetPawn());
-	
-	destination = player->FireComp->bulletDropPoint;
-	direction = destination - GetActorLocation();
-	direction.Normalize();
+	// pc = Cast<APlayerController_YMH>(GetWorld()->GetFirstPlayerController());
+	// auto player = Cast<APlayerBase_YMH>(pc->GetPawn());
+	//
+	// destination = player->FireComp->bulletDropPoint;
+	// direction = destination - GetActorLocation();
+	// direction.Normalize();
 	
 	FTimerHandle deathTime;
 	GetWorld()->GetTimerManager().SetTimer(deathTime, FTimerDelegate::CreateLambda([&]
@@ -50,8 +50,8 @@ void ABullet_YMH::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	
 	FVector p0 = GetActorLocation();
-	FVector v = direction * bulletSpeed;
-	// FVector v = GetActorForwardVector() * bulletSpeed;
+	// FVector v = direction * bulletSpeed;
+	FVector v = GetActorForwardVector() * bulletSpeed;
 	SetActorLocation(p0 + v * DeltaTime);
 }
 
