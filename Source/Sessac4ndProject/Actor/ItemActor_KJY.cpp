@@ -39,14 +39,10 @@ void AItemActor_KJY::OnBeginItemOverlap(UPrimitiveComponent* OverlappedComponent
 {
 	if (HasAuthority())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("HasAuthority"));
-		
 		Player = Cast<APlayerBase_YMH>(OtherActor);
 	
 		if (Player == OtherActor)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("OtherActor"));
-
 			ReactItem();
 			Destroy();
 		}
