@@ -17,7 +17,7 @@ AShotgunPlayer_YMH::AShotgunPlayer_YMH()
 	maxHelth = 10.0f;
 	currentHealth = maxHelth;
 	FireComp->attackSpeed = 5.0f;
-	FireComp->Damage = 50.0f;
+	FireComp->Damage = 3.0f;
 	FireComp->attackDistance = 1500;
 	FireComp->weaponeGrade = 1;
 	FireComp->MaxBulletCount = 5.0f;

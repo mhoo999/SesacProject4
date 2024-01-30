@@ -120,7 +120,7 @@ void UPlayerFireComp_YMH::Reload(const FInputActionValue& value)
 void UPlayerFireComp_YMH::ServerRPCReload_Implementation()
 {
 	ClientRPCReload_Implementation();
-	MultiRPCReload_Implementation();
+	MultiRPCReload();
 }
 
 void UPlayerFireComp_YMH::ClientRPCReload_Implementation()
@@ -178,7 +178,7 @@ void UPlayerFireComp_YMH::ServerRPCFire_Implementation()
 		if (Temp)
 		{
 			auto MyEnemy = Cast<AZombieBase_KJY>(Temp->GetOwner());
-			MyEnemy->Damage();
+			MyEnemy->ServerRPCDamage(Damage);
 		}
 	}
 
