@@ -17,4 +17,6 @@ class SESSAC4NDPROJECT_API ASkillUpItem_KJY : public AItemActor_KJY
 	virtual void BeginPlay() override;
 
 	virtual void ReactItem() override;
+public:
+	
 };

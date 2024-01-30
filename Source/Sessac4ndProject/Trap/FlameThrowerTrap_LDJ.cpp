@@ -9,6 +9,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Character/Player/PlayerBuildComp_LDJ.h"
 #include "Character/Player/PlayerUpgradeComp_YMH.h"
+#include "Kismet/GameplayStatics.h"
 
 
 AFlameThrowerTrap_LDJ::AFlameThrowerTrap_LDJ()
@@ -76,6 +77,7 @@ void AFlameThrowerTrap_LDJ::ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef)
 		FireFX2->SetVisibility(true);
 		FireFX3->SetVisibility(true);
 		FireFX4->SetVisibility(true);
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ReactFlameTrapSound, GetActorLocation());
 		FTimerHandle Handle;
 		GetWorldTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
 		{

@@ -64,6 +64,7 @@ void ASpikeTrap_LDJ::ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef)
 	{
 		SpikeMeshComp->SetVisibility(false);
 		SpikeMeshComp2->SetVisibility(true);
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ReactSpikeTrapSound, GetActorLocation());
 		FTimerHandle Handle;
 		GetWorldTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
 		{

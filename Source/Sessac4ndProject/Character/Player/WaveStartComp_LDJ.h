@@ -49,6 +49,19 @@ public:
 
 	UPROPERTY()
 	class AZombieManagerBase_KJY* Temp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USoundBase* WaveReadySound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USoundBase* WaveStartSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USoundBase* GameWinSound;
+
+	UPROPERTY()
+	class UAudioComponent* SoundController;
+
 	// ----- 일반 변수 -----
 	FTimerHandle ZombieDieHandle;
 	FTimerHandle WinHandle;

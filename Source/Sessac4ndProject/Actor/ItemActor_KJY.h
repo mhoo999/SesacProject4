@@ -38,4 +38,19 @@ public:
 							  const FHitResult& SweepResult);
 
 	virtual void ReactItem();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USoundBase* SkillUpItemDropSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USoundBase* SkillUpItemEatSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USoundBase* GoldItemDropSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USoundBase* HealthPosionDropSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USoundBase* HealthPosionEatSound;
 };

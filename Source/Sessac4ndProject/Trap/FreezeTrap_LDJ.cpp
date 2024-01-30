@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Character/Player/PlayerBuildComp_LDJ.h"
 #include "Character/Player/PlayerUpgradeComp_YMH.h"
+#include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 
 AFreezeTrap_LDJ::AFreezeTrap_LDJ()
@@ -70,6 +71,7 @@ void AFreezeTrap_LDJ::ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef)
 		FreezeFX2->SetVisibility(true);
 		FreezeFX3->SetVisibility(true);
 		FreezeFX4->SetVisibility(true);
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ReactFreezeTrapSound, GetActorLocation());
 		FTimerHandle Handle;
 		GetWorldTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
 		{

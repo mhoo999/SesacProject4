@@ -83,6 +83,12 @@ UPlayerBuildComp_LDJ::UPlayerBuildComp_LDJ()
 	
 	// static ConstructorHelpers::FClassFinder<UWaveInformationUI_LDJ> WaveInforUIRef(TEXT("/Game/LDJ/UI/WBP_WaveInfor.WBP_WaveInfor_C"));
 	// if (WaveInforUIRef.Succeeded()) WaveInforUIFactory = WaveInforUIRef.Class;
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> BuildSoundRef(TEXT("/Game/Resources/LDJ/Sounds/Trap/TrapBuiltSound2.TrapBuiltSound2"));
+	if (BuildSoundRef.Succeeded())
+	{
+		BuiltSound = BuildSoundRef.Object;
+	}
 }
 
 void UPlayerBuildComp_LDJ::BeginPlay()
@@ -271,9 +277,10 @@ void UPlayerBuildComp_LDJ::PressPlaceBuild()
 {
 	if (player->bIsBuildMode && bBuildEnable && player->wallet >= SelectedTrap->GetCost())
 	{
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Green, FString::Printf(TEXT("%d"), SelectedTrap->Cost));
+		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Green, FString::Printf(TEXT("%p"), GetWorld()->GetFirstPlayerController()));
 		auto anim = Cast<UPlayerAnimInstance_YMH>(player->GetMesh()->GetAnimInstance());
 		anim->PlayInstallMontage();
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), BuiltSound, GetOwner()->GetActorLocation());
 		
 		// GetWorld()->SpawnActor<ATrapBase>(TrapFactory, BuildPreviewTransform);
 		ServerRPC_PressPlaceBuild(TempVec, TrapFactory);
