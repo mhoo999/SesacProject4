@@ -14,5 +14,7 @@ class SESSAC4NDPROJECT_API AHealthItem_KJY : public AItemActor_KJY
 {
 	GENERATED_BODY()
 
+	virtual void BeginPlay() override;
+
 	virtual void ReactItem() override;
 };

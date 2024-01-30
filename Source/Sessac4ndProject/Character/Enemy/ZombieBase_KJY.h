@@ -23,8 +23,6 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UZombieFSM* fsm;
@@ -32,13 +30,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=FSM)
 	float MaxHp = 10.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=FSM)
+	UPROPERTY()
 	float CurrentHp = MaxHp;
+	
+	UFUNCTION(Server, Reliable)
+	void ServerRPCDamage(float getDamage);
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPCDamage(float hp);
 
-	void Damage(float damage);
-	void Die();
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiDieProcess(float hp);
 
-	FTimerHandle ZombieBaseTimer;
+	bool bZombieHit = false;
+	bool bZombieDie = false;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class UHPWidget_KJY> HPWidget;
@@ -69,5 +73,15 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ASkillUpItem_KJY> SkillUpFactory;
 	
-	virtual void SpawnItem();
+	UFUNCTION(Server, Reliable)
+	void ServerRPCSpawnItem(FVector sLoc);
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPCSpawnHealth(FVector spawnLocation);
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPCSpawnSkill(FVector spawnLocation);
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPCSpawnMonny(FVector spawnLocation);
+
+	UPROPERTY(EditAnywhere, Category="Sound")
+	USoundBase* ATKSound;
 };

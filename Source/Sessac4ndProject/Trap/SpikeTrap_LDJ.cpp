@@ -55,7 +55,7 @@ void ASpikeTrap_LDJ::ReactTrap(TArray<AZombieBase_KJY*> EnemyBoxRef)
 		auto temp = Cast<AZombieBase_KJY>(e);
 		if (temp)
 		{
-			temp->Damage(TrapLevel);
+			temp->ServerRPCDamage(TrapLevel);
 			//널 에러가 뜬다면, 좀비베이스의 Die함수를 Timer로 씌워서 2초 늦게 죽자.
 		}
 	}

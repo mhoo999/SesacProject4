@@ -57,24 +57,31 @@ void UZombieFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 
 	// ...
 
-	switch (mState)
+	if (Me->bZombieDie == false && Me->bZombieHit == false)
 	{
-	case EZombieState::Move:
-		MoveState();
-		break;
-	case EZombieState::Chase:
-		ChaseState();
-		break;
-		
-	case EZombieState::Attack:
-		AttackState();
-		break;
-	// case EZombieState::Damage:
-	// 	DamageState();
-	// 	break;
-	// case EZombieState::Die:
-	// 	DieState();
-	// 	break;
+		switch (mState)
+		{
+		case EZombieState::Move:
+			MoveState();
+			break;
+		case EZombieState::Chase:
+			ChaseState();
+			break;
+			
+		case EZombieState::Attack:
+			AttackState();
+			break;
+		// case EZombieState::Damage:
+		// 	DamageState();
+		// 	break;
+		// case EZombieState::Die:
+		// 	break;
+		}
+	}
+
+	if (Me->bZombieDie)
+	{
+		DieState();
 	}
 }
 
@@ -169,17 +176,17 @@ void UZombieFSM::AttackState()
 		Anim->AnimState = mState;	
 	}
 	
-}
+}*/
 
 void UZombieFSM::DieState()
 {
-	
 	CurrentTime += GetWorld()->DeltaTimeSeconds;
+	
 	if (CurrentTime > DeathTime)
 	{
 		Me->Destroy();
 	}
-}*/
+}
 
 
 FVector UZombieFSM::GetRandomLocationInNavMesh(bool& bisLeft, FVector DestLoc, FVector RightDestLoc)

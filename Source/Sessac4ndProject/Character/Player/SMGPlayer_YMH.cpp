@@ -17,7 +17,7 @@ ASMGPlayer_YMH::ASMGPlayer_YMH()
 	maxHelth = 10.0f;
 	currentHealth = maxHelth;
 	FireComp->attackSpeed = 2.0f;
-	FireComp->Damage = 10.0f;
+	FireComp->Damage = 1.0f;
 	FireComp->attackDistance = 4000;
 	FireComp->weaponeGrade = 1;
 	FireComp->MaxBulletCount = 30.0f;

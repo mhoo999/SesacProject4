@@ -6,6 +6,17 @@
 #include "ZombieBase_KJY.h"
 
 
+void UZombieAnim::NativeUpdateAnimation(float DeltaSeconds)
+{
+	Super::NativeUpdateAnimation(DeltaSeconds);
+
+	if (Me)
+	{
+		bIsDead = Me->bZombieDie;
+		bIsDamage = Me->bZombieHit;
+	}
+}
+
 void UZombieAnim::PlayDamageAnim()
 {
 	Montage_Play(DamageAnimMontage);
@@ -34,4 +45,9 @@ void UZombieAnim::NativeInitializeAnimation()
 
 	Me = Cast<AZombieBase_KJY>(GetOwningActor());
 	
+}
+
+void UZombieAnim::AnimNotify_ReactEnd()
+{
+	Me->bZombieHit = false;
 }

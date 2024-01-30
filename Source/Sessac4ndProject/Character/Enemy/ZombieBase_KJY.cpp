@@ -5,7 +5,6 @@
 #include "Character/Enemy/ZombieFSM.h"
 #include "ZombieAnim.h"
 #include "Actor/HealthItem_KJY.h"
-#include "Actor/ItemActor_KJY.h"
 #include "Actor/SkillUpItem_KJY.h"
 #include "Actor/WalletItem_KJY.h"
 #include "Blueprint/UserWidget.h"
@@ -13,6 +12,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/TextBlock.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/HPWidget_KJY.h"
 
 
@@ -47,59 +47,58 @@ void AZombieBase_KJY::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AZombieBase_KJY::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void AZombieBase_KJY::ServerRPCDamage_Implementation(float getDamage)
 {
-	Super::EndPlay(EndPlayReason);
-
-	SpawnItem();
-}
-
-void AZombieBase_KJY::Damage(float damage)
-{
-
-	GetCharacterMovement()->MaxWalkSpeed = 0;
-
 	if (ZombieHPUI != nullptr)
 	{
 		ZombieHPUI->AddToViewport();
 		//ZombieHPUI->SetPercent(CurrentHp, MaxHp);
 	}
-
-	CurrentHp--;
-	PrintHP();
-	Anim->PlayDamageAnim();
 	
+	CurrentHp -= getDamage;
+
 	if(	CurrentHp <= 0)
 	{
-		SpawnLoc = GetActorLocation() + FVector(0, 0, -50);
-		Die();
+		MultiDieProcess(CurrentHp);
+	}
+	else
+	{
+		MultiRPCDamage(CurrentHp);
 	}
 }
 
-void AZombieBase_KJY::Die()
+void AZombieBase_KJY::MultiDieProcess_Implementation(float hp)
 {
-	Anim->PlayDieAnim();
+	SpawnLoc = GetActorLocation() + FVector(0, 0, -50);
+	CurrentHp = hp;
+	bZombieDie = true;
+	GetCharacterMovement()->MaxWalkSpeed = 0;
+	SetActorLocation(SpawnLoc);
+	PrintHP();
+	GetMesh()->SetCollisionProfileName(FName("DieZombie"));
 
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	
-	
-	auto temp = Cast<AZombieBase_KJY>(GetMesh()->GetOwner());
-	temp->GetCharacterMovement()->MaxWalkSpeed = 0;
-	GetWorld()->GetTimerManager().SetTimer(ZombieBaseTimer, FTimerDelegate::CreateLambda([&]
-	{
-		Destroy();
-	}), 0.1, false);
+	ServerRPCSpawnItem(SpawnLoc);
+}
 
+void AZombieBase_KJY::MultiRPCDamage_Implementation(float hp)
+{
+	bZombieHit = true;
+	
+	CurrentHp = hp;
+	GetCharacterMovement()->MaxWalkSpeed = 0;
+	PrintHP();
+
+	UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentHp);
 }
 
 void AZombieBase_KJY::OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                           UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	auto player = Cast<APlayerBase_YMH>(OtherActor);
 
 	if (player&&Anim->bAttackCollision == true)
 	{
+		UGameplayStatics::PlaySound2D(GetWorld(), ATKSound);
 		player->BeShot(1.0f);
 		Anim->bAttackCollision = false;
 	}
@@ -117,21 +116,42 @@ void AZombieBase_KJY::PrintHP()
 	}
 }
 
-void AZombieBase_KJY::SpawnItem()
+void AZombieBase_KJY::ServerRPCSpawnItem_Implementation(FVector sLoc)
 {
-	float RandItem = FMath::RandRange(0,1);
-	if(RandItem < 0.6)
+	const int32 RandItem = FMath::RandRange(0,10);
+
+	if(0 <= RandItem && RandItem < 2)
 	{
-		GetWorld()->SpawnActor<AWalletItem_KJY>(WalletFactory, SpawnLoc, FRotator(0));
+		MultiRPCSpawnHealth(sLoc);
 	}
-	else if(RandItem<0.8)
+	else if(2 <= RandItem && RandItem < 4)
 	{
-		GetWorld()->SpawnActor<AHealthItem_KJY>(HealthFactory, SpawnLoc, FRotator(0));
+		MultiRPCSpawnSkill(sLoc);
 	}
 	else
 	{
-		GetWorld()->SpawnActor<ASkillUpItem_KJY>(SkillUpFactory, SpawnLoc, FRotator(0));
+		MultiRPCSpawnMonny(sLoc);
 	}
+}
 
+void AZombieBase_KJY::MultiRPCSpawnHealth_Implementation(FVector sLoc)
+{
+	UE_LOG(LogTemp, Warning, TEXT("health Item"));
+
+	GetWorld()->SpawnActor<AHealthItem_KJY>(HealthFactory, sLoc, FRotator(0));
+}
+
+void AZombieBase_KJY::MultiRPCSpawnSkill_Implementation(FVector sLoc)
+{
+	UE_LOG(LogTemp, Warning, TEXT("skill Item"));
+
+	GetWorld()->SpawnActor<ASkillUpItem_KJY>(SkillUpFactory, sLoc, FRotator(0));
+}
+
+void AZombieBase_KJY::MultiRPCSpawnMonny_Implementation(FVector sLoc)
+{
+	UE_LOG(LogTemp, Warning, TEXT("monny Item"));
+
+	GetWorld()->SpawnActor<AWalletItem_KJY>(WalletFactory, sLoc, FRotator(0));
 }
 
