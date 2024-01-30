@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Bullet_YMH.generated.h"
 
+class APlayerBase_YMH;
 class UBoxComponent;
 class APlayerController_YMH;
 
@@ -37,10 +38,13 @@ public:
 	APlayerController_YMH* pc;
 
 	UPROPERTY(EditAnywhere, Category="MySettings")
-	float destroyTime = 5.0f;
+	float destroyTime = 3.0f;
 	UPROPERTY(EditAnywhere, Category="MySettings")
 	float bulletSpeed = 5000.0f;
 	
 	FVector destination;
 	FVector direction;
+
+	// APlayerBase_YMH* Owner = nullptr;
+	// void FindOwner();
 };
