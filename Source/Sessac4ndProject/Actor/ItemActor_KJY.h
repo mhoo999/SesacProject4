@@ -38,5 +38,4 @@ public:
 							  const FHitResult& SweepResult);
 
 	virtual void ReactItem();
-
 };
