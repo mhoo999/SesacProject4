@@ -48,9 +48,9 @@ public:
 	double RandSpawnX;
 	double RandSpawnY;
 
-	int32 Wave1 = 2; // *2
-	int32 Wave2 = 3; // *3
-	int32 Wave3 = 4; // *4
+	int32 Wave1 = 20; // *2
+	int32 Wave2 = 30; // *3
+	int32 Wave3 = 40; // *4
 	int32 CurrentWave = 0;
 	FActorSpawnParameters ActorSpawnParameters;
 	// ESpawnActorCollisionHandlingMethod ActorSpawnParams = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;

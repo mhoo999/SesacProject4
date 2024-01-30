@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Character/Enemy/ZombieBase_KJY.h"
 #include "ZombieHPUI_LDJ.generated.h"
 
 /**
@@ -19,7 +20,7 @@ public:
 
 	// ----- 함수 -----
 		
-	void ShowZombieHPUI(float CurrentHP, float MaxHP);
+	void ShowZombieHPUI(float CurrentHP, float MaxHP,AZombieBase_KJY* Enemy);
 	void ClearZombieHPUI();
 	// ----- 함수 -----
 

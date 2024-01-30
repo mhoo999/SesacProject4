@@ -17,4 +17,5 @@ class SESSAC4NDPROJECT_API AWalletItem_KJY : public AItemActor_KJY
 	virtual void BeginPlay() override;
 
 	virtual void ReactItem() override;
+	
 };
