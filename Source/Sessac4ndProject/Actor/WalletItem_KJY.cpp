@@ -16,6 +16,8 @@ void AWalletItem_KJY::BeginPlay()
 
 void AWalletItem_KJY::ReactItem()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Monney : %s"), *GetActorLocation().ToString());
+
 	Player->wallet+=50;
 	auto MyPlayerController = Cast<APlayerController_YMH>(GetWorld()->GetFirstPlayerController());
 	MyPlayerController->mainUI->WBP_Money->SetMoneyText(Player->wallet);
