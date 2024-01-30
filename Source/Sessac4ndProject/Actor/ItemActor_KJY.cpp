@@ -37,10 +37,13 @@ void AItemActor_KJY::Tick(float DeltaTime)
 void AItemActor_KJY::OnBeginItemOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	Player = Cast<APlayerBase_YMH>(GetWorld()->GetFirstPlayerController()->GetCharacter());
-
+	Player = Cast<APlayerBase_YMH>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	UE_LOG(LogTemp, Warning, TEXT("overlap"));
+	
 	if (Player == OtherActor)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("overlap player"));
+		
 		ReactItem();
 		Destroy();
 	}
@@ -49,4 +52,3 @@ void AItemActor_KJY::OnBeginItemOverlap(UPrimitiveComponent* OverlappedComponent
 void AItemActor_KJY::ReactItem()
 {
 }
-
