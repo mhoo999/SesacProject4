@@ -58,6 +58,7 @@ void AZombieBase_KJY::ServerRPCDamage_Implementation(float getDamage)
 	}
 	
 	CurrentHp -= getDamage;
+	GetCharacterMovement()->MaxWalkSpeed = 0;
 
 	if(	CurrentHp <= 0)
 	{
@@ -72,7 +73,6 @@ void AZombieBase_KJY::ServerRPCDamage_Implementation(float getDamage)
 void AZombieBase_KJY::MultiDieProcess_Implementation(float hp)
 {
 	SpawnLoc = GetActorLocation() + FVector(0, 0, -50);
-	GetCharacterMovement()->MaxWalkSpeed = 0;
 	CurrentHp = hp;
 	bZombieDie = true;
 	PrintHP();
@@ -86,7 +86,6 @@ void AZombieBase_KJY::MultiRPCDamage_Implementation(float hp)
 	bZombieHit = true;
 	
 	CurrentHp = hp;
-	GetCharacterMovement()->MaxWalkSpeed = 0;
 	PrintHP();
 
 	UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentHp);
