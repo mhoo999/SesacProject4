@@ -236,8 +236,8 @@ void UPlayerBuildComp_LDJ::PreviewLoop()
 	TempVec = FVector(HitInfo.Location.X, HitInfo.Location.Y, HitInfo.Location.Z);
 	TempVec.X = FMath::Floor(HitInfo.Location.X / 350) * 350 + 190;
 	TempVec.Y = FMath::Floor(HitInfo.Location.Y / 350) * 350 + 250;
-	// TempVec.Z = FMath::CeilToFloat(HitInfo.Location.Z);
-	TempVec.Z = 0;
+	TempVec.Z = FMath::CeilToFloat(HitInfo.Location.Z);
+	//TempVec.Z = 0;
 	BuildPreviewTransform.SetLocation(TempVec);
 	BuildPreviewTransform.SetScale3D(FVector(2.15, 2.15, 1));
 
