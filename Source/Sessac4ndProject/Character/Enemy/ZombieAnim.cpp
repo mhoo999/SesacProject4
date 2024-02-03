@@ -4,6 +4,7 @@
 #include "ZombieAnim.h"
 
 #include "ZombieBase_KJY.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 void UZombieAnim::NativeUpdateAnimation(float DeltaSeconds)
@@ -50,4 +51,5 @@ void UZombieAnim::NativeInitializeAnimation()
 void UZombieAnim::AnimNotify_ReactEnd()
 {
 	Me->bZombieHit = false;
+	Me->GetCharacterMovement()->MaxWalkSpeed = 300;
 }

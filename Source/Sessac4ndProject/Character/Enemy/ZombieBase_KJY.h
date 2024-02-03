@@ -58,6 +58,7 @@ public:
 
 	void PrintHP();
 
+	// 아이템 소환 주소
 	UPROPERTY(EditAnywhere)
 	FVector SpawnLoc;
 

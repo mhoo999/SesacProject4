@@ -45,6 +45,8 @@ void AZombieBase_KJY::BeginPlay()
 void AZombieBase_KJY::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	UE_LOG(LogTemp, Warning, TEXT("hit : %hhd, die : %hhd"), bZombieHit, bZombieDie);
 }
 
 void AZombieBase_KJY::ServerRPCDamage_Implementation(float getDamage)
@@ -56,6 +58,7 @@ void AZombieBase_KJY::ServerRPCDamage_Implementation(float getDamage)
 	}
 	
 	CurrentHp -= getDamage;
+	GetCharacterMovement()->MaxWalkSpeed = 0;
 
 	if(	CurrentHp <= 0)
 	{
@@ -72,8 +75,6 @@ void AZombieBase_KJY::MultiDieProcess_Implementation(float hp)
 	SpawnLoc = GetActorLocation() + FVector(0, 0, -50);
 	CurrentHp = hp;
 	bZombieDie = true;
-	GetCharacterMovement()->MaxWalkSpeed = 0;
-	SetActorLocation(SpawnLoc);
 	PrintHP();
 	GetMesh()->SetCollisionProfileName(FName("DieZombie"));
 
@@ -85,7 +86,6 @@ void AZombieBase_KJY::MultiRPCDamage_Implementation(float hp)
 	bZombieHit = true;
 	
 	CurrentHp = hp;
-	GetCharacterMovement()->MaxWalkSpeed = 0;
 	PrintHP();
 
 	UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentHp);
